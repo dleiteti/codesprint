@@ -39,7 +39,7 @@ const MultiSelectCard = memo(({ name, options, label, selected, onToggle, custom
   onCustomChange: (value: string) => void;
 }) => (
   <div className="mb-6">
-    <label className="block text-sm font-medium text-white mb-3">{label} <span className="text-cyan-400 text-xs">(Múltipla escolha)</span></label>
+    <label className="block text-sm font-medium text-white mb-3">{label} <span className="text-cyan-400 text-xs">(Pode escolher mais de uma opção)</span></label>
     <div className="grid grid-cols-2 gap-2">
       {options.map(opt => (
         <button 
