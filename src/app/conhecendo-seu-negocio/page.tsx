@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, Sparkles, CheckCircle2, Building2, Target, Users, Palette, Camera, Gift, Phone, Star, ChevronDown } from 'lucide-react';
+import { Send, Sparkles, CheckCircle2, Building2, Target, Users, Palette, Camera, Gift, Phone, Star, ChevronDown, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 const WHATSAPP_LINK = "https://wa.me/5511960552522";
 
@@ -11,6 +12,7 @@ export default function ConhecendoSeuNegocio() {
     const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState<Record<string, string>>({});
     const [customInputs, setCustomInputs] = useState<Record<string, string>>({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const steps = [
         { icon: Building2, title: 'Seu Negócio', desc: 'Informações básicas' },
@@ -38,15 +40,64 @@ export default function ConhecendoSeuNegocio() {
 
     const getValue = (name: string) => formData[name] === 'outro' ? customInputs[name] : formData[name];
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+
+        // Prepare data for database
+        const briefingData = {
+            nome: getValue('nome'),
+            empresa: getValue('empresa'),
+            whatsapp: getValue('whatsapp'),
+            nicho: getValue('nicho'),
+            tempo_mercado: getValue('tempo'),
+            local_atuacao: getValue('local'),
+            objetivo: getValue('objetivo'),
+            acao_desejada: getValue('acao'),
+            servico_principal: getValue('servico'),
+            publico: getValue('publico'),
+            renda: getValue('renda'),
+            dor_principal: getValue('dor'),
+            diferencial: getValue('diferencial'),
+            clima: getValue('clima'),
+            cores: getValue('cores'),
+            tem_logo: getValue('logo'),
+            estilo: getValue('estilo'),
+            tem_fotos: getValue('fotos'),
+            tem_depoimentos: getValue('depoimentos'),
+            numeros: getValue('numeros'),
+            instagram: getValue('instagram'),
+            mostrar_precos: getValue('preco'),
+            faixa_preco: getValue('faixa'),
+            promocao: getValue('promocao'),
+            garantia: getValue('garantia'),
+            formas_pagamento: getValue('pagamento'),
+            whatsapp_contato: getValue('whatsappFinal'),
+            horario: getValue('horario'),
+            tempo_resposta: getValue('resposta'),
+            urgencia: getValue('urgencia'),
+            investimento: getValue('investimento'),
+            observacoes: getValue('observacao'),
+            status: 'novo'
+        };
+
+        try {
+            // Save to Supabase
+            await supabase.from('briefings').insert([briefingData]);
+        } catch (error) {
+            console.error('Erro ao salvar briefing:', error);
+        }
+
+        // Open WhatsApp
         const data = Object.entries(formData).map(([k, v]) => `*${k}:* ${v === 'outro' ? customInputs[k] : v}`).join('\n');
         const msg = encodeURIComponent(`🚀 *NOVO BRIEFING - LANDING PAGE*\n\n${data}\n\n_Enviado pelo formulário CodeSprint_`);
         window.open(`${WHATSAPP_LINK}?text=${msg}`, '_blank');
+
+        setIsSubmitting(false);
     };
 
     const OptionCard = ({ name, options, label }: { name: string; options: string[]; label: string }) => (
         <div className="mb-6">
-            <label className="block text-sm font-medium text-cyan-300 mb-3">{label}</label>
+            <label className="block text-sm font-medium text-white mb-3">{label}</label>
             <div className="grid grid-cols-2 gap-2">
                 {options.map(opt => (
                     <button key={opt} type="button" onClick={() => handleSelect(name, opt)}
@@ -65,7 +116,7 @@ export default function ConhecendoSeuNegocio() {
 
     const TextInput = ({ name, label, placeholder, required = false }: { name: string; label: string; placeholder: string; required?: boolean }) => (
         <div className="mb-4">
-            <label className="block text-sm font-medium text-cyan-300 mb-2">{label} {required && <span className="text-red-400">*</span>}</label>
+            <label className="block text-sm font-medium text-white mb-2">{label} {required && <span className="text-red-400">*</span>}</label>
             <input type="text" value={formData[name] || ''} onChange={(e) => handleInput(name, e.target.value)} placeholder={placeholder}
                 className="w-full px-4 py-3 bg-slate-800/50 border border-cyan-500/30 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 transition-all" />
         </div>
@@ -164,12 +215,12 @@ export default function ConhecendoSeuNegocio() {
                                 </button>
                             )}
                             {currentStep < steps.length - 1 ? (
-                                <button onClick={() => setCurrentStep(currentStep + 1)} className="flex-1 py-3 bg-cyan-500 text-white font-bold rounded-xl hover:bg-cyan-400 transition-all text-sm flex items-center justify-center gap-2">
+                                <button onClick={() => setCurrentStep(currentStep + 1)} className="flex-1 py-3 bg-[#128C7E] text-white font-bold rounded-xl hover:bg-[#075E54] transition-all text-sm flex items-center justify-center gap-2">
                                     Próximo →
                                 </button>
                             ) : (
-                                <button onClick={handleSubmit} className="flex-1 py-4 bg-[#25D366] text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-base" style={{ boxShadow: '0 0 30px rgba(37, 211, 102, 0.4)' }}>
-                                    <Send className="w-5 h-5" /> Enviar pelo WhatsApp
+                                <button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 py-4 bg-[#25D366] text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-base disabled:opacity-50 disabled:cursor-not-allowed" style={{ boxShadow: '0 0 30px rgba(37, 211, 102, 0.4)' }}>
+                                    {isSubmitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Enviando...</> : <><Send className="w-5 h-5" /> Enviar pelo WhatsApp</>}
                                 </button>
                             )}
                         </div>
