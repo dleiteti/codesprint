@@ -1,10 +1,10 @@
 // 30 Templates de Prompts para Geração de Mockups
-// Cada template foca em um aspecto diferente do design
+// REGRA: Sempre usar dados REAIS do lead, templates variam apenas estilo/estrutura
 
 export interface PromptTemplate {
     id: number;
     name: string;
-    category: 'estilo' | 'estrutura' | 'cta' | 'social' | 'nicho';
+    category: 'estilo' | 'estrutura' | 'cta' | 'social';
     categoryLabel: string;
     buildPrompt: (data: BriefingData) => string;
 }
@@ -21,16 +21,30 @@ export interface BriefingData {
     referencia_visual?: string;
 }
 
+// Bloco de dados do lead - SEMPRE incluído em todos os prompts
+const buildLeadDataBlock = (data: BriefingData) => `
+📋 **DADOS DO CLIENTE (USAR INTEGRALMENTE):**
+- **Empresa:** ${data.empresa || 'Não informado'}
+- **Nicho:** ${data.nicho || 'Não informado'}
+- **Objetivo:** ${data.objetivo || 'Não especificado'}
+- **Público-Alvo:** ${data.publico_resumo || 'Não especificado'}
+- **Diferencial:** ${data.diferencial_curto || 'Não especificado'}
+- **Cores Preferidas:** ${data.cores_preferidas || 'Deixar a critério'}
+- **Estilo Desejado:** ${data.clima || 'Não especificado'}
+- **Referência Visual:** ${data.referencia_visual || 'Nenhuma'}
+`;
+
 const BASE_RULES = `
 ⚠️ **REGRAS OBRIGATÓRIAS:**
 1. TODOS os textos DEVEM estar em PORTUGUÊS BRASILEIRO
-2. Botão principal: "Chame no WhatsApp" ou "Fale Conosco"
-3. Incluir logo/nome da empresa no topo
-4. Design mobile-first
+2. Nome "${'{EMPRESA}'}" deve aparecer no topo
+3. Botão principal: "Chame no WhatsApp" ou "Fale Conosco"
+4. Respeitar o NICHO informado pelo cliente
+5. Design mobile-first
 `;
 
 export const promptTemplates: PromptTemplate[] = [
-    // ============ CATEGORIA 1: ESTILO VISUAL (1-6) ============
+    // ============ CATEGORIA 1: ESTILO VISUAL (1-8) ============
     {
         id: 1,
         name: "Dark Mode Neon",
@@ -39,25 +53,22 @@ export const promptTemplates: PromptTemplate[] = [
         buildPrompt: (data) => `
 🎨 **MOCKUP: DARK MODE NEON**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com estilo DARK MODE e acentos NEON.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
 - Fundo escuro (#0B1120 ou preto)
-- Acentos em neon verde/ciano (#00FF88 ou #00FFFF)
+- Acentos em neon (verde/ciano) OU cores do cliente se informadas
 - Tipografia bold e grande
 - Efeitos de glow nos botões e ícones
-- Formas geométricas com brilho
 
 **ESTRUTURA:**
-- Hero com headline impactante
-- Seção benefícios com ícones neon
+- Hero com headline para o nicho ${data.nicho}
+- Benefícios com ícones neon
 - Depoimentos em cards escuros
-- CTA "Chame no WhatsApp" com glow verde
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Público: ${data.publico_resumo || 'Geral'}
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+- CTA "Chame no WhatsApp" com glow
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
         id: 2,
@@ -67,25 +78,22 @@ ${BASE_RULES}`
         buildPrompt: (data) => `
 🎨 **MOCKUP: LIGHT MINIMAL CLEAN**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com estilo MINIMALISTA e CLEAN.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
 - Fundo branco ou off-white (#FAFAFA)
 - Muito espaço em branco
-- Tipografia fina e elegante (Inter, Outfit)
-- Tons neutros: preto, cinza, um accent sutil
-- Sombras suaves, bordas arredondadas
+- Tipografia fina e elegante
+- Cores do cliente como accent sutil
 
 **ESTRUTURA:**
 - Hero clean com poucos elementos
-- Cards de benefícios com ícones lineares
-- Depoimentos minimalistas
-- CTA em verde escuro elegante
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Público: ${data.publico_resumo || 'Geral'}
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+- Cards de benefícios minimalistas
+- Depoimentos elegantes
+- CTA verde escuro
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
         id: 3,
@@ -95,54 +103,47 @@ ${BASE_RULES}`
         buildPrompt: (data) => `
 🎨 **MOCKUP: GRADIENT VIBRANTE**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com GRADIENTES COLORIDOS.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
-- Gradientes vibrantes (rosa→roxo, azul→ciano)
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
+- Gradientes coloridos vibrantes
 - Formas orgânicas e fluidas
 - Tipografia moderna e jovem
-- Visual energético e dinâmico
-- Cores: magenta, roxo, ciano
+- Visual energético
 
 **ESTRUTURA:**
 - Hero com background gradient
 - Elementos flutuantes
 - Cards com glassmorphism
 - Botão WhatsApp colorido
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Público: ${data.publico_resumo || 'Geral'}
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
         id: 4,
-        name: "Corporate Trust",
+        name: "Corporate Confiável",
         category: "estilo",
         categoryLabel: "🎨 Estilo Visual",
         buildPrompt: (data) => `
-🎨 **MOCKUP: CORPORATE TRUST**
+🎨 **MOCKUP: CORPORATE CONFIÁVEL**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com estilo CORPORATIVO e CONFIÁVEL.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
-- Cores: azul escuro (#1E3A5F), cinza, branco
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
+- Cores sóbrias (azul escuro, cinza, branco)
 - Visual sério e profissional
-- Badges de confiança proeminentes
-- Fotos de equipe/escritório
-- Tipografia tradicional (system fonts)
+- Badges de confiança
+- Tipografia tradicional
 
 **ESTRUTURA:**
 - Hero com foto profissional
-- Seção "Por que nos escolher"
-- Logos de parceiros/clientes
-- Depoimentos com foto e cargo
-- CTA formal "Solicite um Orçamento"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Público: ${data.publico_resumo || 'Geral'}
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+- "Por que nos escolher"
+- Logos de parceiros
+- Depoimentos com foto
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
         id: 5,
@@ -152,672 +153,575 @@ ${BASE_RULES}`
         buildPrompt: (data) => `
 🎨 **MOCKUP: WARM ACOLHEDOR**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com estilo ACOLHEDOR e HUMANO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
-- Cores quentes: bege, terracota, marrom
-- Fotos lifestyle com pessoas reais
-- Tipografia com personalidade
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
+- Cores quentes (bege, terracota, marrom)
+- Fotos lifestyle com pessoas
 - Visual caseiro e confortável
-- Ilustrações hand-drawn
+- Tipografia com personalidade
 
 **ESTRUTURA:**
-- Hero com foto calorosa
-- Seção "Nossa História"
-- Depoimentos com emoção
+- Hero calorosa
+- "Nossa História"
 - Galeria de momentos
 - CTA "Vamos Conversar?"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Público: ${data.publico_resumo || 'Geral'}
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
         id: 6,
-        name: "Luxury Gold",
+        name: "Luxury Premium",
         category: "estilo",
         categoryLabel: "🎨 Estilo Visual",
         buildPrompt: (data) => `
-🎨 **MOCKUP: LUXURY GOLD**
+🎨 **MOCKUP: LUXURY PREMIUM**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com estilo LUXUOSO e PREMIUM.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
 - Cores: preto, dourado (#D4AF37), branco
-- Tipografia serif elegante (Playfair Display)
+- Tipografia serif elegante
 - Espaçamento generoso
-- Detalhes em ouro/bronze
 - Visual de alto padrão
 
 **ESTRUTURA:**
 - Hero sofisticada
 - "Experiência Exclusiva"
 - Galeria premium
-- Depoimentos de clientes VIP
 - CTA "Agende sua Experiência"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Público: ${data.publico_resumo || 'Geral'}
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
-
-    // ============ CATEGORIA 2: ESTRUTURA (7-12) ============
     {
         id: 7,
+        name: "Bold Impactante",
+        category: "estilo",
+        categoryLabel: "🎨 Estilo Visual",
+        buildPrompt: (data) => `
+🎨 **MOCKUP: BOLD IMPACTANTE**
+
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
+
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
+- Tipografia ENORME e bold
+- Contraste alto (preto/branco + accent)
+- Elementos grandes e ousados
+- Animações de impacto
+
+**ESTRUTURA:**
+- Hero com texto gigante
+- Números em destaque
+- Benefícios com ícones grandes
+- CTA impossível de ignorar
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
+    },
+    {
+        id: 8,
+        name: "Pastel Suave",
+        category: "estilo",
+        categoryLabel: "🎨 Estilo Visual",
+        buildPrompt: (data) => `
+🎨 **MOCKUP: PASTEL SUAVE**
+
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
+
+${buildLeadDataBlock(data)}
+
+**APLICAR ESTILO:**
+- Cores pastel suaves (rosa, azul bebê, lavanda)
+- Visual delicado e feminino
+- Formas arredondadas
+- Ilustrações sutis
+
+**ESTRUTURA:**
+- Hero acolhedora
+- Benefícios em cards soft
+- Depoimentos delicados
+- CTA suave
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
+    },
+
+    // ============ CATEGORIA 2: ESTRUTURA (9-16) ============
+    {
+        id: 9,
         name: "Hero Full Screen",
         category: "estrutura",
         categoryLabel: "📐 Estrutura",
         buildPrompt: (data) => `
 📐 **MOCKUP: HERO FULL SCREEN**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com HERO OCUPANDO 100% DA TELA.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA PRINCIPAL:**
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
 - Hero ocupa 100vh (tela inteira)
-- Headline GIGANTE no centro
-- Subheadline curta
+- Headline GIGANTE no centro relacionada ao nicho
 - Apenas 1 botão CTA enorme
 - Background com foto ou gradient
 
 **DEMAIS SEÇÕES:**
 - Scroll revela benefícios
-- Prova social compacta
-- FAQ colapsável
-- Footer com WhatsApp
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+- Prova social
+- FAQ
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 8,
+        id: 10,
         name: "Split Hero 50/50",
         category: "estrutura",
         categoryLabel: "📐 Estrutura",
         buildPrompt: (data) => `
 📐 **MOCKUP: SPLIT HERO 50/50**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com HERO DIVIDIDA.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA PRINCIPAL:**
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
 - Hero dividida: 50% texto / 50% imagem
 - Lado esquerdo: headline + CTA
-- Lado direito: foto/produto em destaque
+- Lado direito: foto do nicho ${data.nicho}
 - Alinhamento vertical centralizado
 
 **DEMAIS SEÇÕES:**
 - 3 cards de benefícios
-- Seção de depoimentos
-- Preços/planos (se aplicável)
+- Depoimentos
 - CTA final
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 9,
+        id: 11,
         name: "Video Background",
         category: "estrutura",
         categoryLabel: "📐 Estrutura",
         buildPrompt: (data) => `
 📐 **MOCKUP: VIDEO BACKGROUND**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com VÍDEO DE FUNDO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA PRINCIPAL:**
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
 - Hero com vídeo em loop de fundo
 - Overlay escuro para legibilidade
 - Texto branco grande por cima
-- Botão play para ver vídeo completo
+- Vídeo relacionado ao nicho ${data.nicho}
 
 **DEMAIS SEÇÕES:**
-- Transição suave para seção clara
-- Benefícios em formato timeline
-- Depoimentos em vídeo (thumbnails)
-- CTA sticky no mobile
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+- Transição para seção clara
+- Timeline de benefícios
+- Depoimentos
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 10,
+        id: 12,
         name: "Product Showcase",
         category: "estrutura",
         categoryLabel: "📐 Estrutura",
         buildPrompt: (data) => `
 📐 **MOCKUP: PRODUCT SHOWCASE**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com PRODUTO EM DESTAQUE.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA PRINCIPAL:**
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
 - Produto/serviço ENORME no centro
-- Foto 360° ou múltiplos ângulos
+- Múltiplos ângulos ou detalhes
 - Specs/características ao redor
 - Preço em destaque (se aplicável)
 
 **DEMAIS SEÇÕES:**
 - Como funciona (3 passos)
-- Comparativo antes/depois
-- Garantia em destaque
-- Botão WhatsApp fixo
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+- Comparativo
+- Garantia
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 11,
+        id: 13,
         name: "Testimonial First",
         category: "estrutura",
         categoryLabel: "📐 Estrutura",
         buildPrompt: (data) => `
 📐 **MOCKUP: TESTIMONIAL FIRST**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" ABRINDO COM DEPOIMENTO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA PRINCIPAL:**
-- Hero abre com depoimento impactante
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
+- Hero ABRE com depoimento impactante
 - Citação grande com foto do cliente
 - "Veja o que dizem sobre nós"
 - Credibilidade imediata
 
 **DEMAIS SEÇÕES:**
-- Carrossel de mais depoimentos
+- Carrossel de depoimentos
 - Quem somos (breve)
 - Serviços/produtos
-- CTA "Seja o próximo case"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 12,
+        id: 14,
         name: "Numbers Impact",
         category: "estrutura",
         categoryLabel: "📐 Estrutura",
         buildPrompt: (data) => `
 📐 **MOCKUP: NUMBERS IMPACT**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com NÚMEROS IMPACTANTES.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA PRINCIPAL:**
-- Hero com contadores animados
-- "+500 Clientes Satisfeitos"
-- "+10 Anos de Experiência"
-- "98% Aprovação"
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
+- Hero com contadores animados grandes
+- "+500 Clientes" / "+10 Anos" / "98% Satisfação"
+- Números que impressionam
 
 **DEMAIS SEÇÕES:**
 - Gráfico de crescimento
 - Timeline de conquistas
 - Depoimentos com métricas
-- CTA "Faça parte dessa história"
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
+    },
+    {
+        id: 15,
+        name: "Scroll Storytelling",
+        category: "estrutura",
+        categoryLabel: "📐 Estrutura",
+        buildPrompt: (data) => `
+📐 **MOCKUP: SCROLL STORYTELLING**
 
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
+
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
+- Página conta uma história ao scrollar
+- Seções que revelam progressivamente
+- "O Problema → A Solução → O Resultado"
+- Jornada visual do cliente
+
+**DEMAIS SEÇÕES:**
+- Capítulos visuais
+- CTA aparece no clímax
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
+    },
+    {
+        id: 16,
+        name: "Grid Magazine",
+        category: "estrutura",
+        categoryLabel: "📐 Estrutura",
+        buildPrompt: (data) => `
+📐 **MOCKUP: GRID MAGAZINE**
+
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
+
+${buildLeadDataBlock(data)}
+
+**ESTRUTURA OBRIGATÓRIA:**
+- Layout estilo revista/editorial
+- Grid assimétrico interessante
+- Fotos grandes e textos curtos
+- Visual sofisticado de magazine
+
+**DEMAIS SEÇÕES:**
+- Catálogo visual
+- "Destaques"
+- Footer editorial
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
 
-    // ============ CATEGORIA 3: CTA/CONVERSÃO (13-18) ============
+    // ============ CATEGORIA 3: CTA/CONVERSÃO (17-24) ============
     {
-        id: 13,
+        id: 17,
         name: "WhatsApp Flutuante",
         category: "cta",
         categoryLabel: "🎯 CTA/Conversão",
         buildPrompt: (data) => `
 🎯 **MOCKUP: WHATSAPP FLUTUANTE**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com FOCO EM WHATSAPP.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**CTA PRINCIPAL:**
-- Botão WhatsApp flutuante no canto
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
+- Botão WhatsApp flutuante SEMPRE visível
 - Animação de pulse/bounce
 - Tooltip "Fale agora!"
 - Verde WhatsApp (#25D366)
+- "Resposta em menos de 1 hora"
 
 **ESTRUTURA:**
 - Vários pontos de CTA na página
-- Menções constantes ao WhatsApp
-- "Resposta em menos de 1 hora"
 - Horário de atendimento visível
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 14,
+        id: 18,
         name: "CTA Gigante Central",
         category: "cta",
         categoryLabel: "🎯 CTA/Conversão",
         buildPrompt: (data) => `
 🎯 **MOCKUP: CTA GIGANTE CENTRAL**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com CTA IMPOSSÍVEL DE IGNORAR.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**CTA PRINCIPAL:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
 - Botão ENORME no centro da hero
 - Ocupa 50% da largura
 - Texto grande: "QUERO SABER MAIS"
 - Sombra/glow chamativo
-
-**ESTRUTURA:**
-- Tudo leva ao botão central
 - Setas apontando para CTA
-- Texto de urgência acima
-- Garantia abaixo do botão
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 15,
+        id: 19,
         name: "Multiple CTAs",
         category: "cta",
         categoryLabel: "🎯 CTA/Conversão",
         buildPrompt: (data) => `
 🎯 **MOCKUP: MULTIPLE CTAs**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com CTAs EM TODA SEÇÃO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRATÉGIA:**
-- Cada seção termina com CTA
-- Variações de texto nos botões
-- "Saiba Mais" / "Orçamento Grátis" / "Fale Conosco"
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
+- CADA seção termina com CTA
+- Variações de texto: "Saiba Mais" / "Orçamento Grátis" / "Fale Conosco"
 - Cores diferentes por seção
-
-**ESTRUTURA:**
-- Hero + CTA
-- Benefícios + CTA
-- Depoimentos + CTA
-- FAQ + CTA Final
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+- Múltiplas oportunidades de conversão
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 16,
+        id: 20,
         name: "Urgency Scarcity",
         category: "cta",
         categoryLabel: "🎯 CTA/Conversão",
         buildPrompt: (data) => `
 🎯 **MOCKUP: URGENCY & SCARCITY**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com GATILHOS DE URGÊNCIA.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ELEMENTOS:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
 - Timer contando regressivo
 - "Últimas 5 vagas!"
 - "Oferta termina hoje"
 - Badge "LIMITADO"
-- Cor vermelha para urgência
-
-**ESTRUTURA:**
-- Banner de urgência no topo
-- Hero com timer
 - Preço riscado + promoção
 - CTA "GARANTIR MINHA VAGA"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 17,
+        id: 21,
         name: "Soft CTA Consultivo",
         category: "cta",
         categoryLabel: "🎯 CTA/Conversão",
         buildPrompt: (data) => `
 🎯 **MOCKUP: SOFT CTA CONSULTIVO**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com ABORDAGEM SUAVE.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTILO:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
 - Sem pressão de venda
 - "Vamos conversar?"
 - "Tire suas dúvidas"
-- Cores suaves, azul confiança
-
-**ESTRUTURA:**
-- Hero informativa
-- Muito conteúdo de valor
+- Cores suaves, confiança
 - FAQ expandido
 - CTA "Agendar Conversa Gratuita"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 18,
+        id: 22,
         name: "Form Embedded",
         category: "cta",
         categoryLabel: "🎯 CTA/Conversão",
         buildPrompt: (data) => `
 🎯 **MOCKUP: FORM EMBEDDED**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com FORMULÁRIO NA HERO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**ESTRUTURA:**
-- Hero com formulário à direita
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
+- Formulário DIRETO na hero (lado direito)
 - Campos: Nome, WhatsApp, Email
 - Botão "Enviar" destacado
 - "Responderemos em 24h"
-
-**DEMAIS SEÇÕES:**
-- Por que preencher (benefícios)
-- O que acontece depois
-- Depoimentos de quem preencheu
 - Formulário repetido no final
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
+    },
+    {
+        id: 23,
+        name: "Sticky Bottom Bar",
+        category: "cta",
+        categoryLabel: "🎯 CTA/Conversão",
+        buildPrompt: (data) => `
+🎯 **MOCKUP: STICKY BOTTOM BAR**
 
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
+
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
+- Barra fixa no rodapé da tela
+- Sempre visível ao scrollar
+- "Fale Conosco" + telefone/WhatsApp
+- Contraste alto com a página
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
+    },
+    {
+        id: 24,
+        name: "Exit Intent Popup",
+        category: "cta",
+        categoryLabel: "🎯 CTA/Conversão",
+        buildPrompt: (data) => `
+🎯 **MOCKUP: EXIT INTENT STYLE**
+
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
+
+${buildLeadDataBlock(data)}
+
+**FOCO EM CTA:**
+- Visual que sugere popup de saída
+- "Espera! Antes de ir..."
+- Oferta especial destacada
+- Desconto ou bônus exclusivo
+- CTA urgente
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
 
-    // ============ CATEGORIA 4: PROVA SOCIAL (19-24) ============
+    // ============ CATEGORIA 4: PROVA SOCIAL (25-30) ============
     {
-        id: 19,
+        id: 25,
         name: "Video Testimonials Grid",
         category: "social",
         categoryLabel: "⭐ Prova Social",
         buildPrompt: (data) => `
 ⭐ **MOCKUP: VIDEO TESTIMONIALS**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com DEPOIMENTOS EM VÍDEO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**DESTAQUE:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM PROVA SOCIAL:**
 - Grid de vídeos de clientes
 - Thumbnails com play button
-- Citações abaixo de cada vídeo
 - "Veja o que nossos clientes dizem"
-
-**ESTRUTURA:**
-- Hero com headline de resultado
-- Grid 2x3 de vídeos
-- CTA entre vídeos
-- Mais depoimentos em texto
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+- Citações abaixo de cada vídeo
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 20,
+        id: 26,
         name: "Before After Results",
         category: "social",
         categoryLabel: "⭐ Prova Social",
         buildPrompt: (data) => `
 ⭐ **MOCKUP: BEFORE/AFTER RESULTS**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com ANTES E DEPOIS.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**DESTAQUE:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM PROVA SOCIAL:**
 - Slider de antes/depois
 - Fotos lado a lado
 - Métricas de transformação
 - "Resultados Reais"
-
-**ESTRUTURA:**
-- Hero com caso de sucesso
-- Galeria de transformações
-- Depoimento do cliente transformado
 - CTA "Quero minha transformação"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 21,
+        id: 27,
         name: "Logo Wall Partners",
         category: "social",
         categoryLabel: "⭐ Prova Social",
         buildPrompt: (data) => `
 ⭐ **MOCKUP: LOGO WALL**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com PAREDE DE LOGOS.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**DESTAQUE:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM PROVA SOCIAL:**
 - Grid de logos de clientes/parceiros
 - "Empresas que confiam em nós"
 - Logos em cinza (uniformidade)
-- Scroll infinito de logos
-
-**ESTRUTURA:**
-- Hero institucional
-- Logo wall proeminente
-- Cases de sucesso por empresa
 - CTA "Junte-se a eles"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 22,
+        id: 28,
         name: "Stats Counter Animated",
         category: "social",
         categoryLabel: "⭐ Prova Social",
         buildPrompt: (data) => `
 ⭐ **MOCKUP: STATS COUNTER**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com CONTADORES ANIMADOS.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**DESTAQUE:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM PROVA SOCIAL:**
 - Números grandes animados
 - "+1.500 Clientes Atendidos"
 - "+50.000 Procedimentos"
 - "99% Satisfação"
-
-**ESTRUTURA:**
-- Hero com resultado principal
-- Barra de stats animada
 - Gráfico de crescimento
-- Linha do tempo de conquistas
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 23,
+        id: 29,
         name: "Instagram Feed Embed",
         category: "social",
         categoryLabel: "⭐ Prova Social",
         buildPrompt: (data) => `
 ⭐ **MOCKUP: INSTAGRAM FEED**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com FEED DO INSTAGRAM.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**DESTAQUE:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM PROVA SOCIAL:**
 - Grid estilo Instagram
 - Fotos reais do perfil
 - Contador de seguidores
 - Botão "Siga-nos"
-
-**ESTRUTURA:**
-- Hero com @perfil
-- Feed integrado
 - Stories highlights
-- Depoimentos de DMs
-- CTA WhatsApp
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     },
     {
-        id: 24,
+        id: 30,
         name: "Case Studies Detail",
         category: "social",
         categoryLabel: "⭐ Prova Social",
         buildPrompt: (data) => `
 ⭐ **MOCKUP: CASE STUDIES**
 
-Criar Landing Page para "${data.empresa || 'a marca'}" com CASOS DE SUCESSO.
+Criar Landing Page para "${data.empresa || 'a marca'}" do nicho **${data.nicho || 'geral'}**.
 
-**DESTAQUE:**
+${buildLeadDataBlock(data)}
+
+**FOCO EM PROVA SOCIAL:**
 - Mini cases detalhados
 - Problema → Solução → Resultado
 - Métricas específicas
 - Foto do cliente + empresa
-
-**ESTRUTURA:**
-- Hero com case principal
-- 3 cases em cards
-- Botão "Ver todos os cases"
 - CTA "Seja nosso próximo case"
-
-**CLIENTE:** ${data.nicho || 'Geral'} | Objetivo: ${data.objetivo || 'Conversão'}
-${BASE_RULES}`
-    },
-
-    // ============ CATEGORIA 5: NICHO ESPECÍFICO (25-30) ============
-    {
-        id: 25,
-        name: "Beauty Estética",
-        category: "nicho",
-        categoryLabel: "💼 Nicho Específico",
-        buildPrompt: (data) => `
-💄 **MOCKUP: NICHO BEAUTY/ESTÉTICA**
-
-Criar Landing Page para "${data.empresa || 'a marca'}" do NICHO ESTÉTICA.
-
-**ESTILO ESPECÍFICO:**
-- Cores: rosa, nude, rose gold
-- Fotos de antes/depois
-- Visual feminino e delicado
-- Tipografia elegante
-
-**ELEMENTOS:**
-- Galeria de resultados
-- Procedimentos oferecidos
-- Certificações/especializações
-- Agenda online / WhatsApp
-
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
-    },
-    {
-        id: 26,
-        name: "Fitness Energia",
-        category: "nicho",
-        categoryLabel: "💼 Nicho Específico",
-        buildPrompt: (data) => `
-💪 **MOCKUP: NICHO FITNESS**
-
-Criar Landing Page para "${data.empresa || 'a marca'}" do NICHO FITNESS.
-
-**ESTILO ESPECÍFICO:**
-- Cores: vermelho, laranja, preto
-- Fotos de pessoas em ação
-- Visual energético e motivacional
-- Tipografia bold e impactante
-
-**ELEMENTOS:**
-- Transformações físicas
-- Planos/pacotes de treino
-- Depoimentos com fotos
-- CTA "Comece sua transformação"
-
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
-    },
-    {
-        id: 27,
-        name: "Advocacia Jurídico",
-        category: "nicho",
-        categoryLabel: "💼 Nicho Específico",
-        buildPrompt: (data) => `
-⚖️ **MOCKUP: NICHO ADVOCACIA**
-
-Criar Landing Page para "${data.empresa || 'a marca'}" do NICHO JURÍDICO.
-
-**ESTILO ESPECÍFICO:**
-- Cores: azul escuro, dourado, branco
-- Visual sério e confiável
-- Fotos de escritório/advogados
-- Tipografia clássica
-
-**ELEMENTOS:**
-- Áreas de atuação
-- Equipe/advogados
-- Casos de sucesso (sem nomes)
-- Consulta gratuita
-
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
-    },
-    {
-        id: 28,
-        name: "Educação Cursos",
-        category: "nicho",
-        categoryLabel: "💼 Nicho Específico",
-        buildPrompt: (data) => `
-📚 **MOCKUP: NICHO EDUCAÇÃO**
-
-Criar Landing Page para "${data.empresa || 'a marca'}" do NICHO EDUCAÇÃO.
-
-**ESTILO ESPECÍFICO:**
-- Cores: azul, verde, laranja vibrante
-- Ilustrações e ícones amigáveis
-- Visual acessível e moderno
-- Fotos de alunos/aulas
-
-**ELEMENTOS:**
-- Grade curricular
-- Depoimentos de alunos
-- Certificado/diploma
-- CTA "Matricule-se agora"
-
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
-    },
-    {
-        id: 29,
-        name: "Moda Fashion",
-        category: "nicho",
-        categoryLabel: "💼 Nicho Específico",
-        buildPrompt: (data) => `
-👗 **MOCKUP: NICHO MODA**
-
-Criar Landing Page para "${data.empresa || 'a marca'}" do NICHO MODA/ROUPAS.
-
-**ESTILO ESPECÍFICO:**
-- Visual editorial de revista
-- Grid de produtos
-- Fotos lifestyle
-- Tipografia fashion (serif + sans)
-
-**ELEMENTOS:**
-- Lookbook/catálogo
-- Categorias de produtos
-- Novidades/lançamentos
-- CTA "Ver Coleção" / "Comprar"
-
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
-    },
-    {
-        id: 30,
-        name: "Alimentação Food",
-        category: "nicho",
-        categoryLabel: "💼 Nicho Específico",
-        buildPrompt: (data) => `
-🍽️ **MOCKUP: NICHO ALIMENTAÇÃO**
-
-Criar Landing Page para "${data.empresa || 'a marca'}" do NICHO FOOD.
-
-**ESTILO ESPECÍFICO:**
-- Cores quentes: vermelho, laranja, amarelo
-- Fotos de comida bem produzidas
-- Visual apetitoso e acolhedor
-- Tipografia divertida
-
-**ELEMENTOS:**
-- Menu/cardápio visual
-- Fotos dos pratos
-- Avaliações/ratings
-- CTA "Faça seu Pedido"
-
-**OBJETIVO:** ${data.objetivo || 'Conversão'}
-**DIFERENCIAL:** ${data.diferencial_curto || '-'}
-${BASE_RULES}`
+${BASE_RULES.replace('{EMPRESA}', data.empresa || 'da marca')}`
     }
 ];
 
@@ -831,21 +735,18 @@ export function getNextTemplate(usedIds: number[], preferCategory?: string): Pro
     }
 
     if (availableTemplates.length === 0) {
-        // Reinicia se usou todos
         availableTemplates = promptTemplates;
     }
 
-    // Pega aleatório dos disponíveis
     const randomIndex = Math.floor(Math.random() * availableTemplates.length);
     return availableTemplates[randomIndex];
 }
 
-// Categorias para UI
+// Categorias para UI (removido "nicho" - agora todos respeitam o nicho do lead)
 export const categories = [
     { id: 'todos', label: '🎲 Aleatório' },
     { id: 'estilo', label: '🎨 Estilo Visual' },
     { id: 'estrutura', label: '📐 Estrutura' },
     { id: 'cta', label: '🎯 CTA/Conversão' },
-    { id: 'social', label: '⭐ Prova Social' },
-    { id: 'nicho', label: '💼 Nicho Específico' }
+    { id: 'social', label: '⭐ Prova Social' }
 ];
