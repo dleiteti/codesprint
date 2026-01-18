@@ -2,26 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { RefreshCw, Eye, CheckCircle, Clock, Rocket, ArrowLeft, Search, Copy, Link2, Bot, Trash2, X } from 'lucide-react';
+import { promptTemplates, getNextTemplate, categories, BriefingData } from '@/lib/promptTemplates';
+import { RefreshCw, Eye, CheckCircle, Clock, Rocket, ArrowLeft, Search, Copy, Link2, Bot, Trash2, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-interface Briefing {
+interface Briefing extends BriefingData {
     id: string;
     created_at: string;
-    nome: string;
-    empresa: string;
     whatsapp: string;
-    nicho: string;
-    objetivo: string;
-    clima: string;
     urgencia: string;
     status: string;
     etapa: string;
-    publico?: string;
-    diferencial?: string;
-    cores?: string;
-    estilo?: string;
+    prompts_gerados?: number;
+    ultimo_template_id?: number;
 }
 
 const statusColors: Record<string, { bg: string; text: string }> = {
@@ -43,8 +37,10 @@ export default function AdminLeads() {
     const [filterEtapa, setFilterEtapa] = useState<string>('todos');
     const [searchTerm, setSearchTerm] = useState('');
     const [copiedId, setCopiedId] = useState<string | null>(null);
-    const [promptModal, setPromptModal] = useState<{ open: boolean; prompt: string; lead: string }>({ open: false, prompt: '', lead: '' });
+    const [promptModal, setPromptModal] = useState<{ open: boolean; prompt: string; lead: string; templateName: string; templateId: number; variation: number; briefingId: string }>({ open: false, prompt: '', lead: '', templateName: '', templateId: 0, variation: 0, briefingId: '' });
     const [showResetConfirm, setShowResetConfirm] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('todos');
+    const [usedTemplates, setUsedTemplates] = useState<number[]>([]);
 
     const fetchBriefings = async () => {
         setLoading(true);
@@ -71,57 +67,47 @@ export default function AdminLeads() {
         fetchBriefings();
     };
 
-    const generatePrompt = async (id: string) => {
+    const generatePrompt = async (id: string, forceNewTemplate = false) => {
         const { data } = await supabase.from('briefings').select('*').eq('id', id).single();
         if (!data) return;
 
-        const prompt = `🎨 **GERAR MOCKUPS DE LANDING PAGE**
+        // Determina templates já usados
+        let currentUsed = forceNewTemplate ? [...usedTemplates, promptModal.templateId] : usedTemplates;
 
-⚠️ **IMPORTANTE: TODOS OS TEXTOS DEVEM ESTAR EM PORTUGUÊS BRASILEIRO**
+        // Pega próximo template
+        const template = getNextTemplate(currentUsed, selectedCategory);
 
-📋 **DADOS DO CLIENTE:**
-- **Nome:** ${data.nome || 'Não informado'}
-- **Empresa:** ${data.empresa || 'Não informado'}
-- **Nicho:** ${data.nicho || 'Não informado'}
+        // Gera o prompt
+        const prompt = template.buildPrompt(data);
 
-🎯 **OBJETIVO DA PÁGINA:**
-${data.objetivo || 'Não especificado'}
+        // Atualiza contagem
+        const newVariation = (data.prompts_gerados || 0) + 1;
+        await supabase.from('briefings').update({
+            prompts_gerados: newVariation,
+            ultimo_template_id: template.id
+        }).eq('id', id);
 
-🎨 **ESTILO VISUAL:**
-- **Clima desejado:** ${data.clima || 'Não especificado'}
-- **Cores preferidas:** ${data.cores_preferidas || 'Deixar a critério'}
-- **Referência visual:** ${data.referencia_visual || 'Nenhuma'}
+        // Atualiza estado
+        setUsedTemplates([...currentUsed, template.id]);
+        setPromptModal({
+            open: true,
+            prompt,
+            lead: data.empresa || data.nome,
+            templateName: template.name,
+            templateId: template.id,
+            variation: newVariation,
+            briefingId: id
+        });
+    };
 
-👥 **PÚBLICO-ALVO:**
-${data.publico_resumo || data.publico || 'Não especificado'}
-
-💎 **DIFERENCIAL:**
-${data.diferencial_curto || data.diferencial || 'Não especificado'}
-
----
-
-📌 **INSTRUÇÃO PARA GERAÇÃO:**
-Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
-
-**REGRAS OBRIGATÓRIAS:**
-1. Todos os textos (headlines, botões, seções) DEVEM estar em PORTUGUÊS BRASILEIRO
-2. O nome da empresa "${data.empresa || 'da marca'}" deve aparecer no topo
-3. Botão de CTA deve ser "Fale no WhatsApp" ou "Chame no WhatsApp"
-4. Incluir seção de benefícios com ícones
-5. Incluir área de depoimentos/prova social
-
-**3 VARIAÇÕES:**
-- **Mockup 2 (CLEAN):** Fundo claro, minimalista, elegante  
-- **Mockup 3 (EQUILIBRADO):** Mix de cores, acolhedor, profissional`;
-
-        setPromptModal({ open: true, prompt, lead: data.empresa || data.nome });
-
-        setPromptModal({ open: true, prompt, lead: data.empresa || data.nome });
+    const regeneratePrompt = () => {
+        if (promptModal.briefingId) {
+            generatePrompt(promptModal.briefingId, true);
+        }
     };
 
     const copyPrompt = () => {
         navigator.clipboard.writeText(promptModal.prompt);
-        setTimeout(() => setPromptModal({ open: false, prompt: '', lead: '' }), 500);
     };
 
     useEffect(() => { fetchBriefings(); }, []);
@@ -153,7 +139,7 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                     </div>
                     <div className="flex items-center gap-3">
                         <button onClick={() => setShowResetConfirm(true)} className="flex items-center gap-2 text-red-400 hover:text-red-300 transition-colors text-sm px-3 py-1.5 bg-red-500/10 rounded-lg">
-                            <Trash2 className="w-4 h-4" /> Resetar Base
+                            <Trash2 className="w-4 h-4" /> Resetar
                         </button>
                         <button onClick={fetchBriefings} className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors text-sm">
                             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Atualizar
@@ -170,7 +156,7 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                         <p className="text-3xl font-bold text-white">{briefings.length}</p>
                     </div>
                     <div className="bg-slate-900/50 border border-purple-500/20 rounded-xl p-5">
-                        <p className="text-slate-400 text-sm mb-1">📝 Só Mockup</p>
+                        <p className="text-slate-400 text-sm mb-1">📝 Mockup</p>
                         <p className="text-3xl font-bold text-purple-400">{briefings.filter(b => b.etapa === 'mockup').length}</p>
                     </div>
                     <div className="bg-slate-900/50 border border-blue-500/20 rounded-xl p-5">
@@ -178,7 +164,7 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                         <p className="text-3xl font-bold text-blue-400">{briefings.filter(b => b.status === 'novo').length}</p>
                     </div>
                     <div className="bg-slate-900/50 border border-yellow-500/20 rounded-xl p-5">
-                        <p className="text-slate-400 text-sm mb-1">Em Produção</p>
+                        <p className="text-slate-400 text-sm mb-1">Produção</p>
                         <p className="text-3xl font-bold text-yellow-400">{briefings.filter(b => b.status === 'em_producao').length}</p>
                     </div>
                     <div className="bg-slate-900/50 border border-green-500/20 rounded-xl p-5">
@@ -198,13 +184,13 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                         {['todos', 'mockup', 'completo'].map(etapa => (
                             <button key={etapa} onClick={() => setFilterEtapa(etapa)}
                                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${filterEtapa === etapa ? 'bg-purple-500/20 text-purple-400 border border-purple-400' : 'bg-slate-800/50 text-slate-400 border border-cyan-500/20'}`}>
-                                {etapa === 'todos' ? 'Todas Etapas' : etapa === 'mockup' ? '📝 Mockup' : '✅ Completo'}
+                                {etapa === 'todos' ? 'Todas' : etapa === 'mockup' ? '📝' : '✅'}
                             </button>
                         ))}
                         {['todos', 'novo', 'em_producao', 'entregue'].map(status => (
                             <button key={status} onClick={() => setFilterStatus(status)}
                                 className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${filterStatus === status ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400' : 'bg-slate-800/50 text-slate-400 border border-cyan-500/20'}`}>
-                                {status === 'todos' ? 'Todos Status' : status === 'novo' ? 'Novos' : status === 'em_producao' ? 'Produção' : 'Entregues'}
+                                {status === 'todos' ? 'Status' : status === 'novo' ? '🕐' : status === 'em_producao' ? '🚀' : '✅'}
                             </button>
                         ))}
                     </div>
@@ -215,11 +201,10 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                     {loading ? (
                         <div className="p-12 text-center">
                             <RefreshCw className="w-10 h-10 text-cyan-400 animate-spin mx-auto mb-4" />
-                            <p className="text-slate-400 text-lg">Carregando...</p>
                         </div>
                     ) : filteredBriefings.length === 0 ? (
                         <div className="p-12 text-center">
-                            <p className="text-slate-400 text-lg">Nenhum lead encontrado</p>
+                            <p className="text-slate-400 text-lg">Nenhum lead</p>
                         </div>
                     ) : (
                         <div className="overflow-x-auto">
@@ -261,11 +246,14 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                                                     <button onClick={() => setSelectedBriefing(b)} className="p-2 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 rounded-lg transition-all" title="Ver detalhes">
                                                         <Eye className="w-5 h-5" />
                                                     </button>
-                                                    <button onClick={() => generatePrompt(b.id)} className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-all" title="Gerar Prompt para Mockup">
+                                                    <button onClick={() => generatePrompt(b.id)} className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-all relative" title="Gerar Prompt">
                                                         <Bot className="w-5 h-5" />
+                                                        {(b.prompts_gerados || 0) > 0 && (
+                                                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 text-white text-[10px] rounded-full flex items-center justify-center">{b.prompts_gerados}</span>
+                                                        )}
                                                     </button>
                                                     {b.etapa === 'mockup' && (
-                                                        <button onClick={() => copyDetailLink(b.id)} className="p-2 text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 rounded-lg transition-all" title="Copiar link formulário detalhado">
+                                                        <button onClick={() => copyDetailLink(b.id)} className="p-2 text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 rounded-lg transition-all" title="Link formulário">
                                                             {copiedId === b.id ? <CheckCircle className="w-5 h-5" /> : <Link2 className="w-5 h-5" />}
                                                         </button>
                                                     )}
@@ -288,27 +276,16 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                             <h2 className="text-2xl font-bold text-white">{selectedBriefing.empresa || selectedBriefing.nome}</h2>
                             <button onClick={() => setSelectedBriefing(null)} className="text-slate-400 hover:text-white text-2xl">✕</button>
                         </div>
-
-                        {selectedBriefing.etapa === 'mockup' && (
-                            <div className="mb-4 p-4 bg-purple-500/10 border border-purple-500/30 rounded-xl">
-                                <p className="text-purple-300 text-base">📝 Aguardando preenchimento dos detalhes.</p>
-                                <button onClick={() => copyDetailLink(selectedBriefing.id)} className="mt-2 flex items-center gap-2 text-purple-400 hover:text-purple-300 text-base">
-                                    <Copy className="w-5 h-5" /> Copiar Link do Formulário Detalhado
-                                </button>
-                            </div>
-                        )}
-
                         <div className="grid grid-cols-2 gap-4 text-base">
                             {Object.entries(selectedBriefing).filter(([k]) => !['id', 'created_at'].includes(k)).map(([key, value]) => (
                                 <div key={key} className="bg-slate-800/50 rounded-lg p-4">
                                     <p className="text-slate-400 text-sm mb-1">{key.replace(/_/g, ' ')}</p>
-                                    <p className="text-white text-base">{value || '-'}</p>
+                                    <p className="text-white text-base">{String(value) || '-'}</p>
                                 </div>
                             ))}
                         </div>
-
                         <div className="mt-6 flex gap-3">
-                            <button onClick={() => generatePrompt(selectedBriefing.id)} className="flex-1 py-3 bg-green-600 text-white font-bold rounded-xl text-center hover:bg-green-500 transition-all flex items-center justify-center gap-2">
+                            <button onClick={() => { setSelectedBriefing(null); generatePrompt(selectedBriefing.id); }} className="flex-1 py-3 bg-green-600 text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2">
                                 <Bot className="w-5 h-5" /> Gerar Prompt
                             </button>
                             <a href={`https://wa.me/${selectedBriefing.whatsapp?.replace(/\D/g, '')}`} target="_blank"
@@ -322,18 +299,45 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
 
             {/* Modal Prompt Gerado */}
             {promptModal.open && (
-                <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" onClick={() => setPromptModal({ open: false, prompt: '', lead: '' })}>
-                    <div className="bg-slate-900 border border-green-500/30 rounded-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50" onClick={() => setPromptModal({ ...promptModal, open: false })}>
+                    <div className="bg-slate-900 border border-green-500/30 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-white flex items-center gap-2"><Bot className="w-6 h-6 text-green-400" /> Prompt para: {promptModal.lead}</h2>
-                            <button onClick={() => setPromptModal({ open: false, prompt: '', lead: '' })} className="text-slate-400 hover:text-white text-2xl">✕</button>
+                            <div>
+                                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <Bot className="w-6 h-6 text-green-400" /> {promptModal.lead}
+                                </h2>
+                                <p className="text-sm text-slate-400 mt-1">
+                                    Variação <span className="text-green-400 font-bold">{promptModal.variation}</span> de 30 • Template: <span className="text-cyan-400">{promptModal.templateName}</span>
+                                </p>
+                            </div>
+                            <button onClick={() => setPromptModal({ ...promptModal, open: false })} className="text-slate-400 hover:text-white text-2xl">✕</button>
                         </div>
-                        <pre className="bg-slate-800 border border-slate-700 rounded-xl p-4 text-slate-200 whitespace-pre-wrap text-sm font-mono overflow-x-auto">
+
+                        {/* Seletor de Categoria */}
+                        <div className="mb-4">
+                            <p className="text-sm text-slate-400 mb-2">Próxima variação de qual categoria?</p>
+                            <div className="flex gap-2 flex-wrap">
+                                {categories.map(cat => (
+                                    <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${selectedCategory === cat.id ? 'bg-green-500/20 text-green-400 border border-green-400' : 'bg-slate-800/50 text-slate-400 border border-slate-600'}`}>
+                                        {cat.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <pre className="bg-slate-800 border border-slate-700 rounded-xl p-4 text-slate-200 whitespace-pre-wrap text-sm font-mono overflow-x-auto max-h-[40vh]">
                             {promptModal.prompt}
                         </pre>
-                        <button onClick={copyPrompt} className="w-full mt-4 py-4 bg-green-600 text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-lg">
-                            <Copy className="w-5 h-5" /> Copiar Prompt
-                        </button>
+
+                        <div className="flex gap-3 mt-4">
+                            <button onClick={copyPrompt} className="flex-1 py-4 bg-green-600 text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-lg">
+                                <Copy className="w-5 h-5" /> Copiar Prompt
+                            </button>
+                            <button onClick={regeneratePrompt} className="py-4 px-6 bg-cyan-600 text-white font-bold rounded-xl hover:bg-cyan-500 transition-all flex items-center justify-center gap-2">
+                                <RotateCcw className="w-5 h-5" /> Nova Variação
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -343,15 +347,11 @@ Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
                     <div className="bg-slate-900 border border-red-500/30 rounded-2xl max-w-md w-full p-6 text-center">
                         <Trash2 className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                        <h2 className="text-xl font-bold text-white mb-2">Resetar Base de Dados?</h2>
-                        <p className="text-slate-400 mb-6">Isso vai apagar TODOS os briefings. Esta ação não pode ser desfeita.</p>
+                        <h2 className="text-xl font-bold text-white mb-2">Resetar Base?</h2>
+                        <p className="text-slate-400 mb-6">Isso vai apagar TODOS os briefings.</p>
                         <div className="flex gap-3">
-                            <button onClick={() => setShowResetConfirm(false)} className="flex-1 py-3 bg-slate-700 text-white rounded-xl hover:bg-slate-600 transition-all">
-                                Cancelar
-                            </button>
-                            <button onClick={resetDatabase} className="flex-1 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-500 transition-all">
-                                Sim, Apagar Tudo
-                            </button>
+                            <button onClick={() => setShowResetConfirm(false)} className="flex-1 py-3 bg-slate-700 text-white rounded-xl hover:bg-slate-600">Cancelar</button>
+                            <button onClick={resetDatabase} className="flex-1 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-500">Apagar</button>
                         </div>
                     </div>
                 </div>
