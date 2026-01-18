@@ -77,6 +77,8 @@ export default function AdminLeads() {
 
         const prompt = `🎨 **GERAR MOCKUPS DE LANDING PAGE**
 
+⚠️ **IMPORTANTE: TODOS OS TEXTOS DEVEM ESTAR EM PORTUGUÊS BRASILEIRO**
+
 📋 **DADOS DO CLIENTE:**
 - **Nome:** ${data.nome || 'Não informado'}
 - **Empresa:** ${data.empresa || 'Não informado'}
@@ -86,28 +88,33 @@ export default function AdminLeads() {
 ${data.objetivo || 'Não especificado'}
 
 🎨 **ESTILO VISUAL:**
-- **Clima desejado:** ${data.clima || data.estilo || 'Não especificado'}
-- **Cores preferidas:** ${data.cores || 'Deixar a critério'}
+- **Clima desejado:** ${data.clima || 'Não especificado'}
+- **Cores preferidas:** ${data.cores_preferidas || 'Deixar a critério'}
+- **Referência visual:** ${data.referencia_visual || 'Nenhuma'}
 
 👥 **PÚBLICO-ALVO:**
-${data.publico || 'Não especificado'}
+${data.publico_resumo || data.publico || 'Não especificado'}
 
 💎 **DIFERENCIAL:**
-${data.diferencial || 'Não especificado'}
+${data.diferencial_curto || data.diferencial || 'Não especificado'}
 
 ---
 
-📌 **INSTRUÇÃO:**
-Use a ferramenta Nano Banana para gerar 3 opções de mockup de Landing Page com base nas informações acima. 
+📌 **INSTRUÇÃO PARA GERAÇÃO:**
+Use a ferramenta de geração de imagem para criar 3 mockups de Landing Page.
 
-Cada mockup deve:
-1. Ter uma Hero Section impactante com headline persuasiva
-2. Seção de benefícios/diferenciais
-3. Depoimentos ou prova social
-4. CTA claro para WhatsApp
-5. Cores e estilo alinhados ao nicho
+**REGRAS OBRIGATÓRIAS:**
+1. Todos os textos (headlines, botões, seções) DEVEM estar em PORTUGUÊS BRASILEIRO
+2. O nome da empresa "${data.empresa || 'da marca'}" deve aparecer no topo
+3. Botão de CTA deve ser "Fale no WhatsApp" ou "Chame no WhatsApp"
+4. Incluir seção de benefícios com ícones
+5. Incluir área de depoimentos/prova social
 
-Gere as 3 variações com estilos diferentes: uma mais ousada, uma mais clean, e uma equilibrada.`;
+**3 VARIAÇÕES:**
+- **Mockup 2 (CLEAN):** Fundo claro, minimalista, elegante  
+- **Mockup 3 (EQUILIBRADO):** Mix de cores, acolhedor, profissional`;
+
+        setPromptModal({ open: true, prompt, lead: data.empresa || data.nome });
 
         setPromptModal({ open: true, prompt, lead: data.empresa || data.nome });
     };
