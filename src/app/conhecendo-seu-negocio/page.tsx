@@ -1,138 +1,77 @@
 'use client';
 
 import { useState, useCallback, memo } from 'react';
-import { Send, Sparkles, CheckCircle2, Building2, Target, Users, Palette, Camera, Gift, Phone, Star, ChevronDown, Loader2 } from 'lucide-react';
+import { Send, Sparkles, CheckCircle2, Building2, Target, Palette, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
 const WHATSAPP_LINK = "https://wa.me/5511960552522";
 
-// Move components outside to prevent re-creation
 const TextInput = memo(({ name, label, placeholder, required = false, value, onChange }: {
-    name: string;
-    label: string;
-    placeholder: string;
-    required?: boolean;
-    value: string;
-    onChange: (value: string) => void;
+    name: string; label: string; placeholder: string; required?: boolean; value: string; onChange: (value: string) => void;
 }) => (
-    <div className="mb-4">
+    <div className="mb-5">
         <label className="block text-sm font-medium text-white mb-2">{label} {required && <span className="text-red-400">*</span>}</label>
-        <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={placeholder}
-            className="w-full px-4 py-3 bg-slate-800/50 border border-cyan-500/30 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 transition-all"
-        />
+        <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+            className="w-full px-4 py-3 bg-slate-800/50 border border-cyan-500/30 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 transition-all" />
     </div>
 ));
 
-const MultiSelectCard = memo(({ name, options, label, selected, onToggle, customValue, onCustomChange }: {
-  name: string;
-  options: string[];
-  label: string;
-  selected: string[];
-  onToggle: (value: string) => void;
-  customValue: string;
-  onCustomChange: (value: string) => void;
+const MultiSelectCard = memo(({ name, options, label, selected, onToggle }: {
+    name: string; options: string[]; label: string; selected: string[]; onToggle: (value: string) => void;
 }) => (
-  <div className="mb-6">
-    <label className="block text-sm font-medium text-white mb-3">{label} <span className="text-cyan-400 text-xs">(Pode escolher mais de uma opção)</span></label>
-    <div className="grid grid-cols-2 gap-2">
-      {options.map(opt => (
-        <button 
-          key={opt} 
-          type="button" 
-          onClick={() => onToggle(opt)}
-          className={`p-3 text-left text-sm rounded-xl border transition-all ${selected.includes(opt) ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-slate-800/30 border-cyan-500/20 text-slate-300 hover:border-cyan-500/50'}`}
-        >
-          {selected.includes(opt) && <CheckCircle2 className="w-4 h-4 inline mr-2 text-cyan-400" />}
-          {opt === 'outro' ? '✏️ Outro...' : opt}
-        </button>
-      ))}
-    </div>
-    {selected.includes('outro') && (
-      <input 
-        type="text" 
-        placeholder="Digite aqui..." 
-        value={customValue} 
-        onChange={(e) => onCustomChange(e.target.value)}
-        className="mt-2 w-full px-4 py-3 bg-slate-800/50 border border-cyan-500/30 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 transition-all" 
-      />
-    )}
-  </div>
-));
-
-const OptionCard = memo(({ name, options, label, selected, onSelect, customValue, onCustomChange }: {
-    name: string;
-    options: string[];
-    label: string;
-    selected: string;
-    onSelect: (value: string) => void;
-    customValue: string;
-    onCustomChange: (value: string) => void;
-}) => (
-    <div className="mb-6">
-        <label className="block text-sm font-medium text-white mb-3">{label}</label>
+    <div className="mb-5">
+        <label className="block text-sm font-medium text-white mb-3">{label} <span className="text-cyan-400 text-xs">(Pode escolher mais de uma)</span></label>
         <div className="grid grid-cols-2 gap-2">
             {options.map(opt => (
-                <button
-                    key={opt}
-                    type="button"
-                    onClick={() => onSelect(opt)}
-                    className={`p-3 text-left text-sm rounded-xl border transition-all ${selected === opt ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-slate-800/30 border-cyan-500/20 text-slate-300 hover:border-cyan-500/50'}`}
-                >
-                    {selected === opt && <CheckCircle2 className="w-4 h-4 inline mr-2 text-cyan-400" />}
-                    {opt === 'outro' ? '✏️ Outro...' : opt}
+                <button key={opt} type="button" onClick={() => onToggle(opt)}
+                    className={`p-3 text-left text-sm rounded-xl border transition-all ${selected.includes(opt) ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-slate-800/30 border-cyan-500/20 text-slate-300 hover:border-cyan-500/50'}`}>
+                    {selected.includes(opt) && <CheckCircle2 className="w-4 h-4 inline mr-2 text-cyan-400" />}
+                    {opt}
                 </button>
             ))}
         </div>
-        {selected === 'outro' && (
-            <input
-                type="text"
-                placeholder="Digite aqui..."
-                value={customValue}
-                onChange={(e) => onCustomChange(e.target.value)}
-                className="mt-2 w-full px-4 py-3 bg-slate-800/50 border border-cyan-500/30 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 transition-all"
-            />
-        )}
+    </div>
+));
+
+const OptionCard = memo(({ name, options, label, selected, onSelect }: {
+    name: string; options: string[]; label: string; selected: string; onSelect: (value: string) => void;
+}) => (
+    <div className="mb-5">
+        <label className="block text-sm font-medium text-white mb-3">{label}</label>
+        <div className="grid grid-cols-2 gap-2">
+            {options.map(opt => (
+                <button key={opt} type="button" onClick={() => onSelect(opt)}
+                    className={`p-3 text-left text-sm rounded-xl border transition-all ${selected === opt ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-slate-800/30 border-cyan-500/20 text-slate-300 hover:border-cyan-500/50'}`}>
+                    {selected === opt && <CheckCircle2 className="w-4 h-4 inline mr-2 text-cyan-400" />}
+                    {opt}
+                </button>
+            ))}
+        </div>
     </div>
 ));
 
 export default function ConhecendoSeuNegocio() {
-    const [currentStep, setCurrentStep] = useState(0);
     const [formData, setFormData] = useState<Record<string, string | string[]>>({});
-    const [customInputs, setCustomInputs] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
 
-    const steps = [
-        { icon: Building2, title: 'Seu Negócio', desc: 'Informações básicas' },
-        { icon: Target, title: 'Objetivo', desc: 'O que você quer' },
-        { icon: Users, title: 'Seu Cliente', desc: 'Quem você atende' },
-        { icon: Palette, title: 'Visual', desc: 'Estilo da página' },
-        { icon: Camera, title: 'Materiais', desc: 'O que você tem' },
-        { icon: Gift, title: 'Oferta', desc: 'Preços e promoções' },
-        { icon: Phone, title: 'Contato', desc: 'Como te encontrar' },
-        { icon: Star, title: 'Finalizar', desc: 'Enviar briefing' }
-    ];
+    const handleInput = useCallback((name: string, value: string) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
+    }, []);
 
+    const handleSelect = useCallback((name: string, value: string) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
+    }, []);
 
-    
     const handleMultiToggle = useCallback((name: string, value: string) => {
         setFormData(prev => {
             const current = Array.isArray(prev[name]) ? prev[name] as string[] : [];
-            const updated = current.includes(value) 
-                ? current.filter(v => v !== value)
-                : [...current, value];
+            const updated = current.includes(value) ? current.filter(v => v !== value) : [...current, value];
             return { ...prev, [name]: updated };
         });
-        if (value !== 'outro') {
-            setCustomInputs(prev => ({ ...prev, [name]: '' }));
-        }
     }, []);
-
 
     const getStringValue = (name: string): string => {
         const value = formData[name];
@@ -144,140 +83,56 @@ export default function ConhecendoSeuNegocio() {
         return Array.isArray(value) ? value : [];
     };
 
-    const handleSelect = useCallback((name: string, value: string) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (value !== 'outro') {
-            setCustomInputs(prev => ({ ...prev, [name]: '' }));
-        }
-    }, []);
-
-    const handleCustom = useCallback((name: string, value: string) => {
-        setCustomInputs(prev => ({ ...prev, [name]: value }));
-    }, []);
-
-    const handleInput = useCallback((name: string, value: string) => {
-        setFormData(prev => ({ ...prev, [name]: value }));
-    }, []);
-
-    const getValue = (name: string) => {
-        const value = formData[name];
-        if (Array.isArray(value)) {
-            return value.includes('outro') ? [...value.filter(v => v !== 'outro'), customInputs[name]].filter(Boolean).join(', ') : value.join(', ');
-        }
-        return value === 'outro' ? customInputs[name] : value;
-    };
-
     const handleSubmit = async () => {
+        if (!formData.nome || !formData.whatsapp) {
+            alert('Por favor, preencha seu nome e WhatsApp');
+            return;
+        }
+
         setIsSubmitting(true);
 
         const briefingData = {
-            nome: getValue('nome'),
-            empresa: getValue('empresa'),
-            whatsapp: getValue('whatsapp'),
-            nicho: getValue('nicho'),
-            tempo_mercado: getValue('tempo'),
-            local_atuacao: getValue('local'),
-            objetivo: getValue('objetivo'),
-            acao_desejada: getValue('acao'),
-            servico_principal: getValue('servico'),
-            publico: getValue('publico'),
-            renda: getValue('renda'),
-            dor_principal: getValue('dor'),
-            diferencial: getValue('diferencial'),
-            clima: getValue('clima'),
-            cores: getValue('cores'),
-            tem_logo: getValue('logo'),
-            estilo: getValue('estilo'),
-            tem_fotos: getValue('fotos'),
-            tem_depoimentos: getValue('depoimentos'),
-            numeros: getValue('numeros'),
-            instagram: getValue('instagram'),
-            mostrar_precos: getValue('preco'),
-            faixa_preco: getValue('faixa'),
-            promocao: getValue('promocao'),
-            garantia: getValue('garantia'),
-            formas_pagamento: getValue('pagamento'),
-            whatsapp_contato: getValue('whatsappFinal'),
-            horario: getValue('horario'),
-            tempo_resposta: getValue('resposta'),
-            urgencia: getValue('urgencia'),
-            investimento: getValue('investimento'),
-            observacoes: getValue('observacao'),
+            nome: getStringValue('nome'),
+            whatsapp: getStringValue('whatsapp'),
+            empresa: getStringValue('empresa'),
+            nicho: getArrayValue('nicho').join(', '),
+            objetivo: getArrayValue('objetivo').join(', '),
+            clima: getStringValue('estilo'),
+            etapa: 'mockup',
             status: 'novo'
         };
 
         try {
             await supabase.from('briefings').insert([briefingData]);
         } catch (error) {
-            console.error('Erro ao salvar briefing:', error);
+            console.error('Erro ao salvar:', error);
         }
 
-        const data = Object.entries(formData).map(([k, v]) => `*${k}:* ${v === 'outro' ? customInputs[k] : v}`).join('\n');
-        const msg = encodeURIComponent(`🚀 *NOVO BRIEFING - LANDING PAGE*\n\n${data}\n\n_Enviado pelo formulário CodeSprint_`);
+        const msg = encodeURIComponent(`🚀 *NOVO BRIEFING RÁPIDO*\n\n*Nome:* ${briefingData.nome}\n*Empresa:* ${briefingData.empresa}\n*WhatsApp:* ${briefingData.whatsapp}\n*Nicho:* ${briefingData.nicho}\n*Objetivo:* ${briefingData.objetivo}\n*Estilo:* ${briefingData.clima}\n\n_Aguardando mockups!_`);
         window.open(`${WHATSAPP_LINK}?text=${msg}`, '_blank');
 
         setIsSubmitting(false);
+        setSubmitted(true);
     };
 
-    const renderStep = () => {
-        switch (currentStep) {
-            case 0: return (<>
-                <TextInput name="nome" label="Seu nome" placeholder="Ex: Ana Silva" required value={getStringValue('nome')} onChange={(v) => handleInput('nome', v)} />
-                <TextInput name="empresa" label="Nome da empresa/marca" placeholder="Ex: Studio Ana Beauty" required value={getStringValue('empresa')} onChange={(v) => handleInput('empresa', v)} />
-                <TextInput name="whatsapp" label="WhatsApp" placeholder="(11) 99999-9999" required value={getStringValue('whatsapp')} onChange={(v) => handleInput('whatsapp', v)} />
-                <OptionCard name="nicho" label="Qual seu nicho?" options={['Estética/Beleza', 'Moda/Roupas', 'Saúde/Fitness', 'Alimentação', 'Advocacia', 'Consultoria', 'Educação/Cursos', 'Imóveis', 'Serviços Gerais', 'outro']} selected={getStringValue('nicho')} onSelect={(v) => handleSelect('nicho', v)} customValue={customInputs.nicho || ''} onCustomChange={(v) => handleCustom('nicho', v)} />
-                <OptionCard name="tempo" label="Há quanto tempo está no mercado?" options={['Começando agora', 'Menos de 1 ano', '1-3 anos', '3-5 anos', 'Mais de 5 anos']} selected={getStringValue('tempo')} onSelect={(v) => handleSelect('tempo', v)} customValue={customInputs.tempo || ''} onCustomChange={(v) => handleCustom('tempo', v)} />
-                <OptionCard name="local" label="Onde você atende?" options={['Apenas minha cidade', 'Meu estado', 'Brasil todo', 'Online/Remoto', 'outro']} selected={getStringValue('local')} onSelect={(v) => handleSelect('local', v)} customValue={customInputs.local || ''} onCustomChange={(v) => handleCustom('local', v)} />
-            </>);
-            case 1: return (<>
-                <MultiSelectCard name="objetivo" label="Qual o objetivo da página?" options={['Receber contatos no WhatsApp', 'Vender produto/serviço', 'Capturar e-mails', 'Mostrar portfólio', 'Divulgar evento', 'outro']} selected={Array.isArray(formData.objetivo) ? formData.objetivo : []} onToggle={(v) => handleMultiToggle('objetivo', v)} customValue={customInputs.objetivo || ''} onCustomChange={(v) => handleCustom('objetivo', v)} />
-                <MultiSelectCard name="acao" label="O que o visitante deve fazer?" options={['Clicar no WhatsApp', 'Preencher formulário', 'Ver catálogo/preços', 'Agendar horário', 'Comprar direto', 'outro']} selected={Array.isArray(formData.acao) ? formData.acao : []} onToggle={(v) => handleMultiToggle('acao', v)} customValue={customInputs.acao || ''} onCustomChange={(v) => handleCustom('acao', v)} />
-                <MultiSelectCard name="servico" label="Seu serviço principal" options={['Procedimentos estéticos', 'Consultoria/Assessoria', 'Produtos físicos', 'Cursos/Mentorias', 'Serviços de manutenção', 'Eventos/Festas', 'outro']} selected={Array.isArray(formData.servico) ? formData.servico : []} onToggle={(v) => handleMultiToggle('servico', v)} customValue={customInputs.servico || ''} onCustomChange={(v) => handleCustom('servico', v)} />
-            </>);
-            case 2: return (<>
-                <OptionCard name="publico" label="Quem é seu cliente ideal?" options={['Mulheres 18-35', 'Mulheres 35-55', 'Homens 18-35', 'Homens 35-55', 'Empresas/B2B', 'Público geral', 'outro']} selected={getStringValue('publico')} onSelect={(v) => handleSelect('publico', v)} customValue={customInputs.publico || ''} onCustomChange={(v) => handleCustom('publico', v)} />
-                <OptionCard name="renda" label="Poder aquisitivo do cliente" options={['Classe C (popular)', 'Classe B (médio)', 'Classe A (premium)', 'Misto']} selected={getStringValue('renda')} onSelect={(v) => handleSelect('renda', v)} customValue={customInputs.renda || ''} onCustomChange={(v) => handleCustom('renda', v)} />
-                <OptionCard name="dor" label="Qual a maior dor do seu cliente?" options={['Falta de tempo', 'Falta de dinheiro', 'Não sabe como resolver', 'Já tentou e não deu certo', 'Quer resultado rápido', 'Quer qualidade/premium', 'outro']} selected={getStringValue('dor')} onSelect={(v) => handleSelect('dor', v)} customValue={customInputs.dor || ''} onCustomChange={(v) => handleCustom('dor', v)} />
-                <OptionCard name="diferencial" label="Seu diferencial principal" options={['Preço acessível', 'Qualidade premium', 'Atendimento rápido', 'Experiência no mercado', 'Resultados comprovados', 'Atendimento personalizado', 'outro']} selected={getStringValue('diferencial')} onSelect={(v) => handleSelect('diferencial', v)} customValue={customInputs.diferencial || ''} onCustomChange={(v) => handleCustom('diferencial', v)} />
-            </>);
-            case 3: return (<>
-                <OptionCard name="clima" label="Qual clima quer passar?" options={['Profissional/Sério', 'Jovem/Descolado', 'Luxuoso/Premium', 'Acessível/Popular', 'Moderno/Tech', 'Acolhedor/Familiar', 'Minimalista', 'outro']} selected={getStringValue('clima')} onSelect={(v) => handleSelect('clima', v)} customValue={customInputs.clima || ''} onCustomChange={(v) => handleCustom('clima', v)} />
-                <OptionCard name="cores" label="Cores preferidas" options={['Rosa/Feminino', 'Azul/Confiança', 'Verde/Natural', 'Preto/Elegante', 'Dourado/Luxo', 'Colorido/Vibrante', 'Deixo vocês escolherem', 'outro']} selected={getStringValue('cores')} onSelect={(v) => handleSelect('cores', v)} customValue={customInputs.cores || ''} onCustomChange={(v) => handleCustom('cores', v)} />
-                <OptionCard name="logo" label="Você tem logo?" options={['Sim, profissional', 'Sim, mas simples', 'Não tenho', 'Preciso criar']} selected={getStringValue('logo')} onSelect={(v) => handleSelect('logo', v)} customValue={customInputs.logo || ''} onCustomChange={(v) => handleCustom('logo', v)} />
-                <OptionCard name="estilo" label="Estilo de design" options={['Moderno/Tecnológico', 'Elegante/Sofisticado', 'Divertido/Colorido', 'Clássico/Tradicional', 'Minimalista/Clean', 'outro']} selected={getStringValue('estilo')} onSelect={(v) => handleSelect('estilo', v)} customValue={customInputs.estilo || ''} onCustomChange={(v) => handleCustom('estilo', v)} />
-            </>);
-            case 4: return (<>
-                <OptionCard name="fotos" label="Você tem fotos profissionais?" options={['Sim, do produto/serviço', 'Sim, minhas/da equipe', 'Tenho do celular', 'Não tenho (usem banco)', 'Vou providenciar']} selected={getStringValue('fotos')} onSelect={(v) => handleSelect('fotos', v)} customValue={customInputs.fotos || ''} onCustomChange={(v) => handleCustom('fotos', v)} />
-                <OptionCard name="depoimentos" label="Tem depoimentos de clientes?" options={['Sim, prints de WhatsApp', 'Sim, avaliações Google', 'Tenho vídeos', 'Não tenho ainda']} selected={getStringValue('depoimentos')} onSelect={(v) => handleSelect('depoimentos', v)} customValue={customInputs.depoimentos || ''} onCustomChange={(v) => handleCustom('depoimentos', v)} />
-                <OptionCard name="numeros" label="Números para mostrar" options={['+50 clientes', '+100 clientes', '+500 clientes', 'X anos no mercado', 'Não tenho números', 'outro']} selected={getStringValue('numeros')} onSelect={(v) => handleSelect('numeros', v)} customValue={customInputs.numeros || ''} onCustomChange={(v) => handleCustom('numeros', v)} />
-                <OptionCard name="instagram" label="Tem Instagram ativo?" options={['Sim, com bastante conteúdo', 'Sim, mas pouco', 'Tenho mas não uso', 'Não tenho']} selected={getStringValue('instagram')} onSelect={(v) => handleSelect('instagram', v)} customValue={customInputs.instagram || ''} onCustomChange={(v) => handleCustom('instagram', v)} />
-            </>);
-            case 5: return (<>
-                <OptionCard name="preco" label="Quer mostrar preços?" options={['Sim, valor fixo', 'Sim, "a partir de"', 'Não, só pelo WhatsApp', 'Tabela de preços completa']} selected={getStringValue('preco')} onSelect={(v) => handleSelect('preco', v)} customValue={customInputs.preco || ''} onCustomChange={(v) => handleCustom('preco', v)} />
-                <OptionCard name="faixa" label="Faixa de preço do serviço" options={['Até R$ 100', 'R$ 100 - R$ 500', 'R$ 500 - R$ 1.000', 'R$ 1.000 - R$ 5.000', 'Acima de R$ 5.000', 'Variável/sob consulta']} selected={getStringValue('faixa')} onSelect={(v) => handleSelect('faixa', v)} customValue={customInputs.faixa || ''} onCustomChange={(v) => handleCustom('faixa', v)} />
-                <OptionCard name="promocao" label="Tem promoção especial?" options={['Sim, desconto à vista', 'Sim, primeira compra', 'Sim, combo/pacote', 'Não tenho', 'outro']} selected={getStringValue('promocao')} onSelect={(v) => handleSelect('promocao', v)} customValue={customInputs.promocao || ''} onCustomChange={(v) => handleCustom('promocao', v)} />
-                <OptionCard name="garantia" label="Oferece garantia?" options={['Sim, devolução', 'Sim, satisfação', 'Garantia do produto', 'Não ofereço', 'outro']} selected={getStringValue('garantia')} onSelect={(v) => handleSelect('garantia', v)} customValue={customInputs.garantia || ''} onCustomChange={(v) => handleCustom('garantia', v)} />
-                <OptionCard name="pagamento" label="Formas de pagamento" options={['Pix', 'Cartão', 'Pix + Cartão', 'Todas (pix, cartão, boleto)', 'outro']} selected={getStringValue('pagamento')} onSelect={(v) => handleSelect('pagamento', v)} customValue={customInputs.pagamento || ''} onCustomChange={(v) => handleCustom('pagamento', v)} />
-            </>);
-            case 6: return (<>
-                <TextInput name="whatsappFinal" label="WhatsApp para receber contatos" placeholder="(11) 99999-9999" required value={getStringValue('whatsappFinal')} onChange={(v) => handleInput('whatsappFinal', v)} />
-                <TextInput name="instagramLink" label="@ do Instagram" placeholder="@suaempresa" value={getStringValue('instagramLink')} onChange={(v) => handleInput('instagramLink', v)} />
-                <OptionCard name="horario" label="Horário de atendimento" options={['Comercial (9h-18h)', 'Manhã e tarde', 'Noite também', '24 horas', 'Só agendamento']} selected={getStringValue('horario')} onSelect={(v) => handleSelect('horario', v)} customValue={customInputs.horario || ''} onCustomChange={(v) => handleCustom('horario', v)} />
-                <OptionCard name="resposta" label="Tempo de resposta" options={['Até 30 minutos', 'Até 1 hora', 'Até 24 horas', 'Variável']} selected={getStringValue('resposta')} onSelect={(v) => handleSelect('resposta', v)} customValue={customInputs.resposta || ''} onCustomChange={(v) => handleCustom('resposta', v)} />
-            </>);
-            case 7: return (<>
-                <OptionCard name="urgencia" label="Qual a urgência?" options={['Preciso para ontem! 🔥', 'Essa semana', 'Próximos 15 dias', 'Sem pressa']} selected={getStringValue('urgencia')} onSelect={(v) => handleSelect('urgencia', v)} customValue={customInputs.urgencia || ''} onCustomChange={(v) => handleCustom('urgencia', v)} />
-                <OptionCard name="investimento" label="Investimento previsto" options={['Até R$ 500', 'R$ 500 - R$ 1.000', 'R$ 1.000 - R$ 2.000', 'Acima de R$ 2.000', 'Quero saber o preço']} selected={getStringValue('investimento')} onSelect={(v) => handleSelect('investimento', v)} customValue={customInputs.investimento || ''} onCustomChange={(v) => handleCustom('investimento', v)} />
-                <TextInput name="observacao" label="Algo mais que queira contar? (opcional)" placeholder="Detalhes extras, dúvidas..." value={getStringValue('observacao')} onChange={(v) => handleInput('observacao', v)} />
-                <div className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-xl">
-                    <p className="text-green-400 text-sm text-center">✅ Perfeito! Você receberá <strong>3 opções de layout</strong> em até 3 dias úteis!</p>
+    if (submitted) {
+        return (
+            <main className="relative min-h-screen bg-[#0B1120] flex items-center justify-center p-4">
+                <div className="max-w-md text-center">
+                    <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle2 className="w-10 h-10 text-green-400" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-white mb-4">Briefing Enviado! 🎉</h1>
+                    <p className="text-slate-300 mb-6">Agora vamos criar <strong className="text-cyan-400">3 opções de layout</strong> para você escolher.</p>
+                    <div className="bg-slate-800/50 border border-cyan-500/20 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-slate-400">📱 Prazo de entrega dos mockups:</p>
+                        <p className="text-xl font-bold text-white">Até 48 horas</p>
+                    </div>
+                    <p className="text-slate-500 text-sm">Você receberá as opções pelo WhatsApp!</p>
                 </div>
-            </>);
-            default: return null;
-        }
-    };
-
-    const progress = ((currentStep + 1) / steps.length) * 100;
+            </main>
+        );
+    }
 
     return (
         <main className="relative min-h-screen bg-[#0B1120]">
@@ -285,42 +140,37 @@ export default function ConhecendoSeuNegocio() {
             <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
 
             <header className="relative z-10 px-4 py-4">
-                <nav className="max-w-3xl mx-auto flex items-center justify-between">
+                <nav className="max-w-xl mx-auto flex items-center justify-between">
                     <Link href="/"><Image src="/logo.png" alt="CodeSprint" width={150} height={38} className="h-8 w-auto" priority /></Link>
-                    <span className="text-xs text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full hidden sm:block">Briefing</span>
+                    <span className="text-xs text-green-400 bg-green-500/10 px-3 py-1 rounded-full">⚡ Rápido</span>
                 </nav>
             </header>
 
             <section className="relative z-10 px-4 py-6">
                 <div className="max-w-xl mx-auto">
-                    <div className="text-center mb-6">
-                        <h1 className="text-xl md:text-2xl font-bold text-white mb-1">{steps[currentStep].title}</h1>
-                        <p className="text-slate-400 text-sm">{steps[currentStep].desc}</p>
-                    </div>
-
-                    <div className="w-full bg-slate-700/50 rounded-full h-2 mb-6">
-                        <div className="bg-gradient-to-r from-cyan-500 to-green-400 h-2 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-4">
+                            <Sparkles className="w-4 h-4 text-cyan-400" />
+                            <span className="text-cyan-300 text-sm">5 perguntas • 1 minuto</span>
+                        </div>
+                        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Vamos criar sua Landing Page!</h1>
+                        <p className="text-slate-400">Responda rapidamente e receba <strong className="text-cyan-400">3 opções de layout</strong></p>
                     </div>
 
                     <div className="bg-slate-900/60 backdrop-blur-xl border border-cyan-500/20 rounded-2xl p-5 md:p-6">
-                        {renderStep()}
+                        <TextInput name="nome" label="Seu nome" placeholder="Ex: Ana Silva" required value={getStringValue('nome')} onChange={(v) => handleInput('nome', v)} />
+                        <TextInput name="whatsapp" label="WhatsApp" placeholder="(11) 99999-9999" required value={getStringValue('whatsapp')} onChange={(v) => handleInput('whatsapp', v)} />
+                        <TextInput name="empresa" label="Nome da empresa/marca" placeholder="Ex: Studio Ana Beauty" value={getStringValue('empresa')} onChange={(v) => handleInput('empresa', v)} />
 
-                        <div className="flex gap-3 mt-6">
-                            {currentStep > 0 && (
-                                <button onClick={() => setCurrentStep(currentStep - 1)} className="flex-1 py-3 bg-slate-700 text-white font-medium rounded-xl hover:bg-slate-600 transition-all text-sm">
-                                    ← Voltar
-                                </button>
-                            )}
-                            {currentStep < steps.length - 1 ? (
-                                <button onClick={() => setCurrentStep(currentStep + 1)} className="flex-1 py-3 bg-[#128C7E] text-white font-bold rounded-xl hover:bg-[#075E54] transition-all text-sm flex items-center justify-center gap-2">
-                                    Próximo →
-                                </button>
-                            ) : (
-                                <button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 py-4 bg-[#25D366] text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-base disabled:opacity-50 disabled:cursor-not-allowed" style={{ boxShadow: '0 0 30px rgba(37, 211, 102, 0.4)' }}>
-                                    {isSubmitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Enviando...</> : <><Send className="w-5 h-5" /> Enviar pelo WhatsApp</>}
-                                </button>
-                            )}
-                        </div>
+                        <MultiSelectCard name="nicho" label="Qual seu nicho?" options={['Estética/Beleza', 'Moda/Roupas', 'Saúde/Fitness', 'Alimentação', 'Advocacia', 'Consultoria', 'Educação/Cursos', 'Serviços Gerais']} selected={getArrayValue('nicho')} onToggle={(v) => handleMultiToggle('nicho', v)} />
+
+                        <MultiSelectCard name="objetivo" label="O que quer com a página?" options={['Receber contatos no WhatsApp', 'Vender produto/serviço', 'Capturar e-mails', 'Mostrar portfólio', 'Divulgar evento']} selected={getArrayValue('objetivo')} onToggle={(v) => handleMultiToggle('objetivo', v)} />
+
+                        <OptionCard name="estilo" label="Qual estilo visual?" options={['Moderno/Tech', 'Elegante/Sofisticado', 'Jovem/Colorido', 'Minimalista/Clean', 'Acolhedor/Familiar', 'Profissional/Sério']} selected={getStringValue('estilo')} onSelect={(v) => handleSelect('estilo', v)} />
+
+                        <button onClick={handleSubmit} disabled={isSubmitting} className="w-full py-4 mt-4 bg-[#25D366] text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-lg disabled:opacity-50" style={{ boxShadow: '0 0 30px rgba(37, 211, 102, 0.4)' }}>
+                            {isSubmitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Enviando...</> : <><Send className="w-5 h-5" /> Enviar e Receber Mockups</>}
+                        </button>
                     </div>
 
                     <p className="text-center text-slate-500 text-xs mt-4">🔒 Informações confidenciais • CodeSprint</p>
