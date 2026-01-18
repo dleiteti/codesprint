@@ -29,42 +29,6 @@ const TextInput = memo(({ name, label, placeholder, required = false, value, onC
     </div>
 ));
 
-const MultiSelectCard = memo(({ name, options, label, selected, onToggle, customValue, onCustomChange }: {
-  name: string;
-  options: string[];
-  label: string;
-  selected: string[];
-  onToggle: (value: string) => void;
-  customValue: string;
-  onCustomChange: (value: string) => void;
-}) => (
-  <div className="mb-6">
-    <label className="block text-sm font-medium text-white mb-3">{label} <span className="text-cyan-400 text-xs">(Múltipla escolha)</span></label>
-    <div className="grid grid-cols-2 gap-2">
-      {options.map(opt => (
-        <button 
-          key={opt} 
-          type="button" 
-          onClick={() => onToggle(opt)}
-          className={`p-3 text-left text-sm rounded-xl border transition-all ${selected.includes(opt) ? 'bg-cyan-500/20 border-cyan-400 text-white' : 'bg-slate-800/30 border-cyan-500/20 text-slate-300 hover:border-cyan-500/50'}`}
-        >
-          {selected.includes(opt) && <CheckCircle2 className="w-4 h-4 inline mr-2 text-cyan-400" />}
-          {opt === 'outro' ? '✏️ Outro...' : opt}
-        </button>
-      ))}
-    </div>
-    {selected.includes('outro') && (
-      <input 
-        type="text" 
-        placeholder="Digite aqui..." 
-        value={customValue} 
-        onChange={(e) => onCustomChange(e.target.value)}
-        className="mt-2 w-full px-4 py-3 bg-slate-800/50 border border-cyan-500/30 rounded-xl text-white placeholder-slate-400 focus:border-cyan-400 transition-all" 
-      />
-    )}
-  </div>
-));
-
 const OptionCard = memo(({ name, options, label, selected, onSelect, customValue, onCustomChange }: {
     name: string;
     options: string[];
@@ -103,7 +67,7 @@ const OptionCard = memo(({ name, options, label, selected, onSelect, customValue
 
 export default function ConhecendoSeuNegocio() {
     const [currentStep, setCurrentStep] = useState(0);
-    const [formData, setFormData] = useState<Record<string, string | string[]>>({});
+    const [formData, setFormData] = useState<Record<string, string>>({});
     const [customInputs, setCustomInputs] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -117,21 +81,6 @@ export default function ConhecendoSeuNegocio() {
         { icon: Phone, title: 'Contato', desc: 'Como te encontrar' },
         { icon: Star, title: 'Finalizar', desc: 'Enviar briefing' }
     ];
-
-
-    
-    const handleMultiToggle = useCallback((name: string, value: string) => {
-        setFormData(prev => {
-            const current = Array.isArray(prev[name]) ? prev[name] as string[] : [];
-            const updated = current.includes(value) 
-                ? current.filter(v => v !== value)
-                : [...current, value];
-            return { ...prev, [name]: updated };
-        });
-        if (value !== 'outro') {
-            setCustomInputs(prev => ({ ...prev, [name]: '' }));
-        }
-    }, []);
 
     const handleSelect = useCallback((name: string, value: string) => {
         setFormData(prev => ({ ...prev, [name]: value }));
