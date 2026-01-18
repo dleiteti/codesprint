@@ -41,6 +41,7 @@ export default function AdminLeads() {
     const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('todos');
     const [usedTemplates, setUsedTemplates] = useState<number[]>([]);
+    const [promptCopied, setPromptCopied] = useState(false);
 
     const fetchBriefings = async () => {
         setLoading(true);
@@ -108,6 +109,8 @@ export default function AdminLeads() {
 
     const copyPrompt = () => {
         navigator.clipboard.writeText(promptModal.prompt);
+        setPromptCopied(true);
+        setTimeout(() => setPromptCopied(false), 2000);
     };
 
     useEffect(() => { fetchBriefings(); }, []);
@@ -331,8 +334,8 @@ export default function AdminLeads() {
                         </pre>
 
                         <div className="flex gap-3 mt-4">
-                            <button onClick={copyPrompt} className="flex-1 py-4 bg-green-600 text-white font-bold rounded-xl hover:bg-green-500 transition-all flex items-center justify-center gap-2 text-lg">
-                                <Copy className="w-5 h-5" /> Copiar Prompt
+                            <button onClick={copyPrompt} className={`flex-1 py-4 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-lg ${promptCopied ? 'bg-green-500 text-white' : 'bg-green-600 text-white hover:bg-green-500'}`}>
+                                {promptCopied ? <><CheckCircle className="w-5 h-5" /> Copiado!</> : <><Copy className="w-5 h-5" /> Copiar Prompt</>}
                             </button>
                             <button onClick={regeneratePrompt} className="py-4 px-6 bg-cyan-600 text-white font-bold rounded-xl hover:bg-cyan-500 transition-all flex items-center justify-center gap-2">
                                 <RotateCcw className="w-5 h-5" /> Nova Variação
