@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0B1120;
+  --foreground: #F1F5F9;
+  --primary: #00D4FF;
+  --primary-bright: #00E5FF;
+  --primary-glow: rgba(0, 212, 255, 0.6);
+  --whatsapp: #25D366;
+  --whatsapp-dark: #128C7E;
+  --whatsapp-glow: rgba(37, 211, 102, 0.5);
+  --card-bg: rgba(15, 23, 42, 0.7);
+  --card-border: rgba(0, 212, 255, 0.35);
+  --text-muted: #94A3B8;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-glow: var(--primary-glow);
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-text-muted: var(--text-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background Grid Pattern - Subtle */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Radial Gradient Overlay - Disabled for darker look */
+.bg-radial-glow {
+  background: transparent;
+}
+
+/* Glassmorphism Card - More Visible Border */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+}
+
+/* CTA Button Glow Animation - Stronger */
+.cta-glow {
+  box-shadow: 0 0 40px var(--whatsapp-glow), 0 0 80px rgba(37, 211, 102, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cta-glow:hover {
+  box-shadow: 0 0 50px var(--whatsapp-glow), 0 0 100px rgba(37, 211, 102, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Floating Animation */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse Glow - Stronger */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 40px var(--primary-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 60px var(--primary-glow), 0 0 100px rgba(0, 212, 255, 0.35);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Text Gradient - Brighter */
+.text-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--primary-bright) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+/* Neon Text Glow */
+.neon-text {
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3), 0 0 30px rgba(0, 212, 255, 0.2);
+}
+
+/* Neon Border */
+.neon-border {
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2), inset 0 0 15px rgba(0, 212, 255, 0.05);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+@keyframes cardPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.8);
+  }
+
+  50% {
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.7), 0 0 120px rgba(255, 215, 0, 0.5), inset 0 0 30px rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 1);
+  }
+}
+
+/* Slow Bounce Animation */
+@keyframes slowBounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-slow-bounce {
+  animation: slowBounce 2s ease-in-out infinite;
+}
+
+/* Mobile First Optimizations */
+@media (max-width: 640px) {
+
+  /* Reduce hero padding for smaller screens */
+  .hero-compact {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  /* Make CTAs more prominent on mobile */
+  .cta-mobile {
+    font-size: 1.125rem;
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+/* Safe area padding for notched phones */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .sticky-cta-bar {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
 }
