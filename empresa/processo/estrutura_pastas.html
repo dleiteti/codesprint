@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrutura de Pastas — CodeSprint Agency</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B1120',
+                            neon: '#00D4FF',
+                            slate: '#1E293B',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .folder-item {
+            transition: all 0.2s ease;
+        }
+
+        .folder-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-brand-dark via-brand-slate to-brand-dark text-white font-sans antialiased min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-brand-dark/90 backdrop-blur-lg border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span class="text-brand-neon font-bold text-xl">CodeSprint</span>
+                    <span class="text-gray-500">|</span>
+                    <span class="text-gray-400 text-sm">Documentação de Processo</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="fluxograma_mestre.html"
+                        class="nav-link px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:text-white">
+                        📊 Fluxograma Agentes
+                    </a>
+                    <a href="pipeline_completo.html"
+                        class="nav-link px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:text-white">
+                        🔄 Pipeline Completo
+                    </a>
+                    <a href="estrutura_pastas.html"
+                        class="nav-link active px-4 py-2 rounded-lg border border-white/10 text-sm text-brand-neon">
+                        📁 Estrutura Pastas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center py-12 px-4">
+        <div class="inline-block mb-4">
+            <span
+                class="bg-gradient-to-r from-brand-neon to-blue-400 text-brand-dark px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
+                Mapa do Tesouro
+            </span>
+        </div>
+        <h1
+            class="text-5xl md:text-6xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-brand-neon to-white">
+            Estrutura de Pastas
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Organização rígida para que qualquer agente saiba onde encontrar a informação
+        </p>
+    </header>
+
+    <!-- Main -->
+    <main class="max-w-6xl mx-auto px-4 pb-20">
+
+        <!-- Estrutura Principal -->
+        <section class="mb-16">
+            <div class="bg-gray-900 rounded-2xl border border-white/10 overflow-hidden">
+
+                <!-- Header do Terminal -->
+                <div class="bg-gray-800 px-4 py-3 flex items-center gap-3">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span class="font-mono text-sm text-gray-400">codesprint — Estrutura de Pastas</span>
+                </div>
+
+                <!-- Conteúdo -->
+                <div class="p-6 font-mono text-sm">
+
+                    <!-- Root -->
+                    <div class="text-yellow-400 text-lg mb-4">📁 /scratch/codesprint/</div>
+
+                    <div class="ml-4 space-y-2">
+
+                        <!-- EMPRESA -->
+                        <div class="folder-item rounded-lg p-3 bg-blue-500/10 border border-blue-500/30">
+                            <div class="flex items-center gap-2">
+                                <span class="text-blue-400">📂 empresa/</span>
+                                <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded">Recursos
+                                    Internos</span>
+                            </div>
+                            <div class="ml-6 mt-3 space-y-3 text-gray-400">
+
+                                <!-- Processo -->
+                                <div class="flex items-center gap-3">
+                                    <span class="text-amber-400">├── 📁 processo/</span>
+                                    <span class="text-gray-600">← Fluxogramas HTML</span>
+                                </div>
+
+                                <!-- Conhecimento -->
+                                <div class="flex items-center gap-3">
+                                    <span class="text-purple-400">├── 📁 conhecimento/</span>
+                                    <span class="text-gray-600">← Learnings, auditorias</span>
+                                </div>
+
+                                <!-- Templates -->
+                                <div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-pink-400">├── 📁 templates/</span>
+                                    </div>
+                                    <div class="ml-6 mt-2 space-y-1">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-pink-300">├── analise/</span>
+                                            <span class="text-gray-600">← viabilidade, feature_map, arquitetura</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-pink-300">├── comercial/</span>
+                                            <span class="text-gray-600">← propostas HTML, gerar_proposta.py</span>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-pink-300">└── juridico/</span>
+                                            <span class="text-gray-600">← MSA, SOW, SLA</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Playbooks -->
+                                <div class="flex items-center gap-3">
+                                    <span class="text-gray-400">└── 📁 playbooks/</span>
+                                    <span class="text-gray-600">← Guias operacionais</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CLIENTES -->
+                        <div class="folder-item rounded-lg p-3 bg-green-500/10 border border-green-500/30">
+                            <div class="flex items-center gap-2">
+                                <span class="text-green-400">📂 clientes/</span>
+                                <span class="text-xs bg-green-500/20 text-green-300 px-2 py-0.5 rounded">Projetos
+                                    Ativos</span>
+                            </div>
+                            <div class="ml-6 mt-3 space-y-2">
+                                <!-- Template -->
+                                <div class="flex items-center gap-3 text-gray-500">
+                                    <span>├── 📁 _template/</span>
+                                    <span class="text-gray-600">← Copiar para novo cliente</span>
+                                </div>
+                                <!-- Cliente -->
+                                <div class="text-gray-400">└── 📁 [nome_cliente]/</div>
+                                <div class="ml-6 space-y-1 text-gray-400">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-purple-400">├── 01_discovery/</span>
+                                        <code class="text-purple-300">conversa_bruta.md</code>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-blue-400">├── 02_analise/</span>
+                                        <code class="text-blue-300">viabilidade.md + dor_financeira.md</code>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-green-400">├── 03_solucao/</span>
+                                        <code class="text-green-300">feature_map.md + arquitetura.md</code>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-red-400">└── 04_proposta/</span>
+                                        <code class="text-red-300">proposta_comercial.md</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LANDING -->
+                        <div class="folder-item rounded-lg p-3 bg-cyan-500/10 border border-cyan-500/30">
+                            <div class="flex items-center gap-2">
+                                <span class="text-cyan-400">📂 landing/</span>
+                                <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded">Site
+                                    Next.js</span>
+                            </div>
+                            <div class="ml-6 mt-3 space-y-1 text-gray-500">
+                                <div>├── src/, public/, package.json</div>
+                                <div class="text-xs text-gray-600">npm run dev para rodar</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guia de Uso por Agente -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6">🤖 Guia de Uso por Agente</h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Arquiteto -->
+                <div class="bg-purple-500/10 border border-purple-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">👷</span>
+                        <h3 class="font-bold text-purple-300">Arquiteto</h3>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Lê:</span>
+                            <code class="text-purple-300 ml-2">01_discovery/conversa_bruta.md</code>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Escreve:</span>
+                            <div class="ml-2 mt-1 space-y-1">
+                                <code class="text-purple-300 block">02_analise/viabilidade.md</code>
+                                <code class="text-purple-300 block">02_analise/dor_financeira.md</code>
+                                <code class="text-purple-300 block">03_solucao/feature_map.md</code>
+                                <code class="text-purple-300 block">03_solucao/arquitetura.md</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comercial -->
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">💼</span>
+                        <h3 class="font-bold text-blue-300">Comercial</h3>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Lê:</span>
+                            <div class="ml-2 mt-1 space-y-1">
+                                <code class="text-blue-300 block">02_analise/viabilidade.md</code>
+                                <code class="text-blue-300 block">03_solucao/feature_map.md</code>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Escreve:</span>
+                            <code class="text-blue-300 ml-2">04_proposta/proposta_comercial.md</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Designer -->
+                <div class="bg-pink-500/10 border border-pink-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🎨</span>
+                        <h3 class="font-bold text-pink-300">Designer</h3>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Lê:</span>
+                            <code class="text-pink-300 ml-2">04_proposta/proposta_comercial.md</code>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Usa:</span>
+                            <code class="text-pink-300 ml-2">empresa/templates/comercial/gerar_proposta.py</code>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Gera:</span>
+                            <code class="text-pink-300 ml-2">04_proposta/proposta_visual_*.html</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jurídico -->
+                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">⚖️</span>
+                        <h3 class="font-bold text-emerald-300">Jurídico</h3>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Lê:</span>
+                            <code class="text-emerald-300 ml-2">03_solucao/feature_map.md</code>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Usa:</span>
+                            <code class="text-emerald-300 ml-2">empresa/templates/juridico/SOW_template.md</code>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Gera:</span>
+                            <span class="text-emerald-300 ml-2">Contratos finais</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coder -->
+                <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">💻</span>
+                        <h3 class="font-bold text-amber-300">Coder</h3>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Lê:</span>
+                            <div class="ml-2 mt-1 space-y-1">
+                                <code class="text-amber-300 block">03_solucao/feature_map.md</code>
+                                <code class="text-amber-300 block">03_solucao/arquitetura.md</code>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Constrói:</span>
+                            <span class="text-amber-300 ml-2">Supabase + React App</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lead -->
+                <div class="bg-orange-500/10 border border-orange-500/30 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">👤</span>
+                        <h3 class="font-bold text-orange-300">Lead / Cliente</h3>
+                    </div>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <span class="text-gray-500">Fornece:</span>
+                            <code class="text-orange-300 ml-2">Conversa bruta</code>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Recebe:</span>
+                            <div class="ml-2 mt-1 space-y-1">
+                                <code class="text-orange-300 block">Proposta PDF</code>
+                                <code class="text-orange-300 block">Contratos</code>
+                                <code class="text-orange-300 block">App Funcional</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Comando Rápido -->
+        <section class="bg-gray-800/50 rounded-2xl p-8 border border-white/10">
+            <h2 class="text-xl font-bold mb-4">⚡ Comando Rápido: Criar Novo Cliente</h2>
+
+            <div class="bg-gray-900 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                <span class="text-gray-500"># Substituir [nome-cliente] pelo nome do cliente (ex:
+                    limpeza_express)</span><br />
+                <span class="text-green-400">mkdir -p</span> <span
+                    class="text-white">clientes/[nome-cliente]/{01_discovery,02_analise,03_solucao,04_proposta}</span>
+            </div>
+
+            <p class="text-sm text-gray-500 mt-4">
+                Este comando cria toda a estrutura de pastas padrão para um novo cliente em um único comando.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-white/10">
+        <div class="flex justify-center gap-4 mb-4">
+            <a href="fluxograma_mestre.html" class="text-brand-neon hover:underline">📊 Fluxograma Agentes</a>
+            <span>•</span>
+            <a href="pipeline_completo.html" class="text-brand-neon hover:underline">🔄 Pipeline Completo</a>
+            <span>•</span>
+            <a href="estrutura_pastas.html" class="text-brand-neon hover:underline">📁 Estrutura Pastas</a>
+        </div>
+        <p>CodeSprint Agency © 2026 — Linha de Produção Automatizada</p>
+    </footer>
+
+</body>
+
+</html>

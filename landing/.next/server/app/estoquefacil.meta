@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/estoquefacil/layout,_N_T_/estoquefacil/page,_N_T_/estoquefacil"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/estoquefacil/__PAGE__",
+    "/estoquefacil",
+    "/_index",
+    "/_head"
+  ]
+}

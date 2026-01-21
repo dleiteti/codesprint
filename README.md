@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 CodeSprint - Workspace Corporativo
 
-## Getting Started
+> **Missão:** Transformar conversas brutas em software lucrativo.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📁 Estrutura do Workspace
+
+```
+codesprint/
+├── 📂 empresa/          ← Processos, conhecimento, templates
+├── 📂 clientes/         ← Projetos por cliente  
+├── 📂 landing/          ← Site CodeSprint (Next.js)
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏢 Empresa
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tudo relacionado à operação interna da CodeSprint.
 
-## Learn More
+| Pasta | Conteúdo |
+|-------|----------|
+| `empresa/processo/` | Fluxogramas e pipelines visuais |
+| `empresa/conhecimento/` | Learnings, auditorias, pesquisas |
+| `empresa/templates/analise/` | Templates de viabilidade, features, arquitetura |
+| `empresa/templates/comercial/` | Propostas HTML + scripts de automação |
+| `empresa/templates/juridico/` | Contratos e termos |
+| `empresa/playbooks/` | Guias operacionais (SOPs) |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 👥 Clientes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Cada cliente tem sua pasta com a estrutura padrão:
 
-## Deploy on Vercel
+```
+clientes/
+├── _template/           ← Copiar para novo cliente
+└── limpeza_express/     ← Projeto ativo
+    ├── 01_discovery/
+    ├── 02_analise/
+    ├── 03_solucao/
+    └── 04_proposta/
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Projetos Ativos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Cliente | Status | Início |
+|---------|--------|--------|
+| Limpeza Express | 🟢 GO Aprovado | 2026-01-20 |
+
+---
+
+## 🌐 Landing
+
+Site institucional da CodeSprint (Next.js).
+
+```bash
+cd landing && npm run dev
+```
+
+---
+
+## 🤖 Agentes
+
+Workflows dos agentes AI estão em `.agent/workflows/`.
+
+---
+
+*CodeSprint Agency © 2026*

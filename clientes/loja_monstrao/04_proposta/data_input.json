@@ -1,0 +1,94 @@
+{
+    "cliente": {
+        "nome": "Loja do Monstrão",
+        "segmento": "Moda Masculina Premium",
+        "ticket_medio": 400,
+        "investimento_ads_mensal": 4000
+    },
+    "dor_financeira": {
+        "perda_mensal": 18000,
+        "perda_anual": 216000,
+        "perda_diaria": 600,
+        "leads_perdidos_dia": 15,
+        "vendas_perdidas_dia": 1.5
+    },
+    "metricas_funil": {
+        "cliques_dia": 20,
+        "cliques_mes": 600,
+        "custo_por_clique": 200.00,
+        "taxa_perda": 0.75,
+        "taxa_conversao_estimada": 0.10,
+        "conversas_iniciadas": 5,
+        "conversas_iniciadas_percentual": 0.25
+    },
+    "investimento": {
+        "setup": 8000,
+        "mensalidade": 300,
+        "total_ano1": 11600,
+        "desconto_aplicado": true,
+        "valor_original_setup": 15000,
+        "valor_original_mensalidade": 600
+    },
+    "roi": {
+        "payback_meses": 2,
+        "payback_descricao": "< 2 meses",
+        "roi_ano1_reais": 53200,
+        "faturamento_extra_mensal_conservador": 5400,
+        "faturamento_extra_anual_conservador": 64800,
+        "faturamento_extra_mensal_otimista": 9000,
+        "faturamento_extra_anual_otimista": 108000,
+        "economia_liquida_ano1": 53200
+    },
+    "cronograma": {
+        "prazo_dias": 20,
+        "tipo": "dias corridos",
+        "fases": [
+            {
+                "fase": 1,
+                "nome": "Setup + Infraestrutura",
+                "icone": "⚙️",
+                "dias": "1-7",
+                "descricao": "Configuração de ambiente, banco de dados, autenticação e APIs base"
+            },
+            {
+                "fase": 2,
+                "nome": "Agente IA + Dashboard",
+                "icone": "🤖",
+                "dias": "8-14",
+                "descricao": "Desenvolvimento do assistente de triagem e interface de atribuição visual"
+            },
+            {
+                "fase": 3,
+                "nome": "Integrações + Go-Live",
+                "icone": "🚀",
+                "dias": "15-20",
+                "descricao": "Meta Conversions API + CRM + Testes + Treinamento de 2h para equipe"
+            }
+        ]
+    },
+    "comparacao_ferramentas": {
+        "kommo_tintim": {
+            "tempo_resposta": "Manual (minutos/horas)",
+            "qualificacao_automatica": false,
+            "atribuicao": "Passiva",
+            "dashboard": false,
+            "crm_kanban": "Básico",
+            "numero_ferramentas": 2
+        },
+        "codesprint": {
+            "tempo_resposta": "IA < 30 segundos",
+            "qualificacao_automatica": true,
+            "atribuicao": "Ativa + Meta API",
+            "dashboard": true,
+            "crm_kanban": "Completo",
+            "numero_ferramentas": 1
+        }
+    },
+    "meta_proposta": {
+        "data_geracao": "2026-01-20",
+        "validade_dias": 7,
+        "responsavel": "Danilo - CodeSprint",
+        "whatsapp": "(XX) XXXXX-XXXX",
+        "email": "contato@codesprint.com.br"
+    }
+}

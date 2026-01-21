@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Completo — CodeSprint Agency</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0B1120',
+                            neon: '#00D4FF',
+                            slate: '#1E293B',
+                        },
+                        phase: {
+                            discovery: '#8B5CF6',
+                            viability: '#3B82F6',
+                            feature: '#10B981',
+                            arch: '#F59E0B',
+                            proposal: '#EF4444',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+            }
+        }
+
+        @keyframes flow {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .phase-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .phase-card:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, currentColor, transparent);
+            transform: translateX(-50%);
+        }
+
+        .folder-tree {
+            font-family: 'Courier New', monospace;
+        }
+
+        .folder-tree li {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .folder-tree li::before {
+            content: '├── ';
+            position: absolute;
+            left: 0;
+            color: #64748b;
+        }
+
+        .folder-tree li:last-child::before {
+            content: '└── ';
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-brand-dark via-brand-slate to-brand-dark text-white font-sans antialiased min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-brand-dark/90 backdrop-blur-lg border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <span class="text-brand-neon font-bold text-xl">CodeSprint</span>
+                    <span class="text-gray-500">|</span>
+                    <span class="text-gray-400 text-sm">Documentação de Processo</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="fluxograma_mestre.html"
+                        class="nav-link px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:text-white">
+                        📊 Fluxograma Agentes
+                    </a>
+                    <a href="pipeline_completo.html"
+                        class="nav-link active px-4 py-2 rounded-lg border border-white/10 text-sm text-brand-neon">
+                        🔄 Pipeline Completo
+                    </a>
+                    <a href="estrutura_pastas.html"
+                        class="nav-link px-4 py-2 rounded-lg border border-white/10 text-sm text-gray-300 hover:text-white">
+                        📁 Estrutura Pastas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="text-center py-12 px-4">
+        <div class="inline-block mb-4">
+            <span
+                class="bg-gradient-to-r from-brand-neon to-blue-400 text-brand-dark px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wider">
+                Pipeline de Produção
+            </span>
+        </div>
+        <h1
+            class="text-5xl md:text-6xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-brand-neon to-white">
+            Pipeline Completo
+        </h1>
+        <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+            Da conversa bruta ao software funcionando: 5 fases de inteligência + execução automatizada
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 pb-20">
+
+        <!-- ============================== -->
+        <!-- SEÇÃO 1: PIPELINE DE INTELIGÊNCIA -->
+        <!-- ============================== -->
+        <section class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <span class="bg-phase-discovery text-white px-4 py-2 rounded-full text-sm font-bold">SEÇÃO 1</span>
+                <h2 class="text-3xl font-bold">Pipeline de Inteligência <span class="text-gray-400 font-normal">(Fases e
+                        Prazos)</span></h2>
+            </div>
+
+            <p class="text-gray-400 mb-8 max-w-3xl">
+                Este é o desenho que dita o ritmo da agência. Cada projeto passa <strong
+                    class="text-white">obrigatoriamente</strong> por 5 fases antes de qualquer linha de código.
+            </p>
+
+            <!-- Timeline das 5 Fases -->
+            <div class="relative">
+                <!-- Linha de conexão -->
+                <div
+                    class="absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-phase-discovery via-phase-feature to-phase-proposal rounded-full hidden lg:block">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+
+                    <!-- Fase 1: Discovery -->
+                    <div
+                        class="phase-card relative bg-gradient-to-br from-phase-discovery/20 to-purple-600/10 border-2 border-phase-discovery/50 rounded-2xl p-6">
+                        <div
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-phase-discovery text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10">
+                            1
+                        </div>
+                        <div class="text-center mt-4">
+                            <span class="text-3xl">🔍</span>
+                            <h3 class="text-lg font-bold text-purple-300 mt-2">Discovery</h3>
+                            <div
+                                class="bg-phase-discovery/20 text-phase-discovery px-3 py-1 rounded-full text-xs font-bold inline-block mt-2">
+                                ⏱️ 30 min
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">Recebimento da conversa bruta e extração de dores e
+                                oportunidades</p>
+                        </div>
+                        <div class="mt-4 bg-gray-800/50 rounded-lg p-3 text-xs">
+                            <span class="text-gray-500">Output:</span>
+                            <code class="text-purple-300 block mt-1">conversa_bruta.md</code>
+                        </div>
+                    </div>
+
+                    <!-- Fase 2: Viabilidade -->
+                    <div
+                        class="phase-card relative bg-gradient-to-br from-phase-viability/20 to-blue-600/10 border-2 border-phase-viability/50 rounded-2xl p-6">
+                        <div
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-phase-viability text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10">
+                            2
+                        </div>
+                        <div class="text-center mt-4">
+                            <span class="text-3xl">📊</span>
+                            <h3 class="text-lg font-bold text-blue-300 mt-2">Viabilidade</h3>
+                            <div
+                                class="bg-phase-viability/20 text-phase-viability px-3 py-1 rounded-full text-xs font-bold inline-block mt-2">
+                                ⏱️ 1 hora
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">Relatório Go/No-Go com cálculo preciso de ROI</p>
+                        </div>
+                        <div class="mt-4 bg-gray-800/50 rounded-lg p-3 text-xs">
+                            <span class="text-gray-500">Output:</span>
+                            <code class="text-blue-300 block mt-1">viabilidade.md</code>
+                            <code class="text-blue-300 block">dor_financeira.md</code>
+                        </div>
+                    </div>
+
+                    <!-- Fase 3: Feature Map -->
+                    <div
+                        class="phase-card relative bg-gradient-to-br from-phase-feature/20 to-emerald-600/10 border-2 border-phase-feature/50 rounded-2xl p-6">
+                        <div
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-phase-feature text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10">
+                            3
+                        </div>
+                        <div class="text-center mt-4">
+                            <span class="text-3xl">🗺️</span>
+                            <h3 class="text-lg font-bold text-emerald-300 mt-2">Feature Map</h3>
+                            <div
+                                class="bg-phase-feature/20 text-phase-feature px-3 py-1 rounded-full text-xs font-bold inline-block mt-2">
+                                ⏱️ 2 horas
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">Definição do MVP ("Fatia Fina") ciclo Shape Up 10-15
+                                dias</p>
+                        </div>
+                        <div class="mt-4 bg-gray-800/50 rounded-lg p-3 text-xs">
+                            <span class="text-gray-500">Output:</span>
+                            <code class="text-emerald-300 block mt-1">feature_map.md</code>
+                        </div>
+                    </div>
+
+                    <!-- Fase 4: Arquitetura -->
+                    <div
+                        class="phase-card relative bg-gradient-to-br from-phase-arch/20 to-amber-600/10 border-2 border-phase-arch/50 rounded-2xl p-6">
+                        <div
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-phase-arch text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10">
+                            4
+                        </div>
+                        <div class="text-center mt-4">
+                            <span class="text-3xl">🏗️</span>
+                            <h3 class="text-lg font-bold text-amber-300 mt-2">Arquitetura</h3>
+                            <div
+                                class="bg-phase-arch/20 text-phase-arch px-3 py-1 rounded-full text-xs font-bold inline-block mt-2">
+                                ⏱️ 2 horas
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">Modelagem de banco de dados e fluxos Mermaid</p>
+                        </div>
+                        <div class="mt-4 bg-gray-800/50 rounded-lg p-3 text-xs">
+                            <span class="text-gray-500">Output:</span>
+                            <code class="text-amber-300 block mt-1">arquitetura.md</code>
+                        </div>
+                    </div>
+
+                    <!-- Fase 5: Proposta -->
+                    <div
+                        class="phase-card relative bg-gradient-to-br from-phase-proposal/20 to-red-600/10 border-2 border-phase-proposal/50 rounded-2xl p-6">
+                        <div
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-phase-proposal text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10">
+                            5
+                        </div>
+                        <div class="text-center mt-4">
+                            <span class="text-3xl">📄</span>
+                            <h3 class="text-lg font-bold text-red-300 mt-2">Proposta</h3>
+                            <div
+                                class="bg-phase-proposal/20 text-phase-proposal px-3 py-1 rounded-full text-xs font-bold inline-block mt-2">
+                                ⏱️ 1 hora
+                            </div>
+                            <p class="text-xs text-gray-400 mt-3">Tradução técnica para linguagem executiva persuasiva
+                            </p>
+                        </div>
+                        <div class="mt-4 bg-gray-800/50 rounded-lg p-3 text-xs">
+                            <span class="text-gray-500">Output:</span>
+                            <code class="text-red-300 block mt-1">proposta_comercial.md</code>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Resumo de tempo -->
+            <div class="mt-8 bg-brand-neon/10 border border-brand-neon/30 rounded-xl p-6 text-center">
+                <p class="text-lg">
+                    <span class="text-gray-400">Tempo total da Fase de Inteligência:</span>
+                    <span class="text-brand-neon font-bold text-2xl ml-2">~6.5 horas</span>
+                </p>
+                <p class="text-sm text-gray-500 mt-2">Antes de qualquer linha de código ser escrita</p>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- SEÇÃO 2: FLUXO OPERACIONAL -->
+        <!-- ============================== -->
+        <section class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <span class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-bold">SEÇÃO 2</span>
+                <h2 class="text-3xl font-bold">Fluxo Operacional <span class="text-gray-400 font-normal">(Execução
+                        Comercial)</span></h2>
+            </div>
+
+            <p class="text-gray-400 mb-8 max-w-3xl">
+                Como o <strong class="text-white">Diretor Comercial</strong> e o <strong
+                    class="text-white">Designer</strong> transformam dados técnicos em fechamento de negócio.
+            </p>
+
+            <div class="bg-white/5 rounded-2xl p-8 border border-white/10">
+                <div class="grid md:grid-cols-4 gap-6">
+
+                    <!-- Step 1: Extração -->
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                            📥
+                        </div>
+                        <h4 class="font-bold text-blue-300 mb-2">1. Extração</h4>
+                        <p class="text-xs text-gray-400">Comercial extrai valores exatos dos docs do Arquiteto:</p>
+                        <ul class="text-xs text-gray-500 mt-2 space-y-1">
+                            <li>• Perda mensal</li>
+                            <li>• ROI projetado</li>
+                            <li>• Lista de entregas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div class="hidden md:flex items-center justify-center">
+                        <span class="text-4xl text-brand-neon">→</span>
+                    </div>
+
+                    <!-- Step 2: Adaptação -->
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                            ✍️
+                        </div>
+                        <h4 class="font-bold text-pink-300 mb-2">2. Adaptação</h4>
+                        <p class="text-xs text-gray-400">Linguagem adaptada para ser persuasiva (PAS/BAB)</p>
+                        <div class="flex gap-2 justify-center mt-3">
+                            <span class="bg-pink-500/20 text-pink-300 px-2 py-1 rounded text-xs">Urgência</span>
+                            <span class="bg-pink-500/20 text-pink-300 px-2 py-1 rounded text-xs">ROI</span>
+                        </div>
+                    </div>
+
+                    <!-- Arrow + Step 3 -->
+                    <div class="text-center">
+                        <div
+                            class="w-16 h-16 mx-auto bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-3xl mb-4">
+                            🤖
+                        </div>
+                        <h4 class="font-bold text-green-300 mb-2">3. Automação</h4>
+                        <p class="text-xs text-gray-400">Script gera propostas</p>
+                        <code
+                            class="text-xs bg-gray-800 text-green-300 px-2 py-1 rounded block mt-2">gerar_proposta.py</code>
+                        <div class="flex gap-2 justify-center mt-2">
+                            <span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">Dark</span>
+                            <span class="bg-gray-300 text-gray-700 px-2 py-1 rounded text-xs">Light</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Final Step: Entrega -->
+                <div class="mt-8 pt-8 border-t border-white/10">
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                        <div class="text-center">
+                            <span class="text-4xl">📄</span>
+                            <p class="text-sm text-gray-400 mt-2">PDF Premium</p>
+                        </div>
+                        <span class="text-3xl text-brand-neon">→</span>
+                        <div class="flex gap-4">
+                            <div class="bg-green-500/20 border border-green-500/50 rounded-xl p-4 text-center">
+                                <span class="text-2xl">📱</span>
+                                <p class="text-xs text-green-300 mt-1">WhatsApp</p>
+                            </div>
+                            <div class="bg-blue-500/20 border border-blue-500/50 rounded-xl p-4 text-center">
+                                <span class="text-2xl">📧</span>
+                                <p class="text-xs text-blue-300 mt-1">Email</p>
+                            </div>
+                        </div>
+                        <span class="text-3xl text-brand-neon">→</span>
+                        <div class="bg-yellow-500/20 border border-yellow-500/50 rounded-xl p-4 text-center pulse-glow">
+                            <span class="text-2xl">👤</span>
+                            <p class="text-xs text-yellow-300 mt-1">Cliente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- SEÇÃO 3: CICLO DO DESENVOLVEDOR -->
+        <!-- ============================== -->
+        <section class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <span class="bg-amber-500 text-white px-4 py-2 rounded-full text-sm font-bold">SEÇÃO 3</span>
+                <h2 class="text-3xl font-bold">Ciclo do Desenvolvedor <span class="text-gray-400 font-normal">(The
+                        Engine)</span></h2>
+            </div>
+
+            <p class="text-gray-400 mb-8 max-w-3xl">
+                Uma vez que o <strong class="text-green-400">contrato é assinado</strong>, o Coder entra em um ciclo de
+                3 passos para materializar o software.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- Passo 1: Absorção -->
+                <div
+                    class="bg-gradient-to-br from-amber-500/10 to-amber-600/5 border-2 border-amber-500/30 rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-xl font-bold text-white">
+                            1
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-amber-300 text-lg">Absorção</h4>
+                            <p class="text-xs text-gray-500">Leitura obrigatória</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-4">
+                        O Coder lê os documentos para garantir que <strong class="text-white">nenhuma linha de código
+                            seja escrita sem propósito</strong>.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="bg-gray-800/50 rounded-lg p-3 flex items-center gap-2">
+                            <span class="text-lg">📋</span>
+                            <code class="text-amber-300 text-sm">feature_map.md</code>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-3 flex items-center gap-2">
+                            <span class="text-lg">🏗️</span>
+                            <code class="text-amber-300 text-sm">arquitetura.md</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passo 2: Fundação -->
+                <div
+                    class="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-2 border-blue-500/30 rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-xl font-bold text-white">
+                            2
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-blue-300 text-lg">Fundação</h4>
+                            <p class="text-xs text-gray-500">Infraestrutura core</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Implementação imediata do <strong class="text-white">Banco de Dados</strong> e da <strong
+                            class="text-white">Autenticação</strong>.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="bg-gray-800/50 rounded-lg p-3 flex items-center gap-2">
+                            <span class="text-lg">🗄️</span>
+                            <span class="text-blue-300 text-sm">Supabase DB</span>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-3 flex items-center gap-2">
+                            <span class="text-lg">🔐</span>
+                            <span class="text-blue-300 text-sm">Auth + RLS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Passo 3: Iteração -->
+                <div
+                    class="bg-gradient-to-br from-green-500/10 to-green-600/5 border-2 border-green-500/30 rounded-2xl p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div
+                            class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-xl font-bold text-white">
+                            3
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-300 text-lg">Iteração</h4>
+                            <p class="text-xs text-gray-500">Vibe Coding</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-4">
+                        Desenvolvimento das telas priorizando <strong class="text-white">funcionalidade
+                            imediata</strong> sobre estética desnecessária.
+                    </p>
+                    <div class="space-y-2">
+                        <div class="bg-gray-800/50 rounded-lg p-3 flex items-center gap-2">
+                            <span class="text-lg">⚛️</span>
+                            <span class="text-green-300 text-sm">React + TypeScript</span>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-3 flex items-center gap-2">
+                            <span class="text-lg">🚀</span>
+                            <span class="text-green-300 text-sm">Deploy Contínuo</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Resultado Final -->
+            <div
+                class="mt-8 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-500/50 rounded-2xl p-8 text-center">
+                <div class="flex items-center justify-center gap-4 flex-wrap">
+                    <span class="text-5xl">🚀</span>
+                    <div>
+                        <h4 class="text-2xl font-bold text-green-300">App Funcional / MVP</h4>
+                        <p class="text-gray-400">Entregue em produção</p>
+                    </div>
+                    <div class="bg-green-500 text-white px-6 py-3 rounded-full font-bold text-xl">
+                        12 Dias Úteis
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- SEÇÃO 4: ESTRUTURA DE PASTAS -->
+        <!-- ============================== -->
+        <section class="mb-16">
+            <div class="flex items-center gap-4 mb-8">
+                <span class="bg-gray-500 text-white px-4 py-2 rounded-full text-sm font-bold">SEÇÃO 4</span>
+                <h2 class="text-3xl font-bold">Estrutura de Pastas <span class="text-gray-400 font-normal">(O "Mapa do
+                        Tesouro")</span></h2>
+            </div>
+
+            <p class="text-gray-400 mb-8 max-w-3xl">
+                Organização rígida no workspace para que <strong class="text-white">qualquer agente saiba onde encontrar
+                    a informação</strong>.
+            </p>
+
+            <div class="bg-gray-800/50 rounded-2xl p-8 border border-white/10">
+                <div class="font-mono text-sm">
+                    <div class="text-yellow-400 mb-4">📁 /scratch/codesprint/clientes/[nome-cliente]/</div>
+                    <div class="ml-6 space-y-3">
+                        <div class="flex items-start gap-3">
+                            <span class="text-phase-discovery">├── 📁 01_discovery/</span>
+                            <span class="text-gray-500">→</span>
+                            <code class="text-gray-300">conversa_bruta.md</code>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-phase-viability">├── 📁 02_analise/</span>
+                            <span class="text-gray-500">→</span>
+                            <div>
+                                <code class="text-gray-300">viabilidade.md</code>
+                                <span class="text-gray-600 mx-2">+</span>
+                                <code class="text-gray-300">dor_financeira.md</code>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-phase-feature">├── 📁 03_solucao/</span>
+                            <span class="text-gray-500">→</span>
+                            <div>
+                                <code class="text-gray-300">feature_map.md</code>
+                                <span class="text-gray-600 mx-2">+</span>
+                                <code class="text-gray-300">arquitetura.md</code>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-phase-proposal">└── 📁 04_proposta/</span>
+                            <span class="text-gray-500">→</span>
+                            <code class="text-gray-300">proposta_comercial.md</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legenda -->
+                <div class="mt-8 pt-6 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded bg-phase-discovery"></div>
+                        <span class="text-gray-400">Discovery (30min)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded bg-phase-viability"></div>
+                        <span class="text-gray-400">Viabilidade (1h)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded bg-phase-feature"></div>
+                        <span class="text-gray-400">Feature Map (2h)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded bg-phase-proposal"></div>
+                        <span class="text-gray-400">Proposta (1h)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- LEGENDA CONSOLIDADA -->
+        <!-- ============================== -->
+        <section class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+            <h2 class="text-2xl font-bold mb-6">🗺️ Como Ler Este Pipeline</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-phase-discovery/10 border border-phase-discovery/30 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-2xl">🟢</span>
+                        <h4 class="font-bold text-phase-discovery">Fase 1: Inteligência</h4>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Onde você <strong class="text-white">gera valor sem tocar no código</strong>. O Arquiteto
+                        processa a conversa do lead e produz a "munição" técnica.
+                    </p>
+                </div>
+
+                <div class="bg-phase-viability/10 border border-phase-viability/30 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-2xl">🟡</span>
+                        <h4 class="font-bold text-phase-viability">Fase 2: Conversão</h4>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Onde você <strong class="text-white">fecha o negócio</strong>. Comercial usa a munição para
+                        escrever, Designer embala em PDF elite, Jurídico blinda o contrato.
+                    </p>
+                </div>
+
+                <div class="bg-phase-arch/10 border border-phase-arch/30 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-2xl">🔴</span>
+                        <h4 class="font-bold text-phase-arch">Fase 3: Execução</h4>
+                    </div>
+                    <p class="text-sm text-gray-400">
+                        Onde a <strong class="text-white">mágica acontece</strong>. Coder pega artefatos técnicos da
+                        Fase 1 e constrói o software real em ciclos de 12 dias.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Princípio Core -->
+            <div class="mt-6 bg-brand-neon/10 border border-brand-neon/30 rounded-xl p-5 text-center">
+                <p class="text-lg">
+                    💡 <span class="text-gray-400">Princípio Core:</span>
+                    <span class="text-brand-neon font-bold ml-2">Cada agente sabe qual documento LER e qual documento
+                        GERAR</span>
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-gray-500 text-sm border-t border-white/10">
+        <div class="flex justify-center gap-4 mb-4">
+            <a href="fluxograma_mestre.html" class="text-brand-neon hover:underline">📊 Fluxograma Agentes</a>
+            <span>•</span>
+            <a href="pipeline_completo.html" class="text-brand-neon hover:underline">🔄 Pipeline Completo</a>
+            <span>•</span>
+            <a href="estrutura_pastas.html" class="text-brand-neon hover:underline">📁 Estrutura Pastas</a>
+        </div>
+        <p>CodeSprint Agency © 2026 — Linha de Produção Automatizada</p>
+    </footer>
+
+</body>
+
+</html>

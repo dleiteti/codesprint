@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta Comercial — Loja do Monstrão | CodeSprint</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        neon: '#00D4FF',
+                        slate: {
+                            50: '#F8FAFC',
+                            100: '#F1F5F9',
+                            200: '#E2E8F0',
+                            300: '#CBD5E1',
+                            400: '#94A3B8',
+                            500: '#64748B',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1E293B',
+                            900: '#0F172A'
+                        }
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#00D4FF', primaryTextColor: '#1F2937', primaryBorderColor: '#00D4FF', lineColor: '#64748B' } });
+        });
+
+        function exportarPDF() {
+            const element = document.getElementById('proposta-content');
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: 'proposta_loja_monstrao_codesprint.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes pulse-neon {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+            }
+        }
+
+        .pulse-neon {
+            animation: pulse-neon 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+
+
+
+    <div id="proposta-content">
+
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20 px-6">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-4 mb-6">
+                    <div
+                        class="bg-neon/20 border-2 border-neon px-4 py-1.5 rounded-full text-neon text-sm font-semibold pulse-neon">
+                        PROPOSTA EXECUTIVA
+                    </div>
+                    <div
+                        class="bg-green-500/20 border border-green-400 px-4 py-1.5 rounded-full text-green-300 text-sm font-semibold">
+                        ✓ Aprovação Recomendada
+                    </div>
+                </div>
+
+                <h1 class="text-5xl md:text-6xl font-black mb-4 leading-tight">
+                    Máquina de Vendas<br />
+                    <span
+                        class="bg-gradient-to-r from-neon to-blue-400 bg-clip-text text-transparent">Inteligente</span>
+                </h1>
+
+                <p class="text-2xl text-slate-300 font-light mb-8 leading-relaxed">
+                    Para: <span class="font-semibold text-white">Loja do Monstrão</span><br />
+                    Segmento: Moda Masculina Premium
+                </p>
+
+                <div class="flex flex-wrap gap-4 text-sm text-slate-400">
+                    <div>📅 Data: 20 de Janeiro de 2026</div>
+                    <div>⏱️ Validade: 7 dias</div>
+                    <div>📍 CodeSprint Agency</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card ROI de Alto Impacto - REDESENHADO -->
+        <section class="py-16 px-6 bg-white">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4">O Problema é Maior do Que Você Imagina</h2>
+                    <p class="text-xl text-slate-600 leading-relaxed max-w-3xl mx-auto">
+                        Você investe R$ 4.000/mês em anúncios, mas <span class="font-bold text-red-600">75% dos
+                            cliques desaparecem</span> antes de iniciar conversa. São <span
+                            class="font-bold text-red-600">R$ 800 evaporando todo dia</span>.
+                    </p>
+                </div>
+
+                <!-- NOVA ESTRUTURA: 3 COLUNAS -->
+                <div class="grid md:grid-cols-3 gap-6 mb-12">
+
+                    <!-- COLUNA 1: HOJE -->
+                    <div class="relative">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl opacity-5">
+                        </div>
+                        <div class="relative bg-white border-2 border-red-200 rounded-2xl p-6 h-full">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
+                                    <span class="text-xl">⚠️</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-900">HOJE</h3>
+                            </div>
+
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center pb-2 border-b border-red-100">
+                                    <span class="text-slate-600">Cliques/dia</span>
+                                    <span class="font-bold text-slate-900">20</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-red-100">
+                                    <span class="text-slate-600">Chegam no WhatsApp</span>
+                                    <span class="font-bold text-green-600">5 (25%)</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-red-100">
+                                    <span class="text-slate-600">Se perdem</span>
+                                    <span class="font-bold text-red-600">15 (75%)</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-red-100">
+                                    <span class="text-slate-600">Vendas perdidas/dia</span>
+                                    <span class="font-bold text-red-600">~2</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-red-100">
+                                    <span class="text-slate-600">Ticket médio</span>
+                                    <span class="font-bold text-slate-900">R$ 400</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t-2 border-red-200 text-center">
+                                <p class="text-xs text-red-600 font-semibold mb-1">VOCÊ PERDE</p>
+                                <p class="text-3xl font-black text-red-600">R$ 800/dia</p>
+                                <p class="text-xs text-slate-500 mt-1">2 vendas × R$ 400 = R$ 24.000/mês</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUNA 2: NOSSA SOLUÇÃO -->
+                    <div class="relative">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl opacity-5">
+                        </div>
+                        <div class="relative bg-white border-2 border-purple-200 rounded-2xl p-6 h-full">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center">
+                                    <span class="text-xl">🚀</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-900">SOLUÇÃO</h3>
+                            </div>
+
+                            <div class="space-y-3 text-sm">
+                                <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                    <p class="font-semibold text-purple-900 mb-1">🎯 Landing Page</p>
+                                    <p class="text-purple-600 text-xs">Captura lead antes do WhatsApp</p>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <p class="font-semibold text-blue-900 mb-1">🤖 IA Instantânea</p>
+                                    <p class="text-blue-600 text-xs">Resposta em < 30 segundos</p>
+                                </div>
+                                <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-3">
+                                    <p class="font-semibold text-cyan-900 mb-1">📊 Retargeting</p>
+                                    <p class="text-cyan-600 text-xs">Resgata quem desistiu</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t-2 border-purple-200 text-center">
+                                <p class="text-xs text-purple-600 font-semibold mb-1">OBJETIVO</p>
+                                <p class="text-3xl font-black text-purple-600">+1 venda</p>
+                                <p class="text-xs text-slate-500 mt-1">por dia recuperada</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLUNA 3: RESULTADO -->
+                    <div class="relative">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl opacity-5">
+                        </div>
+                        <div class="relative bg-white border-2 border-green-300 rounded-2xl p-6 h-full">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+                                    <span class="text-xl">✅</span>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-900">RESULTADO</h3>
+                            </div>
+
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center pb-2 border-b border-green-100">
+                                    <span class="text-slate-600">Cliques/dia</span>
+                                    <span class="font-bold text-slate-900">20</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-green-100">
+                                    <span class="text-slate-600">Chegam no WhatsApp</span>
+                                    <span class="font-bold text-green-600">9+ (45%)</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-green-100">
+                                    <span class="text-slate-600">Vendas recuperadas</span>
+                                    <span class="font-bold text-green-600">+1/dia</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-green-100">
+                                    <span class="text-slate-600">Faturamento extra</span>
+                                    <span class="font-bold text-green-600">+R$ 400/dia</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-green-100">
+                                    <span class="text-slate-600">Extra por mês</span>
+                                    <span class="font-bold text-green-600">+R$ 8.800</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-green-100">
+                                    <span class="text-slate-600">Extra por ano</span>
+                                    <span class="font-bold text-green-600">+R$ 105.600</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t-2 border-green-300 text-center">
+                                <p class="text-xs text-green-600 font-semibold mb-1">VOCÊ GANHA</p>
+                                <p class="text-3xl font-black text-green-600">+R$ 8.800/mês</p>
+                                <p class="text-xs text-slate-500 mt-1">1 venda × R$ 400 × 22 dias úteis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESCOPO: O QUE ESTÁ INCLUSO -->
+                <div class="bg-white border-2 border-slate-200 rounded-2xl p-8 mb-8">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-black text-slate-900">📦 O Que Você Recebe</h3>
+                        <p class="text-slate-500">Escopo completo do projeto</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-500 text-xl">✅</span>
+                                <div>
+                                    <p class="font-semibold text-slate-900">Landing Page de Captura</p>
+                                    <p class="text-sm text-slate-500">Página otimizada para conversão com rastreamento
+                                        Meta API</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-500 text-xl">✅</span>
+                                <div>
+                                    <p class="font-semibold text-slate-900">Agente IA no WhatsApp</p>
+                                    <p class="text-sm text-slate-500">Responde em < 30s, qualifica e encaminha para
+                                            vendedor</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-500 text-xl">✅</span>
+                                <div>
+                                    <p class="font-semibold text-slate-900">Dashboard de Atribuição</p>
+                                    <p class="text-sm text-slate-500">ROI em tempo real por campanha e anúncio</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-500 text-xl">✅</span>
+                                <div>
+                                    <p class="font-semibold text-slate-900">CRM Kanban</p>
+                                    <p class="text-sm text-slate-500">Gestão visual de leads (Novo → Negociando →
+                                        Fechado)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-500 text-xl">✅</span>
+                                <div>
+                                    <p class="font-semibold text-slate-900">Integração Meta CAPI</p>
+                                    <p class="text-sm text-slate-500">Atribuição de vendas direto no Facebook Ads
+                                        Manager</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-500 text-xl">✅</span>
+                                <div>
+                                    <p class="font-semibold text-slate-900">Treinamento (2 horas)</p>
+                                    <p class="text-sm text-slate-500">Você e sua equipe dominando o sistema</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMO FINANCEIRO -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 text-white">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Investimento -->
+                        <div class="text-center md:text-left">
+                            <p class="text-sm text-slate-400 font-semibold mb-4">SEU INVESTIMENTO</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-300">Setup (uma vez)</span>
+                                    <span class="font-bold text-white">R$ 7.000</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-300">Mensalidade</span>
+                                    <span class="font-bold text-white">R$ 300/mês</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-slate-700">
+                                    <span class="text-slate-300">Total Ano 1</span>
+                                    <span class="font-bold text-neon">R$ 10.600</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resultado -->
+                        <div class="text-center md:text-right">
+                            <p class="text-sm text-slate-400 font-semibold mb-4">SEU GANHO LÍQUIDO</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-300">Faturamento extra</span>
+                                    <span class="font-bold text-green-400">+R$ 105.600</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-300">Investimento</span>
+                                    <span class="font-bold text-red-400">-R$ 10.600</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-2 border-t border-slate-700">
+                                    <span class="text-slate-300 font-semibold">SOBRA NO BOLSO</span>
+                                    <span class="font-black text-2xl text-green-400">+R$ 95.000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destaque Payback -->
+                <div
+                    class="mt-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-8 text-center">
+                    <p class="text-sm font-semibold text-green-700 mb-2">PAYBACK</p>
+                    <p class="text-4xl font-black text-green-600 mb-2">&lt; 1 Mês</p>
+                    <p class="text-slate-600">Setup R$ 7.000 ÷ Ganho R$ 8.800/mês = <span class="font-bold">~24
+                            dias</span></p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- FLUXOGRAMA DA SOLUÇÃO - IMAGENS DO ARQUITETO -->
+        <section class="py-16 px-6 bg-slate-50">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4">Como a Solução Funciona</h2>
+                    <p class="text-xl text-slate-600">Solução em 3 Camadas que aumenta conversão em +120%</p>
+                </div>
+
+                <!-- Imagem 1: Solução em 3 Camadas -->
+                <div class="bg-white rounded-2xl shadow-lg p-4 border border-slate-200 mb-8">
+                    <img src="solucao_3_camadas.jpg" alt="Otimização do Funil de Vendas: Solução em 3 Camadas"
+                        class="w-full rounded-xl">
+                </div>
+
+                <!-- Cards de Resumo -->
+                <div class="grid md:grid-cols-3 gap-4 mb-12">
+                    <div
+                        class="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-xl p-6 text-center">
+                        <div class="text-4xl mb-3">💻</div>
+                        <h4 class="font-bold text-cyan-900 mb-1">Camada 1: Landing Page</h4>
+                        <p class="text-cyan-600 font-black text-2xl">+15%</p>
+                    </div>
+                    <div
+                        class="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-6 text-center">
+                        <div class="text-4xl mb-3">🤖</div>
+                        <h4 class="font-bold text-emerald-900 mb-1">Camada 2: IA Instantânea</h4>
+                        <p class="text-emerald-600 font-black text-2xl">+10%</p>
+                    </div>
+                    <div
+                        class="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 text-center">
+                        <div class="text-4xl mb-3">🎯</div>
+                        <h4 class="font-bold text-purple-900 mb-1">Camada 3: Retargeting</h4>
+                        <p class="text-purple-600 font-black text-2xl">+5%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JORNADA DO LEAD -->
+        <section class="py-16 px-6 bg-white">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4">Jornada do Lead</h2>
+                    <p class="text-xl text-slate-600">Do clique à atribuição completa em 7 passos</p>
+                </div>
+
+                <!-- Imagem 2: Jornada do Lead -->
+                <div
+                    class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-xl p-6 border border-slate-700">
+                    <img src="jornada_lead.jpg" alt="Jornada do Lead - Loja do Monstrão" class="w-full rounded-xl">
+                </div>
+            </div>
+        </section>
+
+        <!-- PREVIEW DO DASHBOARD -->
+        <section class="py-16 px-6 bg-slate-900">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-white mb-4">Seu Dashboard Exclusivo</h2>
+                    <p class="text-xl text-slate-400">Visão geral em tempo real de leads, conversões, faturamento e ROI
+                    </p>
+                </div>
+
+                <!-- Imagem 3: Dashboard -->
+                <div class="bg-slate-800 rounded-2xl shadow-2xl p-4 border border-slate-700">
+                    <img src="dashboard_preview.png" alt="Dashboard - Visão Geral" class="w-full rounded-xl">
+                </div>
+
+                <!-- Destaques do Dashboard -->
+                <div class="mt-8 grid md:grid-cols-4 gap-4">
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                        <p class="text-slate-400 text-sm mb-1">Leads Hoje</p>
+                        <p class="text-white font-black text-2xl">47</p>
+                        <p class="text-green-400 text-xs">+12% vs ontem</p>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                        <p class="text-slate-400 text-sm mb-1">Conversões</p>
+                        <p class="text-white font-black text-2xl">8</p>
+                        <p class="text-purple-400 text-xs">17% taxa</p>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                        <p class="text-slate-400 text-sm mb-1">Faturamento</p>
+                        <p class="text-green-400 font-black text-2xl">R$ 3.200</p>
+                        <p class="text-green-400 text-xs">+R$ 800 vs média</p>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-center">
+                        <p class="text-slate-400 text-sm mb-1">ROI</p>
+                        <p class="text-neon font-black text-2xl">4.2x</p>
+                        <p class="text-neon text-xs">Meta: 3x ✓</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MOCKUPS DAS TELAS -->
+        <section class="py-16 px-6 bg-white">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4">Telas do Sistema</h2>
+                    <p class="text-xl text-slate-600">Protótipos visuais das funcionalidades principais</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Tela 1: CRM Kanban -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border-2 border-slate-200">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <span>📋</span> CRM Kanban Visual
+                        </h3>
+                        <div class="bg-white rounded-lg border-2 border-slate-300 p-4 shadow-sm">
+                            <div class="grid grid-cols-3 gap-2 text-xs">
+                                <div class="bg-yellow-50 border border-yellow-200 rounded p-2">
+                                    <div class="font-semibold text-yellow-700 mb-1">🟡 Novos</div>
+                                    <div class="space-y-1">
+                                        <div class="bg-white border border-yellow-300 rounded p-1.5">
+                                            <p class="font-medium text-slate-700">João Silva</p>
+                                            <p class="text-slate-500 text-[10px]">Atacado • BH</p>
+                                        </div>
+                                        <div class="bg-white border border-yellow-300 rounded p-1.5">
+                                            <p class="font-medium text-slate-700">Maria Costa</p>
+                                            <p class="text-slate-500 text-[10px]">Varejo • SP</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 rounded p-2">
+                                    <div class="font-semibold text-blue-700 mb-1">🔵 Em negociação</div>
+                                    <div class="space-y-1">
+                                        <div class="bg-white border border-blue-300 rounded p-1.5">
+                                            <p class="font-medium text-slate-700">Pedro Lima</p>
+                                            <p class="text-slate-500 text-[10px]">Atacado • RJ</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-green-50 border border-green-200 rounded p-2">
+                                    <div class="font-semibold text-green-700 mb-1">🟢 Fechados</div>
+                                    <div class="space-y-1">
+                                        <div class="bg-white border border-green-300 rounded p-1.5">
+                                            <p class="font-medium text-slate-700">Ana Paula</p>
+                                            <p class="text-green-600 text-[10px]">R$ 1.200</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-4">Arraste leads entre colunas. Follow-up automático de
+                            parados.</p>
+                    </div>
+
+                    <!-- Tela 2: Dashboard Atribuição -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border-2 border-slate-200">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <span>📊</span> Dashboard de Atribuição
+                        </h3>
+                        <div class="bg-white rounded-lg border-2 border-slate-300 p-4 shadow-sm">
+                            <div class="space-y-3 text-xs">
+                                <div
+                                    class="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded p-3">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-slate-700">Campanha: Coleção Verão</span>
+                                        <span
+                                            class="bg-green-500 text-white px-2 py-0.5 rounded-full text-[10px]">Ativa</span>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-[10px]">
+                                        <div>
+                                            <p class="text-slate-500">Cliques</p>
+                                            <p class="font-bold text-slate-900">127</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">Conversões</p>
+                                            <p class="font-bold text-green-600">8</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">ROI</p>
+                                            <p class="font-bold text-blue-600">320%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded p-3">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-semibold text-slate-700">Campanha: Básicos</span>
+                                        <span
+                                            class="bg-gray-400 text-white px-2 py-0.5 rounded-full text-[10px]">Pausada</span>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-[10px]">
+                                        <div>
+                                            <p class="text-slate-500">Cliques</p>
+                                            <p class="font-bold text-slate-900">89</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">Conversões</p>
+                                            <p class="font-bold text-amber-600">3</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-slate-500">ROI</p>
+                                            <p class="font-bold text-amber-600">150%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-4">Saiba exatamente de onde vem cada venda. ROI por
+                            campanha.</p>
+                    </div>
+
+                    <!-- Tela 3: Conversa IA -->
+                    <div class="bg-slate-50 rounded-2xl p-6 border-2 border-slate-200 md:col-span-2">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <span>💬</span> Conversa do Agente IA (exemplo)
+                        </h3>
+                        <div
+                            class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200 p-4 shadow-sm max-w-md mx-auto">
+                            <div class="space-y-3 text-sm">
+                                <!-- Cliente -->
+                                <div class="flex gap-2">
+                                    <div
+                                        class="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center text-xs">
+                                        👤</div>
+                                    <div class="bg-white border border-slate-200 rounded-lg p-3 flex-1">
+                                        <p>Oi, vi o anúncio de vocês</p>
+                                    </div>
+                                </div>
+                                <!-- IA -->
+                                <div class="flex gap-2 flex-row-reverse">
+                                    <div class="w-8 h-8 bg-neon rounded-full flex items-center justify-center text-xs">
+                                        🤖</div>
+                                    <div class="bg-neon/10 border border-neon rounded-lg p-3 flex-1">
+                                        <p><strong>Olá!</strong> 👋 Sou a assistente da Loja do Monstrão. Você quer
+                                            comprar para:</p>
+                                        <p class="mt-2">1️⃣ Atacado (revenda)</p>
+                                        <p>2️⃣ Varejo (uso próprio)</p>
+                                    </div>
+                                </div>
+                                <!-- Cliente -->
+                                <div class="flex gap-2">
+                                    <div
+                                        class="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center text-xs">
+                                        👤</div>
+                                    <div class="bg-white border border-slate-200 rounded-lg p-3 flex-1">
+                                        <p>Atacado</p>
+                                    </div>
+                                </div>
+                                <!-- IA -->
+                                <div class="flex gap-2 flex-row-reverse">
+                                    <div class="w-8 h-8 bg-neon rounded-full flex items-center justify-center text-xs">
+                                        🤖</div>
+                                    <div class="bg-neon/10 border border-neon rounded-lg p-3 flex-1">
+                                        <p>Perfeito! Pode me passar seu <strong>nome</strong> e <strong>cidade</strong>?
+                                        </p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="bg-green-100 border border-green-400 rounded-lg p-2 text-center text-xs text-green-700">
+                                    ✅ Lead qualificado e enviado para vendedor em <strong>25 segundos</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 mt-4 text-center">IA conversa naturalmente, qualifica e passa
+                            pronto para vendedor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabela Comparativa Estilizada -->
+        <section class="py-16 px-6 bg-slate-50">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4">Por Que Nossa Solução é Diferente</h2>
+                    <p class="text-xl text-slate-600">Kommo e Tintim são ferramentas <span
+                            class="italic">passivas</span>. Nossa solução é <span
+                            class="font-bold text-neon">ativa</span>.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg overflow-x-auto border border-slate-200">
+                    <table class="w-full min-w-[600px]">
+                        <thead>
+                            <tr class="bg-slate-900 text-white">
+                                <th class="py-5 px-6 text-left font-semibold">Funcionalidade</th>
+                                <th class="py-5 px-6 text-center font-semibold">Kommo + Tintim</th>
+                                <th class="py-5 px-6 text-center font-semibold bg-neon/20">Máquina CodeSprint</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="py-4 px-6 font-medium text-slate-700">Tempo de resposta ao lead</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="inline-flex items-center gap-2 text-red-600">
+                                        <span class="text-xl">❌</span>
+                                        <span class="text-sm">Manual (minutos/horas)</span>
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-center bg-green-50">
+                                    <span class="inline-flex items-center gap-2 text-green-600 font-semibold">
+                                        <span class="text-xl">✅</span>
+                                        <span class="text-sm">IA &lt; 30 segundos</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="py-4 px-6 font-medium text-slate-700">Qualificação automática</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="text-red-600 text-xl">❌</span>
+                                </td>
+                                <td class="py-4 px-6 text-center bg-green-50">
+                                    <span class="text-green-600 font-semibold text-xl">✅</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="py-4 px-6 font-medium text-slate-700">Atribuição de vendas (ROI por anúncio)
+                                </td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="inline-flex items-center gap-2 text-amber-600">
+                                        <span class="text-xl">⚠️</span>
+                                        <span class="text-sm">Passivo</span>
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-center bg-green-50">
+                                    <span class="inline-flex items-center gap-2 text-green-600 font-semibold">
+                                        <span class="text-xl">✅</span>
+                                        <span class="text-sm">Ativo + Meta API</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="py-4 px-6 font-medium text-slate-700">Dashboard de performance</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="text-red-600 text-xl">❌</span>
+                                </td>
+                                <td class="py-4 px-6 text-center bg-green-50">
+                                    <span class="text-green-600 font-semibold text-xl">✅</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="py-4 px-6 font-medium text-slate-700">Gestão de funil (CRM Kanban)</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="inline-flex items-center gap-2 text-amber-600">
+                                        <span class="text-xl">⚠️</span>
+                                        <span class="text-sm">Básico</span>
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-center bg-green-50">
+                                    <span class="inline-flex items-center gap-2 text-green-600 font-semibold">
+                                        <span class="text-xl">✅</span>
+                                        <span class="text-sm">Completo</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 transition">
+                                <td class="py-4 px-6 font-medium text-slate-700">Número de ferramentas</td>
+                                <td class="py-4 px-6 text-center">
+                                    <span class="text-amber-600 font-semibold">2 separadas</span>
+                                </td>
+                                <td class="py-4 px-6 text-center bg-green-50">
+                                    <span class="text-green-600 font-semibold">1 integrada</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-8 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 text-white text-center">
+                    <p class="text-2xl font-bold mb-2">A Diferença Fundamental</p>
+                    <p class="text-slate-300 text-lg">O CRM apenas <span class="italic">guarda</span> o lead morto.
+                        Nossa IA <span class="font-bold text-neon">impede</span> que o lead morra.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Vertical Elegante -->
+        <section class="py-16 px-6 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4">Cronograma de Entrega</h2>
+                    <p class="text-xl text-slate-600">Sistema completo em <span class="font-bold text-neon">20 dias
+                            corridos</span></p>
+                </div>
+
+                <div class="relative">
+                    <!-- Linha vertical central -->
+                    <div
+                        class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-neon via-blue-500 to-green-500">
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- Fase 1 -->
+                        <div class="relative pl-20">
+                            <div
+                                class="absolute left-0 w-16 h-16 bg-gradient-to-br from-neon to-blue-500 rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+                                ⚙️
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-6 border-l-4 border-neon shadow-sm">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xl font-bold text-slate-900">Setup + Infraestrutura</h3>
+                                    <span class="bg-neon/10 text-neon px-3 py-1 rounded-full text-sm font-semibold">Dias
+                                        1-7</span>
+                                </div>
+                                <p class="text-slate-600">Configuração de ambiente, banco de dados, autenticação e APIs
+                                    base.</p>
+                            </div>
+                        </div>
+
+                        <!-- Fase 2 -->
+                        <div class="relative pl-20">
+                            <div
+                                class="absolute left-0 w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+                                🤖
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-6 border-l-4 border-blue-500 shadow-sm">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xl font-bold text-slate-900">Agente IA + Dashboard</h3>
+                                    <span
+                                        class="bg-blue-500/10 text-blue-600 px-3 py-1 rounded-full text-sm font-semibold">Dias
+                                        8-14</span>
+                                </div>
+                                <p class="text-slate-600">Desenvolvimento do assistente de triagem e interface de
+                                    atribuição visual.</p>
+                            </div>
+                        </div>
+
+                        <!-- Fase 3 -->
+                        <div class="relative pl-20">
+                            <div
+                                class="absolute left-0 w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-3xl shadow-lg pulse-neon">
+                                🚀
+                            </div>
+                            <div
+                                class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border-l-4 border-green-500 shadow-md">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h3 class="text-xl font-bold text-slate-900">Integrações + Go-Live</h3>
+                                    <span
+                                        class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Dias
+                                        15-20</span>
+                                </div>
+                                <p class="text-slate-600 font-medium">Meta Conversions API + CRM + Testes + Treinamento
+                                    de 2h para equipe.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final Premium -->
+        <section class="py-20 px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-5xl font-black mb-6">Cada Dia Sem Agir = R$ 800 Perdidos</h2>
+                <p class="text-2xl text-slate-300 mb-8 leading-relaxed">
+                    Se você decidir hoje, em <span class="font-bold text-neon">20 dias</span> o sistema está
+                    rodando.<br />
+                    Em <span class="font-bold text-green-400">1 mês</span> você já recuperou o investimento.<br />
+                    Em <span class="font-bold text-neon">12 meses</span> você tem <span
+                        class="font-bold text-green-400">+R$ 95.000</span> a mais.
+                </p>
+
+
+
+                <div class="mt-12 pt-12 border-t border-slate-700">
+                    <p class="text-slate-400 mb-4">Contato</p>
+                    <p class="text-xl font-semibold mb-2">Danilo — CodeSprint</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center text-slate-300">
+                        <span>📱 WhatsApp: (21) 981477503</span>
+                        <span class="hidden sm:inline">•</span>
+                        <span>📧 contato@codesprint.com.br</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm no-print">
+        <p>CodeSprint © 2026 — Tecnologia que resolve problemas reais</p>
+        <p class="mt-2 text-xs text-slate-600">Proposta válida por 7 dias • Gerado em 20/01/2026</p>
+    </footer>
+
+</body>
+
+</html>

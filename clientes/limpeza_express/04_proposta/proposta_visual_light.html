@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta Comercial — Limpeza Express</title>
+
+    <!-- Google Fonts: Inter (Clean & Modern) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            primary: '#00D4FF',
+                            dark: '#0B1120',
+                            light: '#F8FAFC',
+                            accent: '#0891B2',
+                            gray: '#475569',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .gradient-brand {
+                background: linear-gradient(135deg, #00D4FF 0%, #0891B2 100%);
+            }
+            
+            .text-gradient {
+                background: linear-gradient(135deg, #00D4FF 0%, #0891B2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            
+            .card-hover {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 24px rgba(0, 212, 255, 0.12);
+            }
+            
+            /* Print Styles */
+            @media print {
+                body { 
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                .no-print { display: none; }
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 to-gray-100 text-slate-900 font-sans antialiased">
+
+    <!-- Container Principal -->
+    <div class="max-w-5xl mx-auto p-8 md:p-12 bg-white shadow-2xl my-8 rounded-2xl border border-slate-200">
+
+        <!-- ============================================ -->
+        <!-- HEADER -->
+        <!-- ============================================ -->
+        <header class="flex justify-between items-start mb-16 pb-8 border-b border-slate-200">
+            <div>
+                <!-- Logo Real -->
+                <img src="../../../public/logo.png" alt="CodeSprint" class="h-12 mb-2" />
+                <p class="text-brand-gray text-sm ml-1">Transformando Dor em Software Lucrativo</p>
+            </div>
+
+            <div class="text-right text-sm">
+                <p class="text-slate-900 font-semibold">Limpeza Express</p>
+                <p class="text-brand-gray">20 de Janeiro de 2026</p>
+                <p class="text-brand-primary text-xs mt-1 font-semibold">Validade: 7 dias</p>
+            </div>
+        </header>
+
+        <!-- ============================================ -->
+        <!-- HERO SECTION: O Problema -->
+        <!-- ============================================ -->
+        <section class="mb-16">
+            <h1 class="text-5xl font-black mb-4 leading-tight text-slate-900">
+                Proposta Comercial Executiva
+            </h1>
+            <h2 class="text-2xl text-brand-gray font-light mb-8">
+                Sistema de Controle de Estoque Inteligente
+            </h2>
+
+            <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-xl mb-8">
+                <h3 class="text-xl font-bold mb-3 flex items-center text-slate-900">
+                    <span class="text-3xl mr-3">⚠️</span>
+                    Sobre Sua Situação Atual
+                </h3>
+                <p class="text-lg leading-relaxed text-slate-700">
+                    Ricardo, você está perdendo vendas todos os dias porque seu time não sabe o que tem disponível no estoque. Vendedores fazem promessas no WhatsApp sem ter certeza se conseguirão entregar. O resultado? Clientes frustrados, tempo desperdiçado conferindo estoque manualmente e R$ 10.000 por mês "escapando pelo ralo".
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- IMPACTO FINANCEIRO -->
+        <!-- ============================================ -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gradient">💰 O Que Está Te Custando</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card de Perda Mensal -->
+                <div
+                    class="bg-gradient-to-br from-red-50 to-red-100 border-2 border-red-300 rounded-2xl p-8 card-hover">
+                    <p class="text-red-600 text-sm font-semibold uppercase tracking-wide mb-2">Perda Mensal</p>
+                    <p class="text-6xl font-black mb-2 text-red-700 whitespace-nowrap">R$ 10.000</p>
+                    <p class="text-slate-600 text-sm">Em 12 meses: <span
+                            class="text-slate-900 font-bold whitespace-nowrap">R$ 120.000</span></p>
+                </div>
+
+                <!-- Card de ROI Projetado -->
+                <div
+                    class="bg-gradient-to-br from-green-50 to-emerald-100 border-2 border-green-300 rounded-2xl p-8 card-hover">
+                    <p class="text-green-600 text-sm font-semibold uppercase tracking-wide mb-2">ROI Esperado</p>
+                    <p class="text-6xl font-black mb-2 text-green-700 whitespace-nowrap">357%</p>
+                    <p class="text-slate-600 text-sm">Payback em: <span
+                            class="text-slate-900 font-bold">2 meses</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- SOLUÇÃO PROPOSTA -->
+        <!-- ============================================ -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gradient">🎯 A Solução</h2>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-6">
+                <p class="text-lg leading-relaxed text-slate-700 mb-6">
+                    Um sistema sob medida que dá visibilidade total do estoque para sua equipe, funciona offline e encerra de vez o caos operacional. Vendedores consultam disponibilidade em 3 segundos, você recebe alertas automáticos de produtos acabando e a baixa acontece com um clique.
+                </p>
+
+                <!-- Lista de Entregas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <div class="flex items-start space-x-3">
+                        <span class="text-brand-neon text-2xl">✓</span>
+                        <div>
+                            <p class="font-semibold">Catálogo Mobile para Vendedores</p>
+                            <p class="text-sm text-white/60">Consulta estoque em tempo real direto do celular</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <span class="text-brand-neon text-2xl">✓</span>
+                        <div>
+                            <p class="font-semibold">Dashboard Administrativo</p>
+                            <p class="text-sm text-white/60">Visão completa + alertas automáticos via WhatsApp</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <span class="text-brand-neon text-2xl">✓</span>
+                        <div>
+                            <p class="font-semibold">Tela de Baixa Rápida</p>
+                            <p class="text-sm text-white/60">Equipe de estoque confirma saída com 1 clique</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <span class="text-brand-neon text-2xl">✓</span>
+                        <div>
+                            <p class="font-semibold">Modo Offline Completo</p>
+                            <p class="text-sm text-white/60">Funciona sem internet, sincroniza depois</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <span class="text-brand-neon text-2xl">✓</span>
+                        <div>
+                            <p class="font-semibold">Login via WhatsApp</p>
+                            <p class="text-sm text-white/60">Sem senha, seguro e rápido</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <span class="text-brand-neon text-2xl">✓</span>
+                        <div>
+                            <p class="font-semibold">Treinamento Completo</p>
+                            <p class="text-sm text-white/60">2 horas para toda equipe dominar o sistema</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- INVESTIMENTO -->
+        <!-- ============================================ -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gradient">💎 Investimento</h2>
+
+            <!-- Tabela de Preços -->
+            <div class="bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-lg">
+                <table class="w-full">
+                    <thead class="gradient-brand text-white">
+                        <tr>
+                            <th class="text-left py-4 px-6 font-bold">Item</th>
+                            <th class="text-right py-4 px-6 font-bold">Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="py-4 px-6">
+                                <p class="font-semibold text-lg text-slate-900">Setup Completo</p>
+                                <p class="text-sm text-slate-600">Desenvolvimento + Deploy + Treinamento</p>
+                            </td>
+                            <td class="py-4 px-6 text-right">
+                                <p class="text-2xl font-black text-brand-primary whitespace-nowrap">R$ 15.000</p>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="py-4 px-6">
+                                <p class="font-semibold text-lg text-slate-900">Mensalidade</p>
+                                <p class="text-sm text-slate-600">Suporte + Atualizações + Hospedagem</p>
+                            </td>
+                            <td class="py-4 px-6 text-right">
+                                <p class="text-2xl font-black text-brand-primary whitespace-nowrap">
+                                    R$ 990/mês</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Resumo Financeiro Ano 1 -->
+            <div
+                class="mt-8 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-brand-primary/30 rounded-2xl p-8">
+                <h3 class="text-xl font-bold mb-4 text-slate-900">Resumo Financeiro (Primeiro Ano)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <p class="text-sm text-slate-600 mb-1">Investimento Total</p>
+                        <p class="text-2xl font-bold text-slate-900 whitespace-nowrap">R$ 26.880</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-600 mb-1">Economia Projetada</p>
+                        <p class="text-2xl font-bold text-green-600 whitespace-nowrap">R$ 96.000</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-600 mb-1">Sobra no Bolso</p>
+                        <p class="text-3xl font-black text-brand-primary whitespace-nowrap">R$ 69.120</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- CRONOGRAMA -->
+        <!-- ============================================ -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-gradient">⏱️ Cronograma de Entrega</h2>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8">
+                <p class="text-4xl font-black mb-6 text-center text-slate-900">12 dias úteis</p>
+
+                <!-- Timeline Visual -->
+                <div class="space-y-4">
+                    
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-neon flex items-center justify-center text-brand-dark font-bold">
+                            1
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-lg">Aprovação da Proposta</p>
+                            <p class="text-sm text-white/60">Você aprova e assinamos o contrato digital</p>
+                        </div>
+                        <div class="text-right text-sm text-brand-neon font-semibold">
+                            Hoje
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-neon flex items-center justify-center text-brand-dark font-bold">
+                            2
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-lg">Pagamento do Sinal</p>
+                            <p class="text-sm text-white/60">50% do setup (R$ 7.500) para iniciar</p>
+                        </div>
+                        <div class="text-right text-sm text-brand-neon font-semibold">
+                            +2 dias
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-neon flex items-center justify-center text-brand-dark font-bold">
+                            3
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-lg">Kick-off Técnico</p>
+                            <p class="text-sm text-white/60">Reunião de alinhamento e coleta de produtos</p>
+                        </div>
+                        <div class="text-right text-sm text-brand-neon font-semibold">
+                            +3 dias
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-neon flex items-center justify-center text-brand-dark font-bold">
+                            4
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-lg">Sprint de Desenvolvimento</p>
+                            <p class="text-sm text-white/60">12 dias de construção usando Shape Up</p>
+                        </div>
+                        <div class="text-right text-sm text-brand-neon font-semibold">
+                            +15 dias
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full gradient-neon flex items-center justify-center text-brand-dark font-bold">
+                            5
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-lg">Go-Live + Treinamento</p>
+                            <p class="text-sm text-white/60">Sistema no ar + 2h de capacitação da equipe</p>
+                        </div>
+                        <div class="text-right text-sm text-brand-neon font-semibold">
+                            +16 dias
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- CALL TO ACTION -->
+        <!-- ============================================ -->
+        <section class="mb-12">
+            <div class="gradient-brand text-white rounded-2xl p-10 text-center shadow-xl">
+                <h2 class="text-3xl font-black mb-4">Por Que Decidir Agora?</h2>
+                <p class="text-lg mb-6 opacity-95">
+                    Cada dia que passa sem resolver isso é <strong>R$ 333 a menos no seu caixa</strong>. Se decidir hoje, em 12 dias você tem o sistema rodando, em 60 dias recuperou todo o investimento e em 12 meses você tem R$ 69.000 a mais do que teria sem o sistema.
+                </p>
+                <div
+                    class="inline-block bg-white text-brand-dark px-8 py-4 rounded-xl font-bold text-lg hover:scale-105 transition cursor-pointer shadow-lg">
+                    📞 Agendar Reunião de 15 Minutos
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- FOOTER -->
+        <!-- ============================================ -->
+        <footer class="border-t border-slate-200 pt-8 mt-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="font-bold text-lg mb-2 text-slate-900">Danilo</p>
+                    <p class="text-sm text-brand-gray mb-1">CodeSprint Agency</p>
+                    <p class="text-sm text-brand-gray">CEO & Founder</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-600 mb-1">📱 WhatsApp: (XX) XXXXX-XXXX</p>
+                    <p class="text-sm text-slate-600 mb-1">📧 Email: contato@codesprint.com.br</p>
+                    <p class="text-sm text-slate-600">🌐 codesprint.com.br</p>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-sm text-slate-500 italic">"Não é sobre ter o melhor sistema. É sobre parar de perder R$ 10.000 por mês."</p>
+                <p class="text-xs text-slate-400 mt-4">CodeSprint © 2026 — Tecnologia que resolve problemas reais.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Print Button (Hidden on Print) -->
+    <div class="text-center mb-8 no-print">
+        <button onclick="window.print()"
+            class="gradient-brand text-white px-6 py-3 rounded-lg font-bold hover:scale-105 transition shadow-lg">
+            🖨️ Exportar para PDF
+        </button>
+    </div>
+
+</body>
+
+</html>
