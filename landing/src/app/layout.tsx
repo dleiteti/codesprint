@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://codesprint.com.br"),
-  title: "CodeSprint | Sites, Apps e Sistemas Personalizados",
-  description: "Transforme suas ideias em realidade digital mais rápido do que você imagina. Desenvolvemos sites, aplicativos e sistemas personalizados em tempo recorde.",
-  keywords: ["desenvolvimento web", "criação de sites", "aplicativos", "sistemas personalizados", "software", "startup", "tecnologia", "landing page"],
+  title: "CodeSprint | Software Acessível para Pequenas Empresas",
+  description: "Sistemas, sites e automações sob medida para micro e pequenas empresas — por uma fração do custo e com entrega em até 30 dias. Mais rápido e mais barato que agências tradicionais.",
+  keywords: ["software acessível", "sistema para pequena empresa", "desenvolvimento web barato", "ERP PME", "digitalização de negócios", "landing page", "automação", "site profissional"],
   authors: [{ name: "CodeSprint" }],
   creator: "CodeSprint",
   publisher: "CodeSprint",
@@ -26,21 +26,21 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: "https://codesprint.com.br",
     siteName: "CodeSprint",
-    title: "CodeSprint | Sites, Apps e Sistemas Personalizados",
-    description: "Transforme suas ideias em realidade digital mais rápido do que você imagina. Desenvolvemos sites, aplicativos e sistemas personalizados.",
+    title: "CodeSprint | Software Acessível para Pequenas Empresas",
+    description: "Sistemas, sites e automações sob medida para micro e pequenas empresas — por uma fração do custo e com entrega em até 30 dias.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CodeSprint - Desenvolvimento de Software",
+        alt: "CodeSprint - Software Acessível para PMEs",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CodeSprint | Sites, Apps e Sistemas Personalizados",
-    description: "Transforme suas ideias em realidade digital mais rápido do que você imagina.",
+    title: "CodeSprint | Software Acessível para Pequenas Empresas",
+    description: "Sistemas sob medida para PMEs — mais rápido e mais barato que agências tradicionais.",
     images: ["/og-image.png"],
   },
   icons: {
