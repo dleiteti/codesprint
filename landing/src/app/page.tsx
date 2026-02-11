@@ -39,8 +39,10 @@ import Link from 'next/link';
    ============================================== */
 function useTheme() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Check localStorage first, then system preference
     const stored = localStorage.getItem('codesprint-theme');
     if (stored === 'dark' || stored === 'light') {
@@ -61,7 +63,7 @@ function useTheme() {
     document.documentElement.classList.toggle('light', next === 'light');
   };
 
-  return { theme, toggleTheme };
+  return { theme, toggleTheme, mounted };
 }
 
 /* ==============================================
@@ -242,7 +244,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
    PAGE
    ============================================== */
 export default function Home() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
 
   return (
     <main className="min-h-screen bg-[var(--background)] transition-colors duration-300">
@@ -288,7 +290,13 @@ export default function Home() {
               className="theme-toggle"
               aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
             >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {!mounted ? (
+                <div className="w-5 h-5" />
+              ) : theme === 'dark' ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </button>
           </div>
         </nav>
