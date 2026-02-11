@@ -11,11 +11,13 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-VPS_HOST="${VPS_HOST:-estoquefacil.net}"
+VPS_HOST="${VPS_HOST:-72.60.146.84}"
 VPS_USER="${VPS_USER:-root}"
 VPS_PORT="${VPS_PORT:-65002}"
 VPS_PATH="${VPS_PATH:-/var/www/codesprint}"
-SSH_KEY="$(dirname "$0")/vps_key"
+# Usar a chave SSH do EstoqueFacil (mesma VPS, mesma chave autorizada)
+SSH_KEY="${SSH_KEY:-/home/danilo/.gemini/antigravity/scratch/estoquefacil10/vps_key}"
+SSH_CMD="ssh -i ${SSH_KEY} -p ${VPS_PORT} -o StrictHostKeyChecking=no -o ConnectTimeout=10"
 
 echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║  🚀 CodeSprint Landing Page Deploy   ║${NC}"
@@ -55,7 +57,7 @@ fi
 
 # Step 3: Test SSH connection
 echo -e "${BLUE}🔐 Testing SSH connection...${NC}"
-if ! ssh -i "${SSH_KEY}" -p "${VPS_PORT}" -o ConnectTimeout=5 "${VPS_USER}@${VPS_HOST}" "echo connected" &>/dev/null; then
+if ! ${SSH_CMD} "${VPS_USER}@${VPS_HOST}" "echo connected" &>/dev/null; then
     echo -e "${RED}❌ Cannot connect to VPS${NC}"
     exit 1
 fi
@@ -63,19 +65,18 @@ echo -e "${GREEN}✅ SSH connection successful${NC}"
 
 # Step 4: Create remote directory if not exists
 echo -e "${BLUE}📁 Preparing remote directory...${NC}"
-ssh -i "${SSH_KEY}" -p "${VPS_PORT}" "${VPS_USER}@${VPS_HOST}" \
-    "mkdir -p ${VPS_PATH} && rm -rf ${VPS_PATH}/*"
+${SSH_CMD} "${VPS_USER}@${VPS_HOST}" "mkdir -p ${VPS_PATH} && rm -rf ${VPS_PATH}/*"
 
 # Step 5: Deploy via rsync
 echo -e "${BLUE}📤 Deploying to ${VPS_HOST}...${NC}"
 rsync -avz --delete --progress \
-    -e "ssh -i ${SSH_KEY} -p ${VPS_PORT}" \
+    -e "ssh -i ${SSH_KEY} -p ${VPS_PORT} -o StrictHostKeyChecking=no" \
     ${BUILD_DIR}/ \
     ${VPS_USER}@${VPS_HOST}:${VPS_PATH}/
 
 # Step 6: Fix permissions
 echo -e "${BLUE}🔧 Fixing permissions...${NC}"
-ssh -i "${SSH_KEY}" -p "${VPS_PORT}" "${VPS_USER}@${VPS_HOST}" \
+${SSH_CMD} "${VPS_USER}@${VPS_HOST}" \
     "find ${VPS_PATH} -type d -exec chmod 755 {} \; && find ${VPS_PATH} -type f -exec chmod 644 {} \;"
 
 # Step 7: Health check
