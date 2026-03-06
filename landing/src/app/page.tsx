@@ -29,7 +29,8 @@ import {
   Headphones,
   Star,
   Moon,
-  Sun
+  Sun,
+  ExternalLink
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -488,8 +489,66 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ============ PORTÓFLIO ============ */}
+      <section className="px-6 py-16" id="cases">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="badge badge-success mb-4 mx-auto w-fit">
+              <Star className="w-4 h-4" />
+              Projetos reais
+            </div>
+            <h2 className="heading-section mb-4">Feito pela CodeSprint</h2>
+            <p className="body-lg max-w-xl mx-auto">Conheça alguns dos sites e sistemas que já entregamos.</p>
+          </div>
 
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Seu Recurso */}
+            <Link href="https://seurecurso.com.br" target="_blank" className="pro-card p-6 group hover:border-[var(--primary)] transition-all">
+              <div className="flex items-center justify-between mb-4">
+                <span className="badge badge-primary text-xs">SaaS</span>
+                <ExternalLink className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-[var(--foreground)]">Seu Recurso</h3>
+              <p className="body-sm mb-4">Plataforma com IA que analisa multas de trânsito e gera defesas técnicas em minutos. Upload, análise e resultado automático.</p>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">IA</span>
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Landing Page</span>
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Next.js</span>
+              </div>
+            </Link>
 
+            {/* Rede Conecta */}
+            <Link href="https://redeconecta.ia.br" target="_blank" className="pro-card p-6 group hover:border-[var(--primary)] transition-all">
+              <div className="flex items-center justify-between mb-4">
+                <span className="badge badge-primary text-xs">Marketing Local</span>
+                <ExternalLink className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-[var(--foreground)]">Rede Conecta</h3>
+              <p className="body-sm mb-4">Plataforma de totens digitais para publicidade local. Anúncios posicionados em estabelecimentos com alto fluxo de pessoas.</p>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Landing Page</span>
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Publicidade</span>
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Design</span>
+              </div>
+            </Link>
+
+            {/* Estoque Fácil */}
+            <Link href="https://estoquefacil.net" target="_blank" className="pro-card p-6 group hover:border-[var(--primary)] transition-all">
+              <div className="flex items-center justify-between mb-4">
+                <span className="badge badge-primary text-xs">SaaS / ERP</span>
+                <ExternalLink className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+              </div>
+              <h3 className="text-xl font-bold mb-2 text-[var(--foreground)]">Estoque Fácil</h3>
+              <p className="body-sm mb-4">Sistema completo para lojistas de roupas: PDV, controle de estoque, fiado e relatórios financeiros. Funciona 100% offline.</p>
+              <div className="flex flex-wrap gap-2">
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">ERP</span>
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Offline-first</span>
+                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Landing Page</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
       {/* ============ PROCESSO ============ */}
       <section className="px-6 py-16 section-alt" id="processo">
         <div className="max-w-6xl mx-auto">

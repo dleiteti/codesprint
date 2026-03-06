@@ -33,8 +33,7 @@ Write-Host "[3/5] Enviando arquivos via SCP..." -ForegroundColor Yellow
 scp -r -i $KeyPath -P $VpsPort "${BuildDir}\*" "${VpsUser}@${VpsHost}:${DestDir}/"
 
 Write-Host "[4/5] Ajustando permissoes..." -ForegroundColor Yellow
-ssh -i $KeyPath -p $VpsPort "${VpsUser}@${VpsHost}" "find $DestDir -type d -exec chmod 755 {} ;"
-ssh -i $KeyPath -p $VpsPort "${VpsUser}@${VpsHost}" "find $DestDir -type f -exec chmod 644 {} ;"
+ssh -i $KeyPath -p $VpsPort "${VpsUser}@${VpsHost}" "chmod -R 755 $DestDir"
 
 Write-Host "[5/5] Reload Nginx..." -ForegroundColor Yellow
 ssh -i $KeyPath -p $VpsPort "${VpsUser}@${VpsHost}" "nginx -t"
