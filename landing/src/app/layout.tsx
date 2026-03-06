@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://codesprint.com.br"),
-  title: "CodeSprint | Software Acessível para Pequenas Empresas",
-  description: "Sistemas, sites e automações sob medida para micro e pequenas empresas — por uma fração do custo e com entrega em até 30 dias. Mais rápido e mais barato que agências tradicionais.",
-  keywords: ["software acessível", "sistema para pequena empresa", "desenvolvimento web barato", "ERP PME", "digitalização de negócios", "landing page", "automação", "site profissional"],
+  title: "CodeSprint | Sites e Landing Pages em 72h — Feitas Pra Vender",
+  description: "Criamos sites e landing pages de alta conversão em até 72 horas. Design profissional, entrega rápida, a partir de R$997.",
+  keywords: ["landing page profissional", "criação de site rápido", "site para empresa", "landing page 72h", "site barato", "landing page de alta conversão", "site profissional", "criação de landing page", "site para pequena empresa"],
   authors: [{ name: "CodeSprint" }],
   creator: "CodeSprint",
   publisher: "CodeSprint",
@@ -26,21 +26,21 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: "https://codesprint.com.br",
     siteName: "CodeSprint",
-    title: "CodeSprint | Software Acessível para Pequenas Empresas",
-    description: "Sistemas, sites e automações sob medida para micro e pequenas empresas — por uma fração do custo e com entrega em até 30 dias.",
+    title: "CodeSprint | Sites e Landing Pages em 72h — Feitas Pra Vender",
+    description: "Criamos sites e landing pages de alta conversão em até 72 horas. Design profissional, entrega rápida, a partir de R$997.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CodeSprint - Software Acessível para PMEs",
+        alt: "CodeSprint - Sites e Landing Pages em 72h",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CodeSprint | Software Acessível para Pequenas Empresas",
-    description: "Sistemas sob medida para PMEs — mais rápido e mais barato que agências tradicionais.",
+    title: "CodeSprint | Sites e Landing Pages em 72h — Feitas Pra Vender",
+    description: "Sites e landing pages de alta conversão em até 72 horas — design profissional, a partir de R$997.",
     images: ["/og-image.png"],
   },
   icons: {
@@ -112,7 +112,7 @@ export default function RootLayout({
                     // Identify which card based on message content
                     if (href.includes('LP%20Express') || href.includes('LP Express')) {
                       cardType = 'Express';
-                      value = 797.00;
+                      value = 997.00;
                     } else if (href.includes('Site%20Business') || href.includes('Business')) {
                       cardType = 'Business';
                       value = 1497.00;

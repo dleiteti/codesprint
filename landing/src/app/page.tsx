@@ -72,24 +72,24 @@ function useTheme() {
 
 const painPoints = [
   {
-    icon: NotebookPen,
-    title: 'Caderno e caneta',
-    description: 'Anotando pedidos, estoque e fiado em papel. Uma chuva e você perde tudo.',
+    icon: Smartphone,
+    title: 'Sem presença online',
+    description: 'Seus concorrentes estão no Google e você não. Cada dia sem site é cliente indo pra outro.',
   },
   {
     icon: Sheet,
-    title: 'Planilhas infinitas',
-    description: 'Excel com 47 abas que só você entende. Trava, some dados e ninguém confia.',
-  },
-  {
-    icon: Smartphone,
-    title: 'WhatsApp caótico',
-    description: 'Pedidos misturados com fotos de família. Clientes reclamando que "mandou mensagem".',
+    title: 'Site amador ou desatualizado',
+    description: 'Site feio. Não converte, não aparece no Google, e espanta seu cliente.',
   },
   {
     icon: HelpCircle,
-    title: 'Zero controle',
-    description: 'Não sabe quanto vendeu, quanto tem em estoque, nem quanto cobra o fiado.',
+    title: 'Agência cobra uma fortuna',
+    description: 'Orçamento de R$5.000+ e prazo de semanas pra uma landing page simples? Sério?',
+  },
+  {
+    icon: NotebookPen,
+    title: 'Não sabe por onde começar',
+    description: 'Domínio, hospedagem, design, SEO... Parece outro idioma. Você só quer vender mais.',
   },
 ];
 
@@ -98,39 +98,17 @@ const services = [
     icon: Workflow,
     title: 'Sites & Landing Pages',
     description: 'Páginas de alta conversão que transformam visitantes em clientes.',
-    features: ['Design premium', 'Otimizado para Google', 'Carrega em 2 segundos'],
-    price: 'A partir de R$ 797',
-  },
-  {
-    icon: BarChart3,
-    title: 'Dashboards & Relatórios',
-    description: 'Visualize seus dados em tempo real e tome decisões com confiança.',
-    features: ['KPIs do seu negócio', 'Alertas automáticos', 'Acesso pelo celular'],
-    price: 'A partir de R$ 1.497',
-  },
-  {
-    icon: Package,
-    title: 'Sistemas & ERPs',
-    description: 'Gestão integrada de estoque, vendas e financeiro sob medida.',
-    features: ['Controle de estoque', 'PDV móvel', 'Relatórios financeiros'],
-    price: 'Sob consulta',
-  },
-  {
-    icon: MessageCircle,
-    title: 'Automações & Integrações',
-    description: 'Automatize o que é repetitivo e conecte seus sistemas.',
-    features: ['WhatsApp Business', 'Fluxos automatizados', 'Sem retrabalho'],
-    price: 'A partir de R$ 997',
+    features: ['Entregue em até 72 horas', 'Design premium e responsivo', 'Otimizado para Google (SEO)', 'Hospedagem e domínio incluso', 'Suporte pós-entrega 30 dias'],
+    price: '⚡ A partir de R$ 997',
   },
 ];
 
 const comparisonRows = [
-  { feature: 'Prazo de entrega', us: 'Até 30 dias', them: '3-6 meses' },
-  { feature: 'Investimento', us: 'A partir de R$ 797', them: 'R$ 15.000+' },
+  { feature: 'Prazo de entrega', us: 'Até 72h', them: '3 a 4 semanas' },
+  { feature: 'Investimento', us: 'A partir de R$ 997', them: 'R$ 4.000+' },
   { feature: 'Comunicação', us: 'WhatsApp direto', them: 'E-mail com 48h de resposta' },
-  { feature: 'Metodologia', us: 'Entregas semanais', them: 'Tudo no final' },
   { feature: 'Suporte pós-entrega', us: 'Incluso 30 dias', them: 'Cobrado à parte' },
-  { feature: 'Feedback e ajustes', us: 'Ilimitados no sprint', them: '2 revisões' },
+  { feature: 'Feedback e ajustes', us: 'Ilimitados', them: '2 revisões' },
 ];
 
 const caseStudies = [
@@ -139,8 +117,8 @@ const caseStudies = [
     segment: 'Moda Masculina Premium',
     result: '+R$ 53.200',
     metric: 'ROI projetado no Ano 1',
-    description: 'Sistema de captação de leads entregue em ciclos ágeis com validação semanal.',
-    timeline: '20 dias',
+    description: 'Landing page de captação de leads de alta conversão — entregue em tempo recorde com validação semanal.',
+    timeline: '72 horas',
     testimonial: 'A CodeSprint transformou completamente como a gente capta clientes. Tudo é rápido e funciona.',
     author: 'Proprietário',
   },
@@ -149,7 +127,7 @@ const caseStudies = [
     segment: 'SaaS Fashion ERP',
     result: '100%',
     metric: 'Funciona offline',
-    description: 'ERP completo com PDV, estoque e financeiro — desenvolvido com entregas semanais.',
+    description: 'Sistema completo com landing page, PDV e gestão — desenvolvido com entregas semanais.',
     timeline: 'Em produção',
     testimonial: 'Finalmente um sistema que funciona mesmo sem internet. Meus vendedores adoraram.',
     author: 'CEO',
@@ -160,41 +138,41 @@ const processSteps = [
   {
     step: 1,
     icon: MessageCircle,
-    title: 'Conversa',
-    description: 'Você nos conta seu problema pelo WhatsApp. Sem burocracia.',
-    duration: '1 dia',
+    title: 'Briefing',
+    description: 'Você nos conta o que precisa pelo WhatsApp. Entendemos seu negócio e objetivos.',
+    duration: '30 min',
   },
   {
     step: 2,
     icon: Target,
-    title: 'Proposta',
-    description: 'Apresentamos a solução com prazo, preço e ROI projetado.',
-    duration: '2-3 dias',
+    title: 'Proposta & Wireframe',
+    description: 'Em poucas horas você recebe a proposta com preço, prazo e o esboço do site.',
+    duration: 'Mesmo dia',
   },
   {
     step: 3,
     icon: Rocket,
-    title: 'Desenvolvimento',
-    description: 'Construímos com entregas semanais. Você acompanha tudo.',
-    duration: '2-4 semanas',
+    title: 'Design & Desenvolvimento',
+    description: 'Criamos seu site com design profissional. Você acompanha e valida em tempo real.',
+    duration: '24–48h',
   },
   {
     step: 4,
     icon: CalendarCheck,
-    title: 'Entrega',
-    description: 'Deploy, treinamento e 30 dias de suporte incluso.',
-    duration: 'Ongoing',
+    title: 'Site no Ar',
+    description: 'Deploy, domínio configurado e 30 dias de suporte incluso. Pronto pra vender.',
+    duration: '72h total',
   },
 ];
 
 const faqs = [
   {
     q: 'E se eu não gostar do resultado?',
-    a: 'Impossível — porque você participa de cada etapa. A cada semana, validamos o que foi feito e ajustamos. Você nunca recebe algo "pronto" sem ter aprovado antes.',
+    a: 'Impossível — porque você participa de cada etapa. Contato frequente e em tempo real, validamos o que foi feito e ajustamos. Você nunca recebe algo "pronto" sem ter aprovado antes.',
   },
   {
     q: 'Quanto custa um projeto?',
-    a: 'Landing pages a partir de R$ 797, sistemas completos sob consulta. Sempre com proposta detalhada antes de começar — sem surpresas.',
+    a: 'Landing pages a partir de R$ 997, sites completos sob consulta. Geralmente os orçamentos ficam entre R$997 e R$2500. Sempre com proposta detalhada antes de começar — sem surpresas.',
   },
   {
     q: 'Preciso entender de tecnologia?',
@@ -202,7 +180,7 @@ const faqs = [
   },
   {
     q: 'Quanto tempo demora?',
-    a: 'Landing pages em 7-14 dias. Sistemas em 2-4 semanas. Sempre com entregas parciais toda semana para você acompanhar.',
+    a: 'Landing pages e Sites completos em até 72 horas.',
   },
   {
     q: 'Vocês fazem manutenção depois?',
@@ -210,7 +188,7 @@ const faqs = [
   },
   {
     q: 'Por que são mais baratos que agências tradicionais?',
-    a: 'Usamos IA e automação em boa parte do processo, o que nos permite entregar mais rápido e com menos custo. A economia vai direto pro seu bolso.',
+    a: 'Usamos processo de desenvolvimento super ágil, o que nos permite entregar mais rápido e com menos custo. A economia vai direto pro seu bolso.',
   },
 ];
 
@@ -307,31 +285,28 @@ export default function Home() {
         <div className="max-w-6xl mx-auto text-center">
           <div className="badge badge-cta mb-6 mx-auto w-fit">
             <Zap className="w-4 h-4" />
-            Mais rápido e mais barato que agências tradicionais
+            ⚡ Sites prontos em 72 horas
           </div>
 
           <h1 className="heading-hero mb-6">
-            Seu negócio merece mais
-            <br />
-            que{' '}
-            <span className="text-gradient">planilhas e cadernos</span>
+            Seu site pronto em{' '}
+            <span className="text-gradient">72 horas</span>
           </h1>
 
           <p className="body-lg max-w-2xl mx-auto mb-10">
-            Criamos sistemas, sites e automações sob medida para micro e pequenas
-            empresas —{' '}
+            Landing pages e sites de alta conversão para sua empresa —{' '}
             <strong className="text-[var(--foreground)]">
-              por uma fração do custo
-            </strong>{' '}
-            e com entrega em até 30 dias.
+              design profissional, entrega rápida
+            </strong>
+            , a partir de R$997.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20digitalizar%20meu%20neg%C3%B3cio.%20Podem%20me%20ajudar?"
+              href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20meu%20site%20em%2072h.%20Podem%20me%20ajudar?"
               className="btn-cta px-8 py-4 text-lg animate-pulse-glow"
             >
-              Quero Digitalizar Meu Negócio
+              Quero Meu Site em 72h
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
@@ -350,8 +325,8 @@ export default function Home() {
               <div className="metric-label">Projetos entregues</div>
             </div>
             <div className="metric-card">
-              <div className="metric-value text-gradient">30</div>
-              <div className="metric-label">Dias para entrega</div>
+              <div className="metric-value text-gradient">72h</div>
+              <div className="metric-label">Prazo para entrega</div>
             </div>
             <div className="metric-card">
               <div className="metric-value text-gradient">96%</div>
@@ -385,7 +360,7 @@ export default function Home() {
               Se você se identifica, a gente resolve
             </h2>
             <p className="body-lg max-w-xl mx-auto">
-              Esses problemas são mais comuns do que você imagina — e todos têm solução.
+              Esses problemas são mais comuns do que você imagina. E todos têm solução.
             </p>
           </div>
 
@@ -414,30 +389,35 @@ export default function Home() {
             <h2 className="heading-section mb-4">
               O que construímos pra você
             </h2>
-            <p className="body-lg max-w-xl mx-auto">
-              Tudo sob medida, sem template genérico. Seu sistema, do seu jeito.
-            </p>
+            <p className="body-lg max-w-xl mx-auto">Do briefing ao site no ar — em até 72 horas.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="max-w-xl mx-auto">
             {services.map((service, i) => (
-              <div key={i} className="pro-card p-8 cursor-pointer">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="icon-container">
-                    <service.icon className="w-6 h-6 text-white" />
+              <div key={i} className="pro-card p-10 cursor-pointer border-2 border-[var(--cta)] shadow-lg" style={{ boxShadow: '0 8px 40px rgba(16, 185, 129, 0.15)' }}>
+                <div className="flex items-start justify-between mb-6">
+                  <div className="icon-container" style={{ padding: '18px' }}>
+                    <service.icon className="w-8 h-8 text-white" />
                   </div>
-                  <span className="badge badge-success text-xs">{service.price}</span>
+                  <span className="badge badge-success text-sm font-bold">{service.price}</span>
                 </div>
-                <h3 className="heading-card mb-2">{service.title}</h3>
-                <p className="body-sm mb-4">{service.description}</p>
-                <ul className="space-y-2">
+                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
+                <p className="body-lg mb-6">{service.description}</p>
+                <ul className="space-y-3">
                   {service.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-[var(--foreground)]">
-                      <CheckCircle2 className="w-4 h-4 text-[var(--success)] shrink-0" />
+                    <li key={j} className="flex items-center gap-3 text-base text-[var(--foreground)]">
+                      <CheckCircle2 className="w-5 h-5 text-[var(--success)] shrink-0" />
                       {f}
                     </li>
                   ))}
                 </ul>
+                <Link
+                  href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20meu%20site%20em%2072h.%20Podem%20me%20ajudar?"
+                  className="btn-cta px-8 py-4 text-lg mt-8 w-full justify-center animate-pulse-glow"
+                >
+                  Quero Meu Site em 72h
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </div>
             ))}
           </div>
@@ -508,66 +488,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ CASES ============ */}
-      <section className="px-6 py-16" id="cases">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="badge badge-success mb-4 mx-auto w-fit">
-              <Star className="w-4 h-4" />
-              Resultados reais
-            </div>
-            <h2 className="heading-section mb-4">
-              Quem confia na CodeSprint
-            </h2>
-            <p className="body-lg max-w-xl mx-auto">
-              Transformações reais de negócios como o seu.
-            </p>
-          </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {caseStudies.map((cs, i) => (
-              <div key={i} className="pro-card p-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] opacity-[0.04] rounded-bl-full" />
-
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="badge badge-success">
-                    <Zap className="w-3 h-3" />
-                    Case Ativo
-                  </div>
-                  <span className="text-sm text-[var(--text-muted)]">{cs.segment}</span>
-                </div>
-
-                <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
-                  {cs.client}
-                </h3>
-
-                <p className="body-sm mb-5">{cs.description}</p>
-
-                {/* Testimonial */}
-                <blockquote className="border-l-3 border-[var(--primary)] pl-4 mb-6">
-                  <p className="italic text-[var(--text-muted)] text-sm leading-relaxed">
-                    &ldquo;{cs.testimonial}&rdquo;
-                  </p>
-                  <footer className="mt-2 text-xs font-semibold text-[var(--foreground)]">
-                    — {cs.author}, {cs.client}
-                  </footer>
-                </blockquote>
-
-                <div className="flex items-end justify-between pt-4 border-t border-[var(--card-border)]">
-                  <div>
-                    <div className="text-3xl font-extrabold text-[var(--primary)]">{cs.result}</div>
-                    <div className="text-sm text-[var(--text-muted)]">{cs.metric}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm text-[var(--text-muted)]">Prazo</div>
-                    <div className="font-semibold text-[var(--foreground)]">{cs.timeline}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ============ PROCESSO ============ */}
       <section className="px-6 py-16 section-alt" id="processo">
@@ -576,9 +497,7 @@ export default function Home() {
             <h2 className="heading-section mb-4">
               Simples assim
             </h2>
-            <p className="body-lg max-w-xl mx-auto">
-              Do primeiro contato ao sistema rodando em 4 passos.
-            </p>
+            <p className="body-lg max-w-xl mx-auto">Do briefing ao site no ar em até 72 horas. Veja como funciona.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -626,43 +545,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ CTA FINAL ============ */}
+      {/* ============ CTA PÓS-FAQ ============ */}
       <section className="px-6 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="pro-card p-10 md:p-16 relative overflow-hidden">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="pro-card p-10 md:p-14 relative overflow-hidden border-2 border-[var(--cta)]" style={{ boxShadow: '0 8px 40px rgba(16, 185, 129, 0.15)' }}>
             <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] opacity-[0.04]" />
 
             <div className="badge badge-cta mb-6 mx-auto w-fit relative z-10">
-              <Users className="w-4 h-4" />
-              Vagas limitadas
+              <Zap className="w-4 h-4" />
+              Entrega em 72 horas
             </div>
 
-            <h2 className="heading-section mb-4 relative z-10">
-              Atendemos apenas{' '}
-              <span className="text-gradient-cta">4 projetos</span> por mês
-            </h2>
+            <h2 className="heading-section mb-4 relative z-10">Seu site pronto em{' '}<span className="text-gradient">72 horas</span></h2>
 
             <p className="body-lg mb-8 max-w-xl mx-auto relative z-10">
-              Para garantir qualidade e atenção total, limitamos nossos projetos.
-              Converse com a gente e garanta sua vaga.
+              Landing pages e sites de alta conversão, a partir de R$997. Design profissional, SEO e suporte incluso.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
               <Link
-                href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20garantir%20minha%20vaga%20para%20um%20projeto."
+                href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20meu%20site%20em%2072h.%20Podem%20me%20ajudar?"
                 className="btn-cta px-10 py-5 text-lg animate-pulse-glow"
               >
                 <MessageCircle className="w-6 h-6" />
-                Garantir Minha Vaga
+                Quero Meu Site em 72h
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
 
             <div className="flex items-center justify-center gap-2 mt-6 relative z-10">
               <Headphones className="w-4 h-4 text-[var(--text-muted)]" />
-              <p className="text-sm text-[var(--text-muted)]">
-                Respondemos em até 2 horas úteis
-              </p>
+              <p className="text-sm text-[var(--text-muted)]">Respondemos em até 2 horas úteis</p>
             </div>
           </div>
         </div>
@@ -681,9 +594,8 @@ export default function Home() {
                 className="h-8 w-auto mb-4"
               />
               <p className="body-sm max-w-sm">
-                Transformamos negócios com tecnologia acessível.
-                Sistemas sob medida, entrega rápida e preço justo para micro e
-                pequenas empresas.
+                Sites e landing pages de alta conversão, entregues em até 72 horas.
+                Design profissional, SEO e suporte incluso. A partir de R$997.
               </p>
             </div>
 
@@ -693,9 +605,6 @@ export default function Home() {
               </h4>
               <ul className="space-y-2.5 text-sm text-[var(--text-muted)]">
                 <li className="hover:text-[var(--primary)] transition-colors cursor-pointer">Sites & Landing Pages</li>
-                <li className="hover:text-[var(--primary)] transition-colors cursor-pointer">Dashboards & Relatórios</li>
-                <li className="hover:text-[var(--primary)] transition-colors cursor-pointer">Sistemas & ERPs</li>
-                <li className="hover:text-[var(--primary)] transition-colors cursor-pointer">Automações & Integrações</li>
               </ul>
             </div>
 
