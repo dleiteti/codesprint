@@ -258,7 +258,12 @@ def get_or_create_session(session_id):
     with sessions_lock:
         if session_id not in sessions:
             sessions[session_id] = {
-                "history": [],
+                "history": [
+                    {
+                        "role": "model",
+                        "parts": [{"text": "Oi! 👋 Tudo bem? Sou a Sofia, da CodeSprint. Posso te ajudar com alguma dúvida sobre a criação do seu site profissional?"}]
+                    }
+                ],
                 "leadData": {
                     "name": None,
                     "whatsapp": None,
