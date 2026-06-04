@@ -153,7 +153,8 @@ const TELEGRAM_CHAT_ID = '8453400539';
 
 const sendTelegramNotification = (message: string) => {
   try {
-    const text = encodeURIComponent(message);
+    const formattedMessage = `[Code Sprint] ${message}`;
+    const text = encodeURIComponent(formattedMessage);
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=HTML`;
     
     // Utilize tracking pixel technique to entirely bypass CORS

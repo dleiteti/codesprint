@@ -422,7 +422,7 @@ class CodeSprintHandler(BaseHTTPRequestHandler):
             mark_notified(session_id)
             now = datetime.now(SP_TZ).strftime("%H:%M:%S")
             tg_msg = (
-                f"<b>[CodeSprint]</b> 🤖💬 <b>LEAD QUALIFICADO VIA CHAT</b>\n"
+                f"<b>[Code Sprint]</b> 🤖💬 <b>LEAD QUALIFICADO VIA CHAT</b>\n"
                 f"👤 Nome: <b>{lead_data['name']}</b>\n"
                 f"📱 WhatsApp: <b>{lead_data['whatsapp']}</b>\n"
                 f"🏢 Segmento: <b>{lead_data['segment']}</b>\n"

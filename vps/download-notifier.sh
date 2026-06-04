@@ -8,7 +8,7 @@ LOG_FILE="/var/log/nginx/access.log"
 TRACK_PATTERN="7-codigos-proibidos.pdf"
 
 send_telegram() {
-    local message="$1"
+    local message="<b>[Code Sprint]</b> $1"
     curl -s -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
         -d "chat_id=${CHAT_ID}" \
         -d "text=${message}" \
