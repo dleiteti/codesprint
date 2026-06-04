@@ -1,0 +1,15 @@
+[Unit]
+Description=PDF Download Telegram Notifier
+After=nginx.service
+Wants=nginx.service
+
+[Service]
+Type=simple
+ExecStart=/opt/codesprint/download-notifier.sh
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

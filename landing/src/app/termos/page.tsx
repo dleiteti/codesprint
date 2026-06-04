@@ -134,7 +134,7 @@ export default function Termos() {
                         <h2 className="text-xl font-semibold text-white mb-4">11. Contato</h2>
                         <p>
                             Para dúvidas sobre estes Termos de Uso, entre em contato conosco através do
-                            WhatsApp: <a href="https://wa.me/5511960552522" className="text-[#1B8A4A] hover:underline">(11) 96055-2522</a>
+                            WhatsApp: <a href="https://wa.me/5521981477503" className="text-[#1B8A4A] hover:underline">(21) 98147-7503</a>
                         </p>
                     </section>
                 </div>

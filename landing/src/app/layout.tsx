@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://codesprint.com.br"),
-  title: "CodeSprint | Sites e Landing Pages em 72h — Feitas Pra Vender",
-  description: "Criamos sites e landing pages de alta conversão em até 72 horas. Design profissional, entrega rápida, a partir de R$997.",
-  keywords: ["landing page profissional", "criação de site rápido", "site para empresa", "landing page 72h", "site barato", "landing page de alta conversão", "site profissional", "criação de landing page", "site para pequena empresa"],
+  title: "CodeSprint | Sites e Landing Pages em 48h — Feitas Pra Vender",
+  description: "Criamos sites e landing pages de alta conversão em até 48 horas. Design profissional, entrega rápida, a partir de R$497.",
+  keywords: ["landing page profissional", "criação de site rápido", "site para empresa", "landing page 48h", "site barato", "landing page de alta conversão", "site profissional", "criação de landing page", "site para pequena empresa"],
   authors: [{ name: "CodeSprint" }],
   creator: "CodeSprint",
   publisher: "CodeSprint",
@@ -26,21 +26,21 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: "https://codesprint.com.br",
     siteName: "CodeSprint",
-    title: "CodeSprint | Sites e Landing Pages em 72h — Feitas Pra Vender",
-    description: "Criamos sites e landing pages de alta conversão em até 72 horas. Design profissional, entrega rápida, a partir de R$997.",
+    title: "CodeSprint | Sites e Landing Pages em 48h — Feitas Pra Vender",
+    description: "Criamos sites e landing pages de alta conversão em até 48 horas. Design profissional, entrega rápida, a partir de R$497.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CodeSprint - Sites e Landing Pages em 72h",
+        alt: "CodeSprint - Sites e Landing Pages em 48h",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CodeSprint | Sites e Landing Pages em 72h — Feitas Pra Vender",
-    description: "Sites e landing pages de alta conversão em até 72 horas — design profissional, a partir de R$997.",
+    title: "CodeSprint | Sites e Landing Pages em 48h — Feitas Pra Vender",
+    description: "Sites e landing pages de alta conversão em 48h — design profissional, a partir de R$497.",
     images: ["/og-image.png"],
   },
   icons: {
@@ -58,6 +58,71 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
+        {/* Schema.org Structured Data (JSON-LD) for Google SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "LocalBusiness",
+                  "name": "CodeSprint Agency",
+                  "description": "Criamos sites e landing pages de alta conversão em até 48 horas. Design profissional, entrega rápida, a partir de R$497.",
+                  "url": "https://codesprint.com.br",
+                  "logo": "https://codesprint.com.br/logo.png",
+                  "image": "https://codesprint.com.br/og-image.png",
+                  "telephone": "+55-21-98147-7503",
+                  "email": "dleite.ti@gmail.com",
+                  "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "Rio de Janeiro",
+                    "addressRegion": "RJ",
+                    "addressCountry": "BR"
+                  },
+                  "priceRange": "R$497",
+                  "sameAs": [
+                    "https://www.instagram.com/codesprint2000"
+                  ]
+                },
+                {
+                  "@type": "Service",
+                  "name": "Criação de Landing Page Premium",
+                  "description": "Landing page profissional de alta conversão entregue em até 48 horas, com design exclusivo, hospedagem e domínio inclusos.",
+                  "provider": { "@type": "LocalBusiness", "name": "CodeSprint Agency" },
+                  "areaServed": { "@type": "Country", "name": "Brasil" },
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "497.00",
+                    "priceCurrency": "BRL",
+                    "description": "Investimento único, sem mensalidade"
+                  }
+                },
+                {
+                  "@type": "FAQPage",
+                  "mainEntity": [
+                    {
+                      "@type": "Question",
+                      "name": "E se eu não gostar do resultado?",
+                      "acceptedAnswer": { "@type": "Answer", "text": "Nós só finalizamos o projeto quando você estiver 100% satisfeito. Você nos acompanha durante o processo e garantimos que o visual atinja suas expectativas." }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Por que um valor tão acessível?",
+                      "acceptedAnswer": { "@type": "Answer", "text": "Especializamos nossa equipe na criação de Páginas de Alta Conversão. Nossos processos internos ágeis reduzem o tempo de produção, repassando essa economia direto para o seu bolso." }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Não entendo nada de tecnologia. Isso é para mim?",
+                      "acceptedAnswer": { "@type": "Answer", "text": "Completamente. Nós cuidamos de tudo: desde o design até colocar o site no ar (Domínio e Hospedagem). Você só precisa nos enviar sua logo e um contato de WhatsApp." }
+                    }
+                  ]
+                }
+              ]
+            })
+          }}
+        />
+
         {/* Google Analytics */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-C98EFJG709"></script>
         <script
@@ -96,35 +161,18 @@ export default function RootLayout({
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '1683199166335451');
+              fbq('init', '969809299178290');
               fbq('track', 'PageView');
               
-              // Enhanced tracking - identify which pricing card was clicked
+              // Enhanced tracking - Lead event on WhatsApp CTA click
               function setupConversionTracking() {
                 document.addEventListener('click', function(e) {
                   var link = e.target.closest('a[href*="wa.me"]');
                   if (link) {
-                    var href = link.getAttribute('href');
-                    var cardType = '';
-                    var value = 0;
-                    var currency = 'BRL';
-                    
-                    // Identify which card based on message content
-                    if (href.includes('LP%20Express') || href.includes('LP Express')) {
-                      cardType = 'Express';
-                      value = 997.00;
-                    } else if (href.includes('Site%20Business') || href.includes('Business')) {
-                      cardType = 'Business';
-                      value = 1497.00;
-                    } else if (href.includes('customizado') || href.includes('Custom')) {
-                      cardType = 'Custom';
-                      value = 3997.00;
-                    }
-                    
-                    // Single Lead event only
+                    // Single Lead event - Plano Unico R$497
                     fbq('track', 'Lead', {
-                      content_name: cardType,
-                      value: value,
+                      content_name: 'LP Premium R$497',
+                      value: 497.00,
                       currency: 'BRL'
                     });
                     
@@ -132,8 +180,8 @@ export default function RootLayout({
                     if (typeof gtag !== 'undefined') {
                       gtag('event', 'whatsapp_click', {
                         'event_category': 'engagement',
-                        'event_label': cardType || 'Generic WhatsApp',
-                        'value': value
+                        'event_label': 'LP Premium R$497',
+                        'value': 497
                       });
                     }
                   }
@@ -151,7 +199,7 @@ export default function RootLayout({
         />
         <noscript>
           <img height="1" width="1" style={{ display: 'none' }}
-            src="https://www.facebook.com/tr?id=1683199166335451&ev=PageView&noscript=1"
+            src="https://www.facebook.com/tr?id=969809299178290&ev=PageView&noscript=1"
           />
         </noscript>
       </head>

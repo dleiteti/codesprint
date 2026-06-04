@@ -358,7 +358,7 @@ export default function EstoqueFacilWaitlist() {
                                 value={formData.cidade}
                                 onChange={(e) => setFormData({ ...formData, cidade: e.target.value })}
                                 className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                                placeholder="São Paulo/SP"
+                                placeholder="Rio de Janeiro/RJ"
                             />
                         </div>
 

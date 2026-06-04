@@ -1,708 +1,517 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  BarChart3,
-  Shield,
-  MessageCircle,
+  Smartphone,
+  Sheet,
+  HelpCircle,
+  NotebookPen,
   CheckCircle2,
-  Workflow,
-  Zap,
-  TrendingUp,
-  Clock,
   Phone,
   Mail,
-  MapPin,
-  ChevronRight,
+  ExternalLink,
   ChevronDown,
-  Package,
-  X,
-  NotebookPen,
-  Sheet,
-  Smartphone,
-  HelpCircle,
-  Users,
-  Rocket,
-  Target,
-  CalendarCheck,
-  Headphones,
-  Star,
-  Moon,
-  Sun,
-  ExternalLink
+  Zap,
+  MessageCircle
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 /* ==============================================
-   THEME TOGGLE HOOK
+   DATA - REFINADO PARA COPY DE NEGÓCIOS
    ============================================== */
-function useTheme() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    // Check localStorage first, then system preference
-    const stored = localStorage.getItem('codesprint-theme');
-    if (stored === 'dark' || stored === 'light') {
-      setTheme(stored);
-      document.documentElement.classList.toggle('dark', stored === 'dark');
-      document.documentElement.classList.toggle('light', stored === 'light');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-      // Don't add class — let prefers-color-scheme handle it
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-    localStorage.setItem('codesprint-theme', next);
-    document.documentElement.classList.toggle('dark', next === 'dark');
-    document.documentElement.classList.toggle('light', next === 'light');
-  };
-
-  return { theme, toggleTheme, mounted };
-}
-
-/* ==============================================
-   DATA
-   ============================================== */
-
 const painPoints = [
   {
     icon: Smartphone,
-    title: 'Sem presença online',
-    description: 'Seus concorrentes estão no Google e você não. Cada dia sem site é cliente indo pra outro.',
+    title: 'INVISÍVEL NO GOOGLE',
+    description: 'Seus clientes estão procurando pelo seu serviço agora mesmo. Se você não tem um site profissional, eles estão comprando do seu concorrente.',
   },
   {
     icon: Sheet,
-    title: 'Site amador ou desatualizado',
-    description: 'Site feio. Não converte, não aparece no Google, e espanta seu cliente.',
+    title: 'PRIMEIRA IMPRESSÃO RUIM',
+    description: 'Você entrega um serviço de excelência e cobra caro por isso, mas se o seu site parece amador, o cliente foge antes mesmo de pedir orçamento.',
   },
   {
     icon: HelpCircle,
-    title: 'Agência cobra uma fortuna',
-    description: 'Orçamento de R$5.000+ e prazo de semanas pra uma landing page simples? Sério?',
+    title: 'AGÊNCIAS CARAS E LENTAS',
+    description: 'Orçamentos absurdos, meses de espera e reuniões desgastantes por um projeto que não gera vendas. Chega da burocracia tradicional.',
   },
   {
     icon: NotebookPen,
-    title: 'Não sabe por onde começar',
-    description: 'Domínio, hospedagem, design, SEO... Parece outro idioma. Você só quer vender mais.',
-  },
-];
-
-const services = [
-  {
-    icon: Workflow,
-    title: 'Sites & Landing Pages',
-    description: 'Páginas de alta conversão que transformam visitantes em clientes.',
-    features: ['Entregue em até 72 horas', 'Design premium e responsivo', 'Otimizado para Google (SEO)', 'Hospedagem e domínio incluso', 'Suporte pós-entrega 30 dias'],
-    price: '⚡ A partir de R$ 997',
+    title: 'ZERO DORES DE CABEÇA',
+    description: 'Hospedagem? Domínio? Configurações complexas? Deixe a tecnologia com a nossa equipe. Seu único trabalho é atender os novos clientes.',
   },
 ];
 
 const comparisonRows = [
-  { feature: 'Prazo de entrega', us: 'Até 72h', them: '3 a 4 semanas' },
-  { feature: 'Investimento', us: 'A partir de R$ 997', them: 'R$ 4.000+' },
-  { feature: 'Comunicação', us: 'WhatsApp direto', them: 'E-mail com 48h de resposta' },
-  { feature: 'Suporte pós-entrega', us: 'Incluso 30 dias', them: 'Cobrado à parte' },
-  { feature: 'Feedback e ajustes', us: 'Ilimitados', them: '2 revisões' },
+  { feature: 'VELOCIDADE DE ENTREGA', us: 'Até 48h', them: '30 a 60 Dias' },
+  { feature: 'INVESTIMENTO', us: 'R$ 497 (Único)', them: 'R$ 1.200 a R$ 2.500' },
+  { feature: 'ATENDIMENTO', us: 'WhatsApp Direto', them: 'E-mail (Lento)' },
+  { feature: 'MANUTENÇÃO E AJUSTES', us: '30 Dias Inclusos', them: 'Cobrados à parte' },
 ];
 
 const caseStudies = [
   {
-    client: 'Loja do Monstrão',
-    segment: 'Moda Masculina Premium',
-    result: '+R$ 53.200',
-    metric: 'ROI projetado no Ano 1',
-    description: 'Landing page de captação de leads de alta conversão — entregue em tempo recorde com validação semanal.',
-    timeline: '72 horas',
-    testimonial: 'A CodeSprint transformou completamente como a gente capta clientes. Tudo é rápido e funciona.',
-    author: 'Proprietário',
+    client: 'OBJETO SINCERO',
+    segment: 'Infoprodutos',
+    url: 'https://objetosincero.com',
+    result: '+120%',
+    metric: 'Conversões',
+    description: 'Construção da Landing Page focada em alta conversão para venda de guias e produtos digitais, estruturando a oferta de forma totalmente persuasiva.',
   },
   {
-    client: 'Estoque Fácil',
-    segment: 'SaaS Fashion ERP',
+    client: 'REDE CONECTA IA',
+    segment: 'Dashboard SaaS',
+    url: 'https://redeconecta.ia.br',
     result: '100%',
-    metric: 'Funciona offline',
-    description: 'Sistema completo com landing page, PDV e gestão — desenvolvido com entregas semanais.',
-    timeline: 'Em produção',
-    testimonial: 'Finalmente um sistema que funciona mesmo sem internet. Meus vendedores adoraram.',
-    author: 'CEO',
-  },
-];
-
-const processSteps = [
-  {
-    step: 1,
-    icon: MessageCircle,
-    title: 'Briefing',
-    description: 'Você nos conta o que precisa pelo WhatsApp. Entendemos seu negócio e objetivos.',
-    duration: '30 min',
+    metric: 'Responsivo',
+    description: 'Desenvolvimento estrutural da interface web do sistema, criando um ambiente limpo que comunica inovação (IA) e atrai usuários corporativos.',
   },
   {
-    step: 2,
-    icon: Target,
-    title: 'Proposta & Wireframe',
-    description: 'Em poucas horas você recebe a proposta com preço, prazo e o esboço do site.',
-    duration: 'Mesmo dia',
+    client: 'ESTOQUE FÁCIL',
+    segment: 'Sistema Gestão ERP',
+    url: 'https://estoquefacil.net',
+    result: '+200%',
+    metric: 'Leads B2B',
+    description: 'Criação do site comercial oficial do ERP, projetado especificamente para captação de lojistas, com fluxo intuitivo para fechamento de sistema.',
   },
   {
-    step: 3,
-    icon: Rocket,
-    title: 'Design & Desenvolvimento',
-    description: 'Criamos seu site com design profissional. Você acompanha e valida em tempo real.',
-    duration: '24–48h',
-  },
-  {
-    step: 4,
-    icon: CalendarCheck,
-    title: 'Site no Ar',
-    description: 'Deploy, domínio configurado e 30 dias de suporte incluso. Pronto pra vender.',
-    duration: '72h total',
+    client: 'SEU RECURSO',
+    segment: 'LegalTech (IA)',
+    url: 'https://www.seurecurso.com.br',
+    result: '+50%',
+    metric: 'Cadastros',
+    description: 'Construção integral da Landing Page para a plataforma jurídica. Otimizamos a experiência visual para transformar motoristas multados em novos clientes da IA.',
   },
 ];
 
 const faqs = [
   {
-    q: 'E se eu não gostar do resultado?',
-    a: 'Impossível — porque você participa de cada etapa. Contato frequente e em tempo real, validamos o que foi feito e ajustamos. Você nunca recebe algo "pronto" sem ter aprovado antes.',
+    q: 'E SE EU NÃO GOSTAR DO RESULTADO?',
+    a: 'Nós só finalizamos o projeto quando você estiver 100% satisfeito. Você nos acompanha durante o processo e garantimos que o visual atinja suas expectativas.',
   },
   {
-    q: 'Quanto custa um projeto?',
-    a: 'Landing pages a partir de R$ 997, sites completos sob consulta. Geralmente os orçamentos ficam entre R$997 e R$2500. Sempre com proposta detalhada antes de começar — sem surpresas.',
+    q: 'POR QUE UM VALOR TÃO ACESSÍVEL?',
+    a: 'Especializamos nossa equipe na criação de Páginas de Alta Conversão. Nossos processos internos ágeis reduzem o tempo de produção, repassando essa economia direto para o seu bolso.',
   },
   {
-    q: 'Preciso entender de tecnologia?',
-    a: 'Zero. Você só precisa saber explicar seu negócio. A gente cuida de toda a parte técnica e entrega tudo funcionando.',
+    q: 'NÃO ENTENDO NADA DE TECNOLOGIA. ISSO É PARA MIM?',
+    a: 'Completamente. Nós cuidamos de tudo: desde o design até colocar o site no ar (Domínio e Hospedagem). Você só precisa nos enviar sua logo e um contato de WhatsApp.',
   },
   {
-    q: 'Quanto tempo demora?',
-    a: 'Landing pages e Sites completos em até 72 horas.',
+    q: 'JÁ TENHO REDES SOCIAIS. PRECISO DE UM SITE?',
+    a: 'Com certeza. Redes sociais limitam seu alcance pelo algoritmo, estão cheias de distrações e você não é dono do perfil. Um site profissional é sua vitrine 24h, aparece no Google e transmite a credibilidade que as redes não conseguem.',
   },
   {
-    q: 'Vocês fazem manutenção depois?',
-    a: '30 dias de suporte gratuito após a entrega. Depois, oferecemos planos mensais acessíveis de manutenção e evolução.',
+    q: 'QUANTO TEMPO LEVA PARA TER RESULTADOS?',
+    a: 'O site fica no ar em até 48 horas. A partir daí, você já pode divulgar e receber contatos. Para resultados orgânicos no Google, normalmente entre 2 a 4 semanas. Com tráfego pago, os primeiros leads podem chegar no mesmo dia.',
   },
   {
-    q: 'Por que são mais baratos que agências tradicionais?',
-    a: 'Usamos processo de desenvolvimento super ágil, o que nos permite entregar mais rápido e com menos custo. A economia vai direto pro seu bolso.',
+    q: 'POSSO FAZER ALTERAÇÕES DEPOIS?',
+    a: 'Sim! O plano inclui 30 dias de suporte e ajustes gratuitos. Se precisar trocar uma foto, atualizar um texto ou ajustar cores — é só pedir pelo WhatsApp.',
+  },
+  {
+    q: 'PRECISO TER UMA LOGO PRONTA?',
+    a: 'Não necessariamente. Se você já tem, ótimo — usamos no projeto. Se não tem, podemos trabalhar apenas com o nome do seu negócio em tipografia profissional.',
   },
 ];
 
 /* ==============================================
-   FAQ COMPONENT
+   COMPONENTES PREMIUM (UI/UX PRO MAX)
    ============================================== */
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="faq-item">
-      <button
-        className="faq-trigger"
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
-      >
+      <button className="faq-trigger group" onClick={() => setOpen(!open)} aria-expanded={open}>
         {question}
         <ChevronDown
-          className={`w-5 h-5 text-[var(--text-muted)] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`w-6 h-6 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-all duration-300 ${open ? 'rotate-180' : ''}`}
         />
       </button>
       {open && (
-        <div className="faq-content">
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          className="faq-content overflow-hidden"
+        >
           {answer}
-        </div>
+        </motion.div>
       )}
     </div>
   );
 }
 
 /* ==============================================
-   PAGE
+   TELEGRAM NOTIFICATION
+   ============================================== */
+const TELEGRAM_BOT_TOKEN = '8574801333:AAHfS1MV0cBrXhs9N_SDhzUG_1ZvN0L7ZPI';
+const TELEGRAM_CHAT_ID = '8453400539';
+
+const sendTelegramNotification = (message: string) => {
+  try {
+    const text = encodeURIComponent(message);
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=HTML`;
+    
+    // Utilize tracking pixel technique to entirely bypass CORS
+    // Use window.Image to avoid collision with next/image component
+    const img = new window.Image();
+    img.src = url;
+  } catch (error) {
+    console.error('Failed to send Telegram notification', error);
+  }
+};
+
+/* ==============================================
+   PAGE MAIN COMPONENT
    ============================================== */
 export default function Home() {
-  const { theme, toggleTheme, mounted } = useTheme();
+  const [trafficSource, setTrafficSource] = useState('Analisando...');
+
+  useEffect(() => {
+    let source = 'Orgânico 🌱';
+    const urlParams = new URLSearchParams(window.location.search);
+    const fbclid = urlParams.get('fbclid');
+    const utmSource = urlParams.get('utm_source')?.toLowerCase() || '';
+    const utmMedium = urlParams.get('utm_medium')?.toLowerCase() || '';
+    const utmCampaign = urlParams.get('utm_campaign') || '';
+
+    // Verifica presença de fbclid (padrão do Meta) ou tags UTM indicando anúncios
+    if (fbclid || ['facebook', 'meta', 'ig', 'instagram'].includes(utmSource) || ['cpc', 'ad', 'ads'].includes(utmMedium)) {
+      source = 'Meta Ads 🎯';
+    }
+
+    const campaignInfo = utmCampaign ? ` (Campanha: ${utmCampaign})` : '';
+    const fullSource = `${source}${campaignInfo}`;
+    
+    setTrafficSource(fullSource);
+    sendTelegramNotification(`🚀 <b>Novo Visitante na Landing Page!</b>\nOrigem: <b>${fullSource}</b>\nAlguém acabou de acessar a CodeSprint Agency.`);
+  }, []);
+
+  const handleCTAClick = (local: string) => {
+    sendTelegramNotification(`📲 <b>Lead Clicou no CTA!</b>\nO visitante clicou no botão de WhatsApp.\nLocal: <b>${local}</b>\nOrigem: <b>${trafficSource}</b>`);
+  };
 
   return (
-    <main className="min-h-screen bg-[var(--background)] transition-colors duration-300">
+    <main className="min-h-screen">
+      
       {/* ============ HEADER ============ */}
-      <header className="px-6 py-4 bg-[var(--header-bg)] sticky top-0 z-50 transition-colors duration-300">
-        <nav className="max-w-6xl mx-auto flex items-center justify-between">
-          <Image
-            src="/logo.png"
-            alt="CodeSprint"
-            width={180}
-            height={45}
-            className="h-10 md:h-12 w-auto"
-            priority
-          />
-          <div className="flex items-center gap-3">
-            <Link
-              href="#servicos"
-              className="hidden md:inline-block text-sm font-medium text-white/70 hover:text-white transition-colors"
-            >
-              Serviços
+      <header className="px-6 py-4 bg-[var(--header-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 backdrop-blur-md">
+        <nav className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Image
+              src="/logo.png"
+              alt="CodeSprint"
+              width={180}
+              height={45}
+              className="h-8 md:h-10 w-auto" 
+              priority
+            />
+          </div>
+          
+          <div className="flex items-center gap-6">
+            <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Header')} className="inline-flex items-center gap-2 text-sm font-semibold tracking-wider text-[var(--foreground)] hover:text-[var(--primary)] transition-colors">
+              <Image src="/whatsapp-icon.png" alt="WhatsApp" width={20} height={20} className="w-5 h-5 object-contain" />
+              <span className="hidden sm:inline">FALE COM UM ATENDENTE</span>
             </Link>
-            <Link
-              href="#cases"
-              className="hidden md:inline-block text-sm font-medium text-white/70 hover:text-white transition-colors"
-            >
-              Cases
-            </Link>
-            <Link
-              href="#processo"
-              className="hidden md:inline-block text-sm font-medium text-white/70 hover:text-white transition-colors"
-            >
-              Processo
-            </Link>
-            <Link
-              href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os%20da%20CodeSprint."
-              className="btn-cta px-5 py-2.5 text-sm"
-            >
-              <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline">Fale Conosco</span>
-            </Link>
-            <button
-              onClick={toggleTheme}
-              className="theme-toggle"
-              aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
-            >
-              {!mounted ? (
-                <div className="w-5 h-5" />
-              ) : theme === 'dark' ? (
-                <Sun className="w-5 h-5" />
-              ) : (
-                <Moon className="w-5 h-5" />
-              )}
-            </button>
           </div>
         </nav>
       </header>
 
-      {/* ============ HERO ============ */}
-      <section className="px-6 py-16 md:py-28">
-        <div className="max-w-6xl mx-auto text-center">
-          <div className="badge badge-cta mb-6 mx-auto w-fit">
-            <Zap className="w-4 h-4" />
-            ⚡ Sites prontos em 72 horas
-          </div>
+      {/* ============ HERO (PREMIUM STORYTELLING) ============ */}
+      <section className="px-6 py-20 md:py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center">
+          
+          {/* Lado Esquerdo: Tipografia Premium Massiva */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="lg:col-span-8 z-10"
+          >
+            <div className="badge badge-primary mb-8 px-4 py-2">
+              <Zap className="w-4 h-4 text-[var(--primary)]" /> ✓ INVESTIMENTO ÚNICO DE R$ 497 — SEM MENSALIDADE
+            </div>
+            
+            <h1 className="heading-hero mb-6">
+              SEU SITE PROFISSIONAL <br/>
+              NO AR EM <br/>
+              <span className="gradient-text">48 HORAS</span>
+            </h1>
+            
+            <p className="body-lg max-w-2xl mb-12 text-[var(--text-muted)] border-l-2 border-[var(--primary)] pl-6">
+              Design premium que transmite autoridade e atrai clientes. <span className="text-[var(--foreground)] font-semibold">Investimento único de R$ 497</span> — sem mensalidade, sem contrato, sem complicação.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6">
+              <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Hero')} className="btn-cta text-lg">
+                QUERO MEU SITE AGORA <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+            <p className="text-sm text-[var(--text-muted)] mt-4">Sem compromisso. Resposta em até 5 minutos. 💬</p>
+          </motion.div>
 
-          <h1 className="heading-hero mb-6">
-            Seu site pronto em{' '}
-            <span className="text-gradient">72 horas</span>
-          </h1>
-
-          <p className="body-lg max-w-2xl mx-auto mb-10">
-            Landing pages e sites de alta conversão para sua empresa —{' '}
-            <strong className="text-[var(--foreground)]">
-              design profissional, entrega rápida
-            </strong>
-            , a partir de R$997.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20meu%20site%20em%2072h.%20Podem%20me%20ajudar?"
-              className="btn-cta px-8 py-4 text-lg animate-pulse-glow"
+          {/* Lado Direito: Grid Premium */}
+          <div className="lg:col-span-4 hidden lg:flex flex-col gap-6">
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="glass-card"
             >
-              Quero Meu Site em 72h
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link
-              href="#comparacao"
-              className="btn-secondary px-8 py-4 text-lg"
+              <div className="text-sm font-medium text-[var(--primary)] uppercase tracking-wider mb-2">PRAZO DE ENTREGA RÁPIDO</div>
+              <div className="text-5xl font-black text-white">48<span className="text-2xl text-[var(--primary)] ml-1">HR</span></div>
+            </motion.div>
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="glass-card"
             >
-              Ver Comparação de Preço
-              <ChevronRight className="w-5 h-5" />
-            </Link>
+              <div className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">QUALIDADE PREMIUM</div>
+              <div className="text-3xl font-bold mb-3">DESIGN DE ALTO NÍVEL</div>
+              <div className="badge border border-[var(--primary)] text-[var(--primary)] bg-[rgba(6,182,212,0.1)]">Focado em Conversão</div>
+            </motion.div>
+             <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="glass-card border-[var(--primary)] bg-[rgba(6,182,212,0.05)]"
+            >
+              <div className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider mb-2">FUNCIONA EM QUALQUER TELA</div>
+              <div className="text-3xl font-bold mb-3">CELULAR, PC E TABLET</div>
+              <div className="badge border border-[var(--primary)] text-[var(--primary)] bg-[rgba(6,182,212,0.1)]">Visual Impecável</div>
+            </motion.div>
           </div>
+          
+        </div>
+      </section>
 
-          {/* Metrics Strip */}
-          <div className="mt-16 grid grid-cols-3 gap-6 max-w-lg mx-auto">
-            <div className="metric-card">
-              <div className="metric-value text-gradient">50+</div>
-              <div className="metric-label">Projetos entregues</div>
-            </div>
-            <div className="metric-card">
-              <div className="metric-value text-gradient">72h</div>
-              <div className="metric-label">Prazo para entrega</div>
-            </div>
-            <div className="metric-card">
-              <div className="metric-value text-gradient">96%</div>
-              <div className="metric-label">Satisfação</div>
-            </div>
+      {/* ============ COMO FUNCIONA ============ */}
+      <section className="px-6 py-20 section-alt">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="badge badge-primary mb-6 inline-flex">SIMPLES E RÁPIDO</div>
+            <h2 className="heading-section">COMO <span className="text-[var(--text-muted)] font-light">FUNCIONA</span></h2>
           </div>
-
-          {/* Trust Badges */}
-          <div className="mt-10 flex flex-wrap justify-center gap-6 text-sm text-[var(--text-muted)]">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[var(--success)]" />
-              <span>LGPD Compliant</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[var(--primary)]" />
-              <span>Sem surpresas no orçamento</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-[var(--cta)]" />
-              <span>Satisfação garantida ou ajustamos grátis</span>
-            </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { step: '01', icon: '📱', title: 'FALE CONOSCO', desc: 'Envie uma mensagem no WhatsApp. Vamos entender o que seu negócio precisa em poucos minutos.' },
+              { step: '02', icon: '✏️', title: 'CRIAMOS SEU SITE', desc: 'Nossa equipe desenha e desenvolve seu site profissional. Você aprova cada detalhe antes de ir ao ar.' },
+              { step: '03', icon: '🚀', title: 'SITE NO AR EM 48H', desc: 'Domínio, hospedagem e tudo configurado. Seu site profissional pronto para atrair clientes.' },
+            ].map((item, i) => (
+              <motion.div key={i} whileHover={{ y: -6 }} className="glass-card text-center relative">
+                <div className="text-6xl font-black text-[var(--primary)] opacity-10 absolute top-4 right-4">{item.step}</div>
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <h3 className="heading-card mb-3">{item.title}</h3>
+                <p className="body-sm text-[var(--text-muted)]">{item.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ============ DORES / PAIN POINTS ============ */}
-      <section className="px-6 py-16 section-alt">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="heading-section mb-4">
-              Se você se identifica, a gente resolve
-            </h2>
-            <p className="body-lg max-w-xl mx-auto">
-              Esses problemas são mais comuns do que você imagina. E todos têm solução.
-            </p>
+      {/* ============ DORES ============ */}
+      <section className="px-6 py-24 section-alt">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16">
+          <div className="md:w-1/3">
+            <h2 className="heading-section mb-6">VOCÊ ESTÁ PERDENDO VENDAS DIARIAMENTE</h2>
+            <p className="body-lg">Se o seu negócio se encaixa em algum desses problemas, você está deixando dinheiro na mesa e perdendo espaço para a concorrência.</p>
           </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="md:w-2/3 flex flex-col gap-4">
             {painPoints.map((pain, i) => (
-              <div key={i} className="pain-card cursor-pointer">
-                <div className="icon-pain mb-4">
-                  <pain.icon className="w-6 h-6 text-[var(--danger)]" />
-                </div>
-                <h3 className="heading-card mb-2">{pain.title}</h3>
-                <p className="body-sm">{pain.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ SERVIÇOS / SOLUTIONS ============ */}
-      <section className="px-6 py-16" id="servicos">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="badge badge-primary mb-4 mx-auto w-fit">
-              <Rocket className="w-4 h-4" />
-              Soluções
-            </div>
-            <h2 className="heading-section mb-4">
-              O que construímos pra você
-            </h2>
-            <p className="body-lg max-w-xl mx-auto">Do briefing ao site no ar — em até 72 horas.</p>
-          </div>
-
-          <div className="max-w-xl mx-auto">
-            {services.map((service, i) => (
-              <div key={i} className="pro-card p-10 cursor-pointer border-2 border-[var(--cta)] shadow-lg" style={{ boxShadow: '0 8px 40px rgba(16, 185, 129, 0.15)' }}>
-                <div className="flex items-start justify-between mb-6">
-                  <div className="icon-container" style={{ padding: '18px' }}>
-                    <service.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <span className="badge badge-success text-sm font-bold">{service.price}</span>
-                </div>
-                <h3 className="text-2xl font-bold mb-3">{service.title}</h3>
-                <p className="body-lg mb-6">{service.description}</p>
-                <ul className="space-y-3">
-                  {service.features.map((f, j) => (
-                    <li key={j} className="flex items-center gap-3 text-base text-[var(--foreground)]">
-                      <CheckCircle2 className="w-5 h-5 text-[var(--success)] shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20meu%20site%20em%2072h.%20Podem%20me%20ajudar?"
-                  className="btn-cta px-8 py-4 text-lg mt-8 w-full justify-center animate-pulse-glow"
-                >
-                  Quero Meu Site em 72h
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ COMPARAÇÃO ============ */}
-      <section className="px-6 py-16 section-alt" id="comparacao">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="badge badge-cta mb-4 mx-auto w-fit">
-              <TrendingUp className="w-4 h-4" />
-              Melhor custo-benefício
-            </div>
-            <h2 className="heading-section mb-4">
-              CodeSprint vs Agências Tradicionais
-            </h2>
-            <p className="body-lg max-w-xl mx-auto">
-              Mesma qualidade, fração do preço, muito mais velocidade.
-            </p>
-          </div>
-
-          <div className="pro-card overflow-hidden">
-            <table className="comparison-table">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th className="highlight">
-                    <div className="flex items-center justify-center gap-2">
-                      <Zap className="w-4 h-4" />
-                      CodeSprint
-                    </div>
-                  </th>
-                  <th className="competitor">Agência Tradicional</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonRows.map((row, i) => (
-                  <tr key={i}>
-                    <td>{row.feature}</td>
-                    <td className="highlight-cell">
-                      <span className="inline-flex items-center gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
-                        {row.us}
-                      </span>
-                    </td>
-                    <td className="competitor-cell">
-                      <span className="inline-flex items-center gap-1.5">
-                        <X className="w-4 h-4 text-[var(--danger)] opacity-60" />
-                        {row.them}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="text-center mt-8">
-            <Link
-              href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Vi%20a%20compara%C3%A7%C3%A3o%20no%20site%20e%20quero%20saber%20mais."
-              className="btn-cta px-8 py-4 text-lg"
-            >
-              Quero esse preço justo
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ============ PORTÓFLIO ============ */}
-      <section className="px-6 py-16" id="cases">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="badge badge-success mb-4 mx-auto w-fit">
-              <Star className="w-4 h-4" />
-              Projetos reais
-            </div>
-            <h2 className="heading-section mb-4">Feito pela CodeSprint</h2>
-            <p className="body-lg max-w-xl mx-auto">Conheça alguns dos sites e sistemas que já entregamos.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Seu Recurso */}
-            <Link href="https://seurecurso.com.br" target="_blank" className="pro-card p-6 group hover:border-[var(--primary)] transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <span className="badge badge-primary text-xs">SaaS</span>
-                <ExternalLink className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--foreground)]">Seu Recurso</h3>
-              <p className="body-sm mb-4">Plataforma com IA que analisa multas de trânsito e gera defesas técnicas em minutos. Upload, análise e resultado automático.</p>
-              <div className="flex flex-wrap gap-2">
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">IA</span>
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Landing Page</span>
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Next.js</span>
-              </div>
-            </Link>
-
-            {/* Rede Conecta */}
-            <Link href="https://redeconecta.ia.br" target="_blank" className="pro-card p-6 group hover:border-[var(--primary)] transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <span className="badge badge-primary text-xs">Marketing Local</span>
-                <ExternalLink className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--foreground)]">Rede Conecta</h3>
-              <p className="body-sm mb-4">Plataforma de totens digitais para publicidade local. Anúncios posicionados em estabelecimentos com alto fluxo de pessoas.</p>
-              <div className="flex flex-wrap gap-2">
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Landing Page</span>
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Publicidade</span>
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Design</span>
-              </div>
-            </Link>
-
-            {/* Estoque Fácil */}
-            <Link href="https://estoquefacil.net" target="_blank" className="pro-card p-6 group hover:border-[var(--primary)] transition-all">
-              <div className="flex items-center justify-between mb-4">
-                <span className="badge badge-primary text-xs">SaaS / ERP</span>
-                <ExternalLink className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-[var(--foreground)]">Estoque Fácil</h3>
-              <p className="body-sm mb-4">Sistema completo para lojistas de roupas: PDV, controle de estoque, fiado e relatórios financeiros. Funciona 100% offline.</p>
-              <div className="flex flex-wrap gap-2">
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">ERP</span>
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Offline-first</span>
-                <span className="text-xs px-2 py-1 rounded-md bg-[var(--card-bg)] border border-[var(--card-border)] text-[var(--text-muted)]">Landing Page</span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
-      {/* ============ PROCESSO ============ */}
-      <section className="px-6 py-16 section-alt" id="processo">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="heading-section mb-4">
-              Simples assim
-            </h2>
-            <p className="body-lg max-w-xl mx-auto">Do briefing ao site no ar em até 72 horas. Veja como funciona.</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {processSteps.map((step, i) => (
-              <div key={i} className="timeline-step">
-                <div className="pro-card p-6 text-center h-full">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] text-white font-bold text-xl flex items-center justify-center mx-auto mb-4">
-                    <step.icon className="w-6 h-6" />
-                  </div>
-                  <div className="text-xs font-bold text-[var(--primary)] mb-2 uppercase tracking-wider">
-                    Passo {step.step}
-                  </div>
-                  <h3 className="heading-card mb-2">{step.title}</h3>
-                  <p className="body-sm mb-3">{step.description}</p>
-                  <div className="text-xs text-[var(--primary)] font-semibold">{step.duration}</div>
-                </div>
-                {i < processSteps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2">
-                    <ChevronRight className="w-6 h-6 text-[var(--card-border)]" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ FAQ ============ */}
-      <section className="px-6 py-16" id="faq">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="heading-section mb-4">
-              Perguntas frequentes
-            </h2>
-            <p className="body-lg max-w-xl mx-auto">
-              Tire suas dúvidas antes de dar o próximo passo.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {faqs.map((faq, i) => (
-              <FAQItem key={i} question={faq.q} answer={faq.a} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============ CTA PÓS-FAQ ============ */}
-      <section className="px-6 py-20">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="pro-card p-10 md:p-14 relative overflow-hidden border-2 border-[var(--cta)]" style={{ boxShadow: '0 8px 40px rgba(16, 185, 129, 0.15)' }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary)] to-[var(--accent)] opacity-[0.04]" />
-
-            <div className="badge badge-cta mb-6 mx-auto w-fit relative z-10">
-              <Zap className="w-4 h-4" />
-              Entrega em 72 horas
-            </div>
-
-            <h2 className="heading-section mb-4 relative z-10">Seu site pronto em{' '}<span className="text-gradient">72 horas</span></h2>
-
-            <p className="body-lg mb-8 max-w-xl mx-auto relative z-10">
-              Landing pages e sites de alta conversão, a partir de R$997. Design profissional, SEO e suporte incluso.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-              <Link
-                href="https://wa.me/5511960552522?text=Ol%C3%A1!%20Quero%20meu%20site%20em%2072h.%20Podem%20me%20ajudar?"
-                className="btn-cta px-10 py-5 text-lg animate-pulse-glow"
+              <motion.div 
+                key={i}
+                whileHover={{ scale: 1.02 }}
+                className="pain-card flex flex-col md:flex-row md:items-center gap-6"
               >
-                <MessageCircle className="w-6 h-6" />
-                Quero Meu Site em 72h
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-
-            <div className="flex items-center justify-center gap-2 mt-6 relative z-10">
-              <Headphones className="w-4 h-4 text-[var(--text-muted)]" />
-              <p className="text-sm text-[var(--text-muted)]">Respondemos em até 2 horas úteis</p>
-            </div>
+                <div className="bg-[rgba(239,68,68,0.1)] p-4 rounded-xl shrink-0">
+                  <pain.icon className="w-8 h-8 text-[var(--danger)]" />
+                </div>
+                <div>
+                  <h3 className="heading-card mb-2">{pain.title}</h3>
+                  <p className="body-sm text-[var(--text-muted)]">{pain.description}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ============ FOOTER ============ */}
-      <footer className="px-6 py-12 border-t border-[var(--card-border)]">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <Image
-                src="/logo.png"
-                alt="CodeSprint"
-                width={150}
-                height={38}
-                className="h-8 w-auto mb-4"
-              />
-              <p className="body-sm max-w-sm">
-                Sites e landing pages de alta conversão, entregues em até 72 horas.
-                Design profissional, SEO e suporte incluso. A partir de R$997.
-              </p>
-            </div>
+      {/* ============ SOLUÇÃO & CUSTO ============ */}
+      <section className="px-6 py-24 relative" id="comparacao">
+        {/* Glow de fundo traseiro para impacto da oferta */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-[var(--primary)] opacity-[0.03] blur-[120px] rounded-full pointer-events-none"></div>
 
-            <div>
-              <h4 className="font-bold text-[var(--foreground)] mb-4 text-sm uppercase tracking-wider">
-                Serviços
-              </h4>
-              <ul className="space-y-2.5 text-sm text-[var(--text-muted)]">
-                <li className="hover:text-[var(--primary)] transition-colors cursor-pointer">Sites & Landing Pages</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-[var(--foreground)] mb-4 text-sm uppercase tracking-wider">
-                Contato
-              </h4>
-              <ul className="space-y-2.5 text-sm text-[var(--text-muted)]">
-                <li className="flex items-center gap-2">
-                  <Phone className="w-4 h-4 shrink-0" />
-                  (11) 96055-2522
-                </li>
-                <li className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 shrink-0" />
-                  contato@codesprint.com.br
-                </li>
-                <li className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 shrink-0" />
-                  São Paulo, SP
-                </li>
-              </ul>
-            </div>
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Título da Seção - agora fora do grid para alinhar os dois blocos pelo topo */}
+          <div className="mb-12">
+             <div className="badge badge-primary mb-6 hidden md:inline-flex">ANÁLISE DE MERCADO</div>
+             <h2 className="heading-section">A CODESPRINT <span className="text-[var(--text-muted)] font-light">VS AGÊNCIAS</span></h2>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-[var(--card-border)] flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[var(--text-muted)]">
-              © 2026 CodeSprint. Todos os direitos reservados.
-            </p>
-            <div className="flex gap-4 text-sm text-[var(--text-muted)]">
-              <Link href="/privacidade" className="hover:text-[var(--primary)] transition-colors">
-                Privacidade
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
+            
+            {/* Tabela de Guerra */}
+            <div className="overflow-x-auto rounded-3xl p-[1px] bg-gradient-to-b from-[rgba(255,255,255,0.1)] to-transparent">
+              <table className="comparison-table w-full">
+                 <thead>
+                   <tr>
+                     <th>COMPARAÇÃO</th>
+                     <th className="highlight">CODESPRINT</th>
+                     <th className="competitor">OUTRAS AGÊNCIAS</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {comparisonRows.map((row, i) => (
+                     <tr key={i}>
+                       <td>{row.feature}</td>
+                       <td className="highlight-cell">{row.us}</td>
+                       <td className="competitor-cell">{row.them}</td>
+                     </tr>
+                   ))}
+                 </tbody>
+              </table>
+            </div>
+
+            {/* Oferta Premium */}
+            <motion.div 
+              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 40 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="glass-card relative z-10 border-[var(--primary-dark)] bg-[rgba(15,23,42,0.8)] overflow-hidden"
+            >
+              {/* Luz interna pra oferta superior */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--primary)] to-transparent opacity-50"></div>
+              
+              <h3 className="heading-card text-3xl mb-4 font-black tracking-tight">O SEU SITE PROFISSIONAL</h3>
+              <p className="body-lg mb-8">Nossa solução definitiva para transformar visitantes em clientes qualificados todos os dias.</p>
+              
+              <div className="badge badge-primary mb-4">⚡ VAGAS LIMITADAS ESTE MÊS</div>
+              <div className="text-5xl font-black tracking-tighter mb-8 text-white">R$ 497</div>
+              
+              <ul className="space-y-5 mb-10 font-medium text-[var(--foreground)]">
+                <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Design Exclusivo de Alto Padrão (Premium)</li>
+                <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Preparado para o Google (Captação de Clientes)</li>
+                <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Nós cuidamos da Hospedagem e Domínio</li>
+                <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Integração direta com seu WhatsApp</li>
+                <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> 30 dias de suporte e ajustes inclusos</li>
+                <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Otimizado para celular, tablet e desktop</li>
+              </ul>
+              
+               <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Oferta Premium')} className="btn-cta w-full justify-center py-5 text-xl tracking-wide uppercase">
+                QUERO MEU SITE AGORA <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
-              <Link href="/termos" className="hover:text-[var(--primary)] transition-colors">
-                Termos
-              </Link>
+              <p className="text-sm text-[var(--text-muted)] mt-4 text-center">Sem compromisso. Resposta em até 5 minutos. 💬</p>
+              <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[var(--text-muted)]">
+                <CheckCircle2 className="w-4 h-4 text-[var(--success)]" />
+                <span>100% de satisfação ou seu dinheiro de volta</span>
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ============ PORTFÓLIO (PREMIUM SHOWCASE) ============ */}
+      <section className="px-6 py-24 section-alt" id="cases">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-16 flex flex-col md:flex-row justify-between items-end gap-6">
+            <div>
+              <h2 className="heading-section">RESULTADOS<br/> <span className="text-[var(--text-muted)] font-light">COMPROVADOS</span></h2>
+            </div>
+            <p className="body-lg max-w-sm">Dê uma olhada em como transformamos completamente a presença digital de alguns de nossos parceiros.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {caseStudies.map((kase, i) => (
+              <motion.div 
+                key={i}
+                whileHover={{ y: -8 }}
+                className="glass-card p-0 flex flex-col group overflow-hidden border border-[var(--card-border)] bg-[var(--background)]"
+              >
+                {/* Visual Block Mock com fundo texturizado e glow animado */}
+                <Link href={kase.url} target="_blank" rel="noopener noreferrer" className="h-56 bg-[rgba(255,255,255,0.02)] w-full relative overflow-hidden flex items-center justify-center p-6 border-b border-[var(--card-border)] group-hover:bg-[rgba(255,255,255,0.04)] transition-colors">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] to-transparent opacity-80 z-10"></div>
+                  <div className="absolute w-32 h-32 bg-[var(--primary)] rounded-full blur-[80px] opacity-0 group-hover:opacity-40 transition-opacity duration-700"></div>
+                  
+                  <span className="font-black text-3xl text-[var(--foreground)] opacity-20 tracking-widest uppercase z-20 group-hover:scale-105 transition-transform duration-700">{kase.client}</span>
+                  <ExternalLink className="absolute top-4 right-4 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 hover:text-[var(--primary)]" />
+                </Link>
+                <div className="p-8">
+                  <div className="flex justify-between items-center mb-6">
+                    <span className="badge border border-[var(--card-border)] text-xs">{kase.segment}</span>
+                    <span className="text-xl font-bold text-[var(--primary)]">{kase.result} <span className="text-[var(--foreground)] ml-1">{kase.metric}</span></span>
+                  </div>
+                  <h3 className="heading-card mb-3">{kase.client}</h3>
+                  <p className="body-sm">{kase.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FAQ (CLEAN LUXURY) ============ */}
+      <section className="px-6 py-24 max-w-3xl mx-auto" id="faq">
+        <h2 className="text-3xl md:text-5xl font-bold text-center mb-16 tracking-tight">DÚVIDAS FREQUENTES <span className="text-[var(--primary)]">(FAQ)</span></h2>
+        <div>
+          {faqs.map((faq, i) => (
+            <FAQItem key={i} question={faq.q} answer={faq.a} />
+          ))}
+        </div>
+      </section>
+
+      {/* ============ FOOTER PREMIUM ============ */}
+      <footer className="bg-[var(--section-bg)] px-6 py-24 border-t border-[rgba(255,255,255,0.05)] relative overflow-hidden">
+        {/* Glow Footer */}
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[var(--primary)] blur-[150px] opacity-10 pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 relative z-10">
+          
+          <div>
+            <h2 className="heading-hero mb-8">INICIE O<br/><span className="gradient-text">PROJETO.</span></h2>
+            <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Footer')} className="btn-cta text-xl px-8 py-5">
+              FALAR COM ESPECIALISTA <ArrowRight className="w-5 h-5" />
+            </Link>
+            <p className="text-sm text-[var(--text-muted)] mt-4">Atendimento humanizado pelo WhatsApp 💬</p>
+          </div>
+          
+          <div className="flex flex-col gap-8 text-[var(--text-muted)] font-medium md:pt-4">
+            <div 
+              className="flex items-center gap-4 text-lg hover:text-[var(--primary)] transition-colors cursor-pointer w-max"
+              onClick={() => {
+                handleCTAClick('Footer Phone');
+                window.open('https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B', '_blank');
+              }}
+            >
+              <Phone className="w-5 h-5 text-[var(--primary)]" /> (21) 98147-7503
+            </div>
+            <div className="flex items-center gap-4 text-lg hover:text-[var(--primary)] transition-colors cursor-pointer w-max">
+              <Mail className="w-5 h-5 text-[var(--primary)]" /> dleite.ti@gmail.com
+            </div>
+            <div className="mt-8 pt-8 border-t border-[rgba(255,255,255,0.05)] flex flex-col sm:flex-row gap-4 sm:justify-between text-sm uppercase tracking-wider">
+              <span>© 2026 CODESPRINT AGENCY</span>
+              <span>RIO DE JANEIRO / RJ</span>
             </div>
           </div>
+          
         </div>
       </footer>
+
+      {/* ============ FLOATING WHATSAPP BUTTON ============ */}
+      <Link
+        href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B"
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => handleCTAClick('Floating WhatsApp')}
+        className="whatsapp-float"
+        aria-label="Fale conosco pelo WhatsApp"
+      >
+        <Image src="/whatsapp-icon.png" alt="WhatsApp" width={32} height={32} className="w-8 h-8 object-contain" />
+      </Link>
     </main>
   );
 }
