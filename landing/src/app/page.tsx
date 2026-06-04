@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 
 /* ==============================================
    DATA - REFINADO PARA COPY DE NEGÓCIOS
@@ -171,6 +172,9 @@ export default function Home() {
   const [trafficSource, setTrafficSource] = useState('Analisando...');
 
   useEffect(() => {
+    // Expor função de clique globalmente para o widget de chat
+    (window as any).handleCTAClick = handleCTAClick;
+
     let source = 'Orgânico 🌱';
     const urlParams = new URLSearchParams(window.location.search);
     const fbclid = urlParams.get('fbclid');
@@ -501,17 +505,8 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* ============ FLOATING WHATSAPP BUTTON ============ */}
-      <Link
-        href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B"
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => handleCTAClick('Floating WhatsApp')}
-        className="whatsapp-float"
-        aria-label="Fale conosco pelo WhatsApp"
-      >
-        <Image src="/whatsapp-icon.png" alt="WhatsApp" width={32} height={32} className="w-8 h-8 object-contain" />
-      </Link>
+      {/* ============ CHAT WIDGET SOFIA ============ */}
+      <Script src="/chat-widget.js" strategy="afterInteractive" id="chat-widget-sofia" />
     </main>
   );
 }

@@ -1,0 +1,16 @@
+[Unit]
+Description=CodeSprint LP Chat AI (Sofia - Telegram + Logging)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Environment=GEMINI_API_KEY=CONFIGURE_ME
+ExecStart=/usr/bin/python3 /opt/codesprint-chat/codesprint-chat.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

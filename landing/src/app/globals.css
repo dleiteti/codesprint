@@ -390,50 +390,19 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--text-subtle); }
 
 /* ================================
-   FLOATING WHATSAPP BUTTON
+   MOBILE RESPONSIVENESS PATCH
    ================================ */
-.whatsapp-float {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 1000;
-  width: 64px;
-  height: 64px;
-  background: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4), 0 0 0 0 rgba(37, 211, 102, 0.4);
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  animation: whatsapp-pulse 2s infinite;
-  text-decoration: none;
-}
-
-.whatsapp-float:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
-}
-
-@keyframes whatsapp-pulse {
-  0% {
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4), 0 0 0 0 rgba(37, 211, 102, 0.4);
-  }
-  70% {
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4), 0 0 0 15px rgba(37, 211, 102, 0);
-  }
-  100% {
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4), 0 0 0 0 rgba(37, 211, 102, 0);
-  }
-}
-
-/* Mobile adjustments for floating button */
 @media (max-width: 640px) {
-  .whatsapp-float {
-    bottom: 16px;
-    right: 16px;
-    width: 56px;
-    height: 56px;
+  .heading-hero {
+    font-size: 2.2rem !important; /* Evita quebra e corte de palavras compridas como PROFISSIONAL */
+    line-height: 1.05 !important;
+    letter-spacing: -0.02em !important;
+  }
+  .badge {
+    font-size: 0.65rem !important; /* Impede que badges de texto longo vazem horizontalmente */
+    padding: 6px 12px !important;
+    white-space: normal !important;
+    text-align: center;
   }
 }
 
