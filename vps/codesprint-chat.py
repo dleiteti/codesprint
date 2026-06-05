@@ -261,7 +261,11 @@ def get_or_create_session(session_id):
                 "history": [
                     {
                         "role": "model",
-                        "parts": [{"text": "Oi! 👋 Tudo bem? Sou a Sofia, da CodeSprint. Posso te ajudar com alguma dúvida sobre a criação do seu site profissional?"}]
+                        "parts": [{"text": (
+                            "Oi! 👋 Tudo bem?\n\n"
+                            "Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 497 — sem mensalidade 🚀\n\n"
+                            "Como posso te ajudar hoje?"
+                        )}]
                     }
                 ],
                 "leadData": {
@@ -407,7 +411,10 @@ class CodeSprintHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Cache-Control", "no-cache, no-store")
             self.end_headers()
-            self.wfile.write(b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00\x21\xf9\x04\x00\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b")
+            try:
+                self.wfile.write(b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00\x21\xf9\x04\x00\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b")
+            except BrokenPipeError:
+                pass  # Client disconnected before receiving response
 
         else:
             self.send_response(404)

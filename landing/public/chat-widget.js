@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   CODESPRINT — Chat Widget
+   CODESPRINT — Chat Widget v2
    Atendente virtual "Sofia" para a LP
    Self-contained: CSS + HTML + JS
    ═══════════════════════════════════════════ */
@@ -10,11 +10,57 @@
   const CHAT_API = '/chat';
   const SESSION_KEY = 'codesprint_chat_sid';
   const HISTORY_KEY = 'codesprint_chat_history';
+  const QR_KEY = 'codesprint_chat_qr';
   const SOFIA_AVATAR = '/sofia-avatar.png';
+
+  // ─── Web Audio API (notification sound) ───
+  var audioCtx = null;
+
+  function initAudioContext() {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch(e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(function(){});
+    }
+  }
+
+  function playNotificationSound() {
+    if (!audioCtx || audioCtx.state !== 'running') return;
+    try {
+      var now = audioCtx.currentTime;
+
+      // Nota 1: E6 (1318 Hz)
+      var osc1 = audioCtx.createOscillator();
+      var gain1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.value = 1318;
+      gain1.gain.setValueAtTime(0.08, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.2);
+
+      // Nota 2: A6 (1760 Hz)
+      var osc2 = audioCtx.createOscillator();
+      var gain2 = audioCtx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.value = 1760;
+      gain2.gain.setValueAtTime(0.06, now + 0.15);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.start(now + 0.15);
+      osc2.stop(now + 0.35);
+    } catch(e) {}
+  }
   
   // Generate or retrieve session ID
   function getSessionId() {
-    let sid = sessionStorage.getItem(SESSION_KEY);
+    var sid = sessionStorage.getItem(SESSION_KEY);
     if (!sid) {
       sid = 'cs_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
       sessionStorage.setItem(SESSION_KEY, sid);
@@ -24,7 +70,7 @@
 
   // ─── Inject CSS ───
   function injectStyles() {
-    const style = document.createElement('style');
+    var style = document.createElement('style');
     style.textContent = `
       /* Chat Bubble — Card style with avatar */
       .cs-chat-bubble {
@@ -59,6 +105,12 @@
         opacity: 0 !important;
         pointer-events: none;
       }
+
+      /* Avatar wrapper for badge positioning */
+      .cs-bubble-avatar-wrap {
+        position: relative;
+        flex-shrink: 0;
+      }
       
       .cs-bubble-avatar {
         width: 52px;
@@ -67,6 +119,36 @@
         object-fit: cover;
         flex-shrink: 0;
         border: 2px solid rgba(6, 182, 212, 0.4);
+      }
+
+      /* Notification badge (pulsing red circle) */
+      .cs-notification-badge {
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #EF4444;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #111F38;
+        animation: cs-badge-pulse 1.5s ease-in-out infinite;
+        z-index: 1;
+        line-height: 1;
+      }
+
+      .cs-notification-badge.cs-show {
+        display: flex;
+      }
+
+      @keyframes cs-badge-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.25); }
       }
       
       .cs-bubble-info {
@@ -190,6 +272,27 @@
         gap: 12px;
         border-bottom: 1px solid rgba(255,255,255,0.06);
         flex-shrink: 0;
+      }
+
+      /* Back button (mobile only) */
+      .cs-chat-back {
+        display: none;
+        background: none;
+        border: none;
+        color: #8BA3C7;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-right: 4px;
+      }
+
+      .cs-chat-back:hover {
+        background: rgba(255,255,255,0.05);
+        color: #F0F4FA;
       }
       
       .cs-chat-avatar {
@@ -423,6 +526,10 @@
           right: 12px;
           max-width: calc(100vw - 80px);
         }
+
+        .cs-chat-back {
+          display: flex;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -430,33 +537,41 @@
 
   // ─── Build DOM ───
   function buildWidget() {
-    // Chat bubble — card style
-    const bubble = document.createElement('button');
+    // Chat bubble — card style with badge
+    var bubble = document.createElement('button');
     bubble.className = 'cs-chat-bubble';
     bubble.id = 'csChatBubble';
     bubble.innerHTML = `
-      <img class="cs-bubble-avatar" src="${SOFIA_AVATAR}" alt="Sofia" />
+      <div class="cs-bubble-avatar-wrap">
+        <img class="cs-bubble-avatar" src="${SOFIA_AVATAR}" alt="Sofia" />
+        <div class="cs-notification-badge" id="csNotificationBadge">1</div>
+      </div>
       <div class="cs-bubble-info">
         <span class="cs-bubble-name">Sofia \u00b7 Atendente</span>
         <span class="cs-bubble-status">Online agora</span>
       </div>
     `;
 
-    // Tooltip
-    const tooltip = document.createElement('div');
+    // Tooltip — oferta irresistível
+    var tooltip = document.createElement('div');
     tooltip.className = 'cs-chat-tooltip';
     tooltip.id = 'csChatTooltip';
     tooltip.innerHTML = `
       <button class="cs-tooltip-close" aria-label="Fechar">&times;</button>
-      Oi! 👋 Posso te ajudar com o seu site?
+      🚀 Site profissional a partir de R$ 497! Tire suas dúvidas 👇
     `;
 
-    // Chat window
-    const win = document.createElement('div');
+    // Chat window with back button for mobile
+    var win = document.createElement('div');
     win.className = 'cs-chat-window';
     win.id = 'csChatWindow';
     win.innerHTML = `
       <div class="cs-chat-header">
+        <button class="cs-chat-back" id="csChatBack" aria-label="Voltar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
         <img class="cs-chat-avatar" src="${SOFIA_AVATAR}" alt="Sofia" />
         <div class="cs-chat-header-info">
           <div class="cs-chat-header-name">Sofia \u00b7 Atendente</div>
@@ -484,42 +599,52 @@
     document.body.appendChild(tooltip);
     document.body.appendChild(win);
 
-    return { bubble, tooltip, win };
+    return { bubble: bubble, tooltip: tooltip, win: win };
   }
 
   // ─── Chat Logic ───
   function initChat() {
     injectStyles();
-    const { bubble, tooltip, win } = buildWidget();
+    var widgets = buildWidget();
+    var bubble = widgets.bubble;
+    var tooltip = widgets.tooltip;
+    var win = widgets.win;
     
-    const messagesEl = document.getElementById('csChatMessages');
-    const inputEl = document.getElementById('csChatInput');
-    const sendBtn = document.getElementById('csChatSend');
-    const closeBtn = document.getElementById('csChatClose');
-    const quickRepliesEl = document.getElementById('csQuickReplies');
+    var messagesEl = document.getElementById('csChatMessages');
+    var inputEl = document.getElementById('csChatInput');
+    var sendBtn = document.getElementById('csChatSend');
+    var closeBtn = document.getElementById('csChatClose');
+    var backBtn = document.getElementById('csChatBack');
+    var quickRepliesEl = document.getElementById('csQuickReplies');
+    var badgeEl = document.getElementById('csNotificationBadge');
     
-    let isOpen = false;
-    let isFirstOpen = true;
-    let isSending = false;
-    const sessionId = getSessionId();
+    var isOpen = false;
+    var isFirstOpen = true;
+    var isSending = false;
+    var sessionId = getSessionId();
 
     // Restore history from sessionStorage
-    const savedHistory = sessionStorage.getItem(HISTORY_KEY);
+    var savedHistory = sessionStorage.getItem(HISTORY_KEY);
     if (savedHistory) {
       try {
-        const msgs = JSON.parse(savedHistory);
-        msgs.forEach(m => addMessage(m.text, m.type, false));
+        var msgs = JSON.parse(savedHistory);
+        msgs.forEach(function(m) { addMessage(m.text, m.type, false); });
         isFirstOpen = false;
         
-        // Verifica se a última mensagem do bot indicava finalização para reinscrever o botão de whatsapp
-        const hasContactInfo = msgs.some(m => m.type === 'user' && (m.text.includes('wa.me') || m.text.includes('Falar pelo WhatsApp')));
+        // Restore persisted quick replies
+        var savedQR = sessionStorage.getItem(QR_KEY);
+        if (savedQR) {
+          try {
+            var qrOptions = JSON.parse(savedQR);
+            if (qrOptions.length > 0) {
+              showQuickReplies(qrOptions, false);
+            }
+          } catch(e) {}
+        }
+
         // Se a conversa já estava qualificada, exibe o botão do WhatsApp
-        const lastMsg = msgs[msgs.length - 1];
-        if (lastMsg && msgs.length > 3) {
-           // Checa se o leadData já foi enviado buscando no localStorage se qualificou
-           if (localStorage.getItem('cs_lead_qualified') === 'true') {
-              showWhatsAppButton();
-           }
+        if (localStorage.getItem('cs_lead_qualified') === 'true') {
+          showWhatsAppButton();
         }
       } catch(e) {}
     }
@@ -530,20 +655,60 @@
       win.classList.add('cs-open');
       bubble.classList.add('cs-open');
       tooltip.classList.remove('cs-show');
+
+      // Hide notification badge
+      if (badgeEl) badgeEl.classList.remove('cs-show');
+
+      // Initialize audio context on first user interaction
+      initAudioContext();
       
       if (isFirstOpen) {
         isFirstOpen = false;
-        // Send initial greeting
+        inputEl.disabled = true;
+        sendBtn.disabled = true;
+
+        // Saudação em 3 etapas com typing indicators
+        // Etapa 1
         showTyping();
-        setTimeout(() => {
+        setTimeout(function() {
           hideTyping();
-          addMessage('Oi! 👋 Tudo bem? Sou a Sofia, da CodeSprint. Posso te ajudar com alguma dúvida sobre a criação do seu site profissional?', 'bot');
-          showQuickReplies(['Quanto custa?', 'Como funciona?', 'Preciso de logo?']);
-        }, 800);
+          addMessage('Oi! 👋 Tudo bem?', 'bot');
+          playNotificationSound();
+
+          // Etapa 2
+          setTimeout(function() {
+            showTyping();
+            setTimeout(function() {
+              hideTyping();
+              addMessage('Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 497 — sem mensalidade 🚀', 'bot');
+              playNotificationSound();
+
+              // Etapa 3
+              setTimeout(function() {
+                showTyping();
+                setTimeout(function() {
+                  hideTyping();
+                  addMessage('Como posso te ajudar hoje?', 'bot');
+                  playNotificationSound();
+                  showQuickReplies(['Quanto custa?', 'Como funciona?', 'Preciso de logo?']);
+                  inputEl.disabled = false;
+                  sendBtn.disabled = false;
+                  if (window.innerWidth > 480) {
+                    inputEl.focus();
+                  }
+                }, 1200);
+              }, 500);
+            }, 1500);
+          }, 600);
+        }, 1000);
+      } else {
+        setTimeout(function() {
+          if (window.innerWidth > 480) {
+            inputEl.focus();
+          }
+        }, 400);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
       }
-      
-      setTimeout(() => inputEl.focus(), 400);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
     function closeChat() {
@@ -554,30 +719,31 @@
 
     bubble.addEventListener('click', openChat);
     tooltip.addEventListener('click', openChat);
-    tooltip.querySelector('.cs-tooltip-close').addEventListener('click', (e) => {
+    tooltip.querySelector('.cs-tooltip-close').addEventListener('click', function(e) {
       e.stopPropagation();
       tooltip.classList.remove('cs-show');
     });
     closeBtn.addEventListener('click', closeChat);
+    backBtn.addEventListener('click', closeChat);
 
     // ─── Messages ───
-    function addMessage(text, type, save = true) {
-      const msg = document.createElement('div');
-      msg.className = `cs-msg cs-msg-${type}`;
+    function addMessage(text, type, save) {
+      if (save === undefined) save = true;
+      var msg = document.createElement('div');
+      msg.className = 'cs-msg cs-msg-' + type;
       msg.textContent = text;
       messagesEl.appendChild(msg);
       messagesEl.scrollTop = messagesEl.scrollHeight;
 
       if (save) {
-        // Save to sessionStorage
-        const history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
-        history.push({ text, type });
+        var history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
+        history.push({ text: text, type: type });
         sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
     }
 
     function showTyping() {
-      const typing = document.createElement('div');
+      var typing = document.createElement('div');
       typing.className = 'cs-typing';
       typing.id = 'csTypingIndicator';
       typing.innerHTML = '<span class="cs-typing-dot"></span><span class="cs-typing-dot"></span><span class="cs-typing-dot"></span>';
@@ -586,90 +752,103 @@
     }
 
     function hideTyping() {
-      const el = document.getElementById('csTypingIndicator');
+      var el = document.getElementById('csTypingIndicator');
       if (el) el.remove();
     }
 
-    function showQuickReplies(options) {
+    function showQuickReplies(options, save) {
+      if (save === undefined) save = true;
       quickRepliesEl.innerHTML = '';
-      options.forEach(text => {
-        const btn = document.createElement('button');
+      options.forEach(function(text) {
+        var btn = document.createElement('button');
         btn.className = 'cs-quick-btn';
         btn.textContent = text;
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', function() {
           quickRepliesEl.innerHTML = '';
+          sessionStorage.removeItem(QR_KEY);
           sendMessage(text);
         });
         quickRepliesEl.appendChild(btn);
       });
+      if (save) {
+        sessionStorage.setItem(QR_KEY, JSON.stringify(options));
+      }
     }
 
     // ─── Send Message ───
-    async function sendMessage(text) {
+    function sendMessage(text) {
       if (!text.trim() || isSending) return;
       
       isSending = true;
       sendBtn.disabled = true;
       inputEl.value = '';
       quickRepliesEl.innerHTML = '';
+      sessionStorage.removeItem(QR_KEY);
       
       addMessage(text, 'user');
       showTyping();
 
-      try {
-        const response = await fetch(CHAT_API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sessionId: sessionId,
-            message: text
-          })
-        });
-
+      fetch(CHAT_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: sessionId,
+          message: text
+        })
+      })
+      .then(function(response) {
         hideTyping();
-
         if (response.ok) {
-          const data = await response.json();
-          addMessage(data.reply, 'bot');
-          
-          // Rastrear mensagem de chat no Telegram server-side
-          if (typeof window.sendEvent === 'function') {
-            window.sendEvent('chat_message');
-          }
+          return response.json().then(function(data) {
+            // Delay humanizado antes de exibir a resposta
+            setTimeout(function() {
+              addMessage(data.reply, 'bot');
+              playNotificationSound();
 
-          // Se lead completo, exibe o botão do WhatsApp e grava no localStorage
-          if (data.leadData && data.leadData.name && data.leadData.whatsapp) {
-            localStorage.setItem('cs_lead_qualified', 'true');
-            showWhatsAppButton();
-          }
+              // Rastrear mensagem de chat no Telegram server-side
+              if (typeof window.sendEvent === 'function') {
+                window.sendEvent('chat_message');
+              }
+
+              // Se lead completo, exibe o botão do WhatsApp e grava no localStorage
+              if (data.leadData && data.leadData.name && data.leadData.whatsapp) {
+                localStorage.setItem('cs_lead_qualified', 'true');
+                showWhatsAppButton();
+              }
+
+              isSending = false;
+              sendBtn.disabled = false;
+              inputEl.focus();
+            }, 400);
+          });
         } else {
           addMessage('Desculpa, tive um probleminha aqui. Pode tentar de novo? 😅', 'bot');
+          isSending = false;
+          sendBtn.disabled = false;
+          inputEl.focus();
         }
-      } catch (error) {
+      })
+      .catch(function(error) {
         hideTyping();
         addMessage('Ops, parece que a conexão caiu. Tenta de novo? 😊', 'bot');
-      }
-
-      isSending = false;
-      sendBtn.disabled = false;
-      inputEl.focus();
+        isSending = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      });
     }
 
     function showWhatsAppButton() {
       // Evita duplicar o botão se ele já existe nas mensagens
-      const existingBtn = document.getElementById('csWhatsAppDirectBtn');
+      var existingBtn = document.getElementById('csWhatsAppDirectBtn');
       if (existingBtn) return;
 
-      const waBtn = document.createElement('div');
+      var waBtn = document.createElement('div');
       waBtn.className = 'cs-msg cs-msg-bot';
       waBtn.id = 'csWhatsAppDirectBtn';
       waBtn.style.cssText = 'background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.3); cursor: pointer; color: #22C55E; font-weight: bold; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;';
-      waBtn.innerHTML = `
-        <img src="/whatsapp-icon.png" alt="WhatsApp" style="width: 20px; height: 20px; object-fit: contain;" />
-        <span>Falar com Especialista no WhatsApp</span>
-      `;
+      waBtn.innerHTML = '<img src="/whatsapp-icon.png" alt="WhatsApp" style="width: 20px; height: 20px; object-fit: contain;" /><span>Falar com Especialista no WhatsApp</span>';
       
-      waBtn.addEventListener('click', () => {
+      waBtn.addEventListener('click', function() {
         if (typeof window.handleCTAClick === 'function') {
            window.handleCTAClick('Chat Sofia Redirect');
         }
@@ -680,32 +859,32 @@
       messagesEl.scrollTop = messagesEl.scrollHeight;
 
       // Salva o clique do botão no histórico de mensagens do sessionStorage
-      const history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
-      if (!history.some(h => h.text.includes('Falar com Especialista'))) {
+      var history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
+      if (!history.some(function(h) { return h.text.includes('Falar com Especialista'); })) {
          history.push({ text: '💬 [Botão de Redirecionamento para o WhatsApp]', type: 'bot' });
          sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
     }
 
     // ─── Input handlers ───
-    sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
-    inputEl.addEventListener('keypress', (e) => {
+    sendBtn.addEventListener('click', function() { sendMessage(inputEl.value); });
+    inputEl.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') sendMessage(inputEl.value);
     });
 
-    // ─── Proactive tooltip after 8s ───
-    setTimeout(() => {
+    // ─── Proactive tooltip + badge after 3s ───
+    setTimeout(function() {
       if (!isOpen) {
-        // Apenas mostra o tooltip se o usuário não abriu o chat e não qualificou o lead
         if (localStorage.getItem('cs_lead_qualified') !== 'true') {
-           tooltip.classList.add('cs-show');
-           // Auto-hide after 12s
-           setTimeout(() => {
-             if (!isOpen) tooltip.classList.remove('cs-show');
-           }, 12000);
+          tooltip.classList.add('cs-show');
+          if (badgeEl) badgeEl.classList.add('cs-show');
+          // Auto-hide tooltip after 12s
+          setTimeout(function() {
+            if (!isOpen) tooltip.classList.remove('cs-show');
+          }, 12000);
         }
       }
-    }, 8000);
+    }, 3000);
 
     // Track chat widget loaded/ready
     if (typeof window.sendEvent === 'function') {
