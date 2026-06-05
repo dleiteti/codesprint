@@ -310,9 +310,9 @@ def cleanup_sessions():
 
 class CodeSprintHandler(BaseHTTPRequestHandler):
 
-    # ───── GET (health and stats) ─────
+    # ───── GET (health, stats and notify) ─────
     def do_GET(self):
-        from urllib.parse import urlparse
+        from urllib.parse import urlparse, parse_qs
 
         parsed = urlparse(self.path)
 
@@ -344,6 +344,70 @@ class CodeSprintHandler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             self.wfile.write(json.dumps(stats, ensure_ascii=False).encode("utf-8"))
+
+        elif parsed.path == "/notify":
+            params = parse_qs(parsed.query)
+            event = params.get("event", ["unknown"])[0]
+            source = params.get("source", ["Desconhecido"])[0]
+            local = params.get("local", [""])[0]
+            campaign = params.get("campaign", [""])[0]
+            content = params.get("content", [""])[0]
+
+            # Montar dados do evento
+            event_data = {
+                "event": event,
+                "source": source,
+                "ip": self.client_address[0],
+                "user_agent": self.headers.get("User-Agent", ""),
+            }
+
+            # Montar mensagem Telegram
+            now = datetime.now(SP_TZ).strftime("%H:%M:%S")
+            
+            if event == "visit":
+                source_detail = source
+                if campaign:
+                    source_detail += f"\nCampanha: {campaign}"
+                if content:
+                    source_detail += f"\nCriativo: {content}"
+                msg = f"<b>[Code Sprint]</b> 🚀 <b>Novo Visitante na LP!</b>\nOrigem: <b>{source_detail}</b>\nHora: {now}"
+
+            elif event == "cta_click":
+                event_data["local"] = local
+                msg = f"<b>[Code Sprint]</b> 📲 <b>Lead Clicou no CTA!</b>\nLocal: <b>{local}</b>\nOrigem: <b>{source}</b>\nHora: {now}"
+
+            elif event == "cta_float":
+                msg = f"<b>[Code Sprint]</b> 📲 <b>Lead Clicou no CTA Flutuante!</b>\nOrigem: <b>{source}</b>\nHora: {now}"
+
+            elif event == "scroll_50":
+                msg = f"<b>[Code Sprint]</b> 📜 Visitante rolou 50% da LP\nOrigem: {source}\nHora: {now}"
+
+            elif event == "chat_widget_loaded":
+                msg = f"<b>[Code Sprint]</b> 💬 <b>Chat Aberto / Carregado</b>\nOrigem: <b>{source}</b>\nHora: {now}"
+
+            elif event == "chat_message":
+                msg = f"<b>[Code Sprint]</b> 💬 <b>Visitante mandou mensagem no Chat</b>\nOrigem: <b>{source}</b>\nHora: {now}"
+
+            else:
+                msg = f"<b>[Code Sprint]</b> ❓ Evento: {event}\nOrigem: {source}\nHora: {now}"
+
+            # Log e Telegram
+            log_event(event_data)
+            
+            # Enviar em background
+            threading.Thread(
+                target=send_telegram,
+                args=(msg,),
+                daemon=True,
+            ).start()
+
+            # Resposta (1x1 pixel transparente para Image() trick)
+            self.send_response(200)
+            self.send_header("Content-Type", "image/gif")
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Cache-Control", "no-cache, no-store")
+            self.end_headers()
+            self.wfile.write(b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00\x21\xf9\x04\x00\x00\x00\x00\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02\x44\x01\x00\x3b")
 
         else:
             self.send_response(404)

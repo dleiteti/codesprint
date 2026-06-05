@@ -146,23 +146,48 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 /* ==============================================
-   TELEGRAM NOTIFICATION
+   SERVER-SIDE EVENT TRACKING
    ============================================== */
-const TELEGRAM_BOT_TOKEN = '8574801333:AAHfS1MV0cBrXhs9N_SDhzUG_1ZvN0L7ZPI';
-const TELEGRAM_CHAT_ID = '8453400539';
-
-const sendTelegramNotification = (message: string) => {
+const sendEvent = (event: string, extraParams?: Record<string, string>) => {
   try {
-    const formattedMessage = `[Code Sprint] ${message}`;
-    const text = encodeURIComponent(formattedMessage);
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=HTML`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmCampaign = urlParams.get('utm_campaign') || '';
+    const utmContent = urlParams.get('utm_content') || '';
     
-    // Utilize tracking pixel technique to entirely bypass CORS
-    // Use window.Image to avoid collision with next/image component
+    let source = 'Orgânico 🌱';
+    const fbclid = urlParams.get('fbclid');
+    const utmSource = (urlParams.get('utm_source') || '').toLowerCase();
+    const utmMedium = (urlParams.get('utm_medium') || '').toLowerCase();
+    
+    if (fbclid || ['facebook', 'meta', 'ig', 'instagram'].includes(utmSource) || ['cpc', 'ad', 'ads'].includes(utmMedium)) {
+      source = 'Meta Ads 🎯';
+    } else if (['google', 'gclid'].includes(utmSource)) {
+      source = 'Google Ads 🔍';
+    } else if (document.referrer) {
+      try {
+        const hostname = new URL(document.referrer).hostname;
+        if (hostname.includes('google')) source = 'Google Orgânico 🔍';
+        else if (hostname.includes('instagram')) source = 'Instagram 📸';
+        else if (hostname.includes('facebook')) source = 'Facebook 👥';
+        else source = `Referência: ${hostname} 🔗`;
+      } catch (e) {}
+    }
+
+    const campaignInfo = utmCampaign ? ` (Campanha: ${utmCampaign})` : '';
+    const fullSource = `${source}${campaignInfo}`;
+
+    const params = new URLSearchParams({
+      event: event,
+      source: fullSource,
+      campaign: utmCampaign,
+      content: utmContent,
+      ...extraParams
+    });
+
     const img = new window.Image();
-    img.src = url;
+    img.src = `/notify?${params.toString()}`;
   } catch (error) {
-    console.error('Failed to send Telegram notification', error);
+    console.error('Failed to send tracking event', error);
   }
 };
 
@@ -173,8 +198,9 @@ export default function Home() {
   const [trafficSource, setTrafficSource] = useState('Analisando...');
 
   useEffect(() => {
-    // Expor função de clique globalmente para o widget de chat
+    // Expor funções globalmente para o widget de chat
     (window as any).handleCTAClick = handleCTAClick;
+    (window as any).sendEvent = sendEvent;
 
     let source = 'Orgânico 🌱';
     const urlParams = new URLSearchParams(window.location.search);
@@ -183,20 +209,33 @@ export default function Home() {
     const utmMedium = urlParams.get('utm_medium')?.toLowerCase() || '';
     const utmCampaign = urlParams.get('utm_campaign') || '';
 
-    // Verifica presença de fbclid (padrão do Meta) ou tags UTM indicando anúncios
     if (fbclid || ['facebook', 'meta', 'ig', 'instagram'].includes(utmSource) || ['cpc', 'ad', 'ads'].includes(utmMedium)) {
       source = 'Meta Ads 🎯';
     }
 
     const campaignInfo = utmCampaign ? ` (Campanha: ${utmCampaign})` : '';
     const fullSource = `${source}${campaignInfo}`;
-    
     setTrafficSource(fullSource);
-    sendTelegramNotification(`🚀 <b>Novo Visitante na Landing Page!</b>\nOrigem: <b>${fullSource}</b>\nAlguém acabou de acessar a CodeSprint Agency.`);
+
+    // Enviar evento de visita inicial
+    sendEvent('visit');
+
+    // Configurar monitoramento de rolagem 50%
+    let scrollTracked = false;
+    const handleScroll = () => {
+      if (scrollTracked) return;
+      const scrollPct = (window.scrollY + window.innerHeight) / document.body.scrollHeight;
+      if (scrollPct > 0.5) {
+        scrollTracked = true;
+        sendEvent('scroll_50');
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleCTAClick = (local: string) => {
-    sendTelegramNotification(`📲 <b>Lead Clicou no CTA!</b>\nO visitante clicou no botão de WhatsApp.\nLocal: <b>${local}</b>\nOrigem: <b>${trafficSource}</b>`);
+    sendEvent('cta_click', { local: local });
   };
 
   return (

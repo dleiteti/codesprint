@@ -632,9 +632,9 @@
           const data = await response.json();
           addMessage(data.reply, 'bot');
           
-          // Dispara evento de analytics no window se existir
-          if (typeof window.handleCTAClick === 'function') {
-             // Opcional: rastrear cliques indiretos de chat
+          // Rastrear mensagem de chat no Telegram server-side
+          if (typeof window.sendEvent === 'function') {
+            window.sendEvent('chat_message');
           }
 
           // Se lead completo, exibe o botão do WhatsApp e grava no localStorage
@@ -706,6 +706,11 @@
         }
       }
     }, 8000);
+
+    // Track chat widget loaded/ready
+    if (typeof window.sendEvent === 'function') {
+      window.sendEvent('chat_widget_loaded');
+    }
   }
 
   // ─── Init when DOM ready ───
