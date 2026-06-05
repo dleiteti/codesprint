@@ -286,7 +286,7 @@ export default function Home() {
             </h1>
             
             <p className="body-lg max-w-2xl mb-12 text-[var(--text-muted)] border-l-2 border-[var(--primary)] pl-6">
-              Design premium que transmite autoridade e atrai clientes. <span className="text-[var(--foreground)] font-semibold">Investimento único de R$ 497</span> — sem mensalidade, sem contrato, sem complicação.
+              Design premium que transmite autoridade e atrai clientes. <br /> <span className="text-[var(--foreground)] font-semibold whitespace-nowrap">Investimento único de R$ 497</span> — sem mensalidade, sem contrato, sem complicação.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6">
