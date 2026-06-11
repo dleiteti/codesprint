@@ -48,7 +48,7 @@ const painPoints = [
 
 const comparisonRows = [
   { feature: 'VELOCIDADE DE ENTREGA', us: 'Até 48h', them: '30 a 60 Dias' },
-  { feature: 'INVESTIMENTO', us: 'R$ 497 (Único)', them: 'R$ 1.200 a R$ 2.500' },
+  { feature: 'INVESTIMENTO', us: 'R$ 397 (Único)', them: 'R$ 1.200 a R$ 2.500' },
   { feature: 'ATENDIMENTO', us: 'WhatsApp Direto', them: 'E-mail (Lento)' },
   { feature: 'MANUTENÇÃO E AJUSTES', us: '30 Dias Inclusos', them: 'Cobrados à parte' },
 ];
@@ -240,6 +240,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
+      {/* ============ BANNER DE URGÊNCIA ============ */}
+      <div className="bg-[var(--danger)] text-white text-center py-2 px-4 text-xs md:text-sm font-bold tracking-wide flex items-center justify-center gap-2 relative z-50">
+        <span>⚠️ Promoção por tempo limitado: Apenas 4 das 10 vagas restantes para pagar apenas R$ 397! para ter um site premium.</span>
+      </div>
       
       {/* ============ HEADER ============ */}
       <header className="px-6 py-4 bg-[var(--header-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 backdrop-blur-md">
@@ -256,7 +260,7 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-6">
-            <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Header')} className="inline-flex items-center gap-2 text-sm font-semibold tracking-wider text-[var(--foreground)] hover:text-[var(--primary)] transition-colors">
+            <Link href="https://api.whatsapp.com/send?phone=5521981477503&text=Oi!%20Quero%20garantir%20meu%20site%20na%20promo%C3%A7%C3%A3o%20rel%C3%A2mpago%20de%20R%24%20397%20%F0%9F%9A%80" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Header')} className="inline-flex items-center gap-2 text-sm font-semibold tracking-wider text-[var(--foreground)] hover:text-[var(--primary)] transition-colors">
               <Image src="/whatsapp-icon.png" alt="WhatsApp" width={20} height={20} className="w-5 h-5 object-contain" />
               <span className="hidden sm:inline">FALE COM UM ATENDENTE</span>
             </Link>
@@ -276,7 +280,7 @@ export default function Home() {
             className="lg:col-span-8 z-10"
           >
             <div className="badge badge-primary mb-8 px-4 py-2">
-              <Zap className="w-4 h-4 text-[var(--primary)]" /> ✓ INVESTIMENTO ÚNICO DE R$ 497 — SEM MENSALIDADE
+              <Zap className="w-4 h-4 text-[var(--primary)]" /> ✓ PROMOÇÃO RELÂMPAGO — R$ 397 TAXA ÚNICA
             </div>
             
             <h1 className="heading-hero mb-6">
@@ -286,11 +290,11 @@ export default function Home() {
             </h1>
             
             <p className="body-lg max-w-2xl mb-12 text-[var(--text-muted)] border-l-2 border-[var(--primary)] pl-6">
-              Design premium que transmite autoridade e atrai clientes. <br /> <span className="text-[var(--foreground)] font-semibold whitespace-nowrap">Investimento único de R$ 497</span> — sem mensalidade, sem contrato, sem complicação.
+              Design premium que transmite autoridade e atrai clientes. <br /> <span className="text-[var(--foreground)] font-semibold whitespace-nowrap">Investimento único de R$ 397</span> — sem mensalidade, sem contrato, sem complicação.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6">
-              <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Hero')} className="btn-cta text-lg">
+              <Link href="https://api.whatsapp.com/send?phone=5521981477503&text=Oi!%20Quero%20garantir%20meu%20site%20na%20promo%C3%A7%C3%A3o%20rel%C3%A2mpago%20de%20R%24%20397%20%F0%9F%9A%80" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Hero')} className="btn-cta text-lg">
                 QUERO MEU SITE AGORA <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
@@ -433,8 +437,11 @@ export default function Home() {
               <h3 className="heading-card text-3xl mb-4 font-black tracking-tight">O SEU SITE PROFISSIONAL</h3>
               <p className="body-lg mb-8">Nossa solução definitiva para transformar visitantes em clientes qualificados todos os dias.</p>
               
-              <div className="badge badge-primary mb-4">⚡ VAGAS LIMITADAS ESTE MÊS</div>
-              <div className="text-5xl font-black tracking-tighter mb-8 text-white">R$ 497</div>
+              <div className="badge badge-primary mb-4">⚡ APENAS 10 VAGAS DISPONÍVEIS OU 5 DIAS</div>
+              <div className="flex items-baseline gap-3 mb-8">
+                <span className="text-2xl text-[var(--text-muted)] line-through">R$ 497</span>
+                <span className="text-5xl font-black tracking-tighter text-white">R$ 397</span>
+              </div>
               
               <ul className="space-y-5 mb-10 font-medium text-[var(--foreground)]">
                 <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Design Exclusivo de Alto Padrão (Premium)</li>
@@ -445,7 +452,7 @@ export default function Home() {
                 <li className="flex gap-4 items-center"><CheckCircle2 className="text-[var(--primary)] w-6 h-6"/> Otimizado para celular, tablet e desktop</li>
               </ul>
               
-               <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Oferta Premium')} className="btn-cta w-full justify-center py-5 text-xl tracking-wide uppercase">
+               <Link href="https://api.whatsapp.com/send?phone=5521981477503&text=Oi!%20Quero%20garantir%20meu%20site%20na%20promo%C3%A7%C3%A3o%20rel%C3%A2mpago%20de%20R%24%20397%20%F0%9F%9A%80" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Oferta Premium')} className="btn-cta w-full justify-center py-5 text-xl tracking-wide uppercase">
                 QUERO MEU SITE AGORA <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
               <p className="text-sm text-[var(--text-muted)] mt-4 text-center">Sem compromisso. Resposta em até 5 minutos. 💬</p>
@@ -517,7 +524,7 @@ export default function Home() {
           
           <div>
             <h2 className="heading-hero mb-8">INICIE O<br/><span className="gradient-text">PROJETO.</span></h2>
-            <Link href="https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Footer')} className="btn-cta text-xl px-8 py-5">
+            <Link href="https://api.whatsapp.com/send?phone=5521981477503&text=Oi!%20Quero%20garantir%20meu%20site%20na%20promo%C3%A7%C3%A3o%20rel%C3%A2mpago%20de%20R%24%20397%20%F0%9F%9A%80" target="_blank" rel="noopener noreferrer" onClick={() => handleCTAClick('Footer')} className="btn-cta text-xl px-8 py-5">
               FALAR COM ESPECIALISTA <ArrowRight className="w-5 h-5" />
             </Link>
             <p className="text-sm text-[var(--text-muted)] mt-4">Atendimento humanizado pelo WhatsApp 💬</p>
@@ -528,7 +535,7 @@ export default function Home() {
               className="flex items-center gap-4 text-lg hover:text-[var(--primary)] transition-colors cursor-pointer w-max"
               onClick={() => {
                 handleCTAClick('Footer Phone');
-                window.open('https://wa.me/5521981477503?text=Oi!%20Quero%20saber%20mais%20sobre%20o%20site%20R%24%20497%20%F0%9F%91%8B', '_blank');
+                window.open('https://api.whatsapp.com/send?phone=5521981477503&text=Oi!%20Quero%20garantir%20meu%20site%20na%20promo%C3%A7%C3%A3o%20rel%C3%A2mpago%20de%20R%24%20397%20%F0%9F%9A%80', '_blank');
               }}
             >
               <Phone className="w-5 h-5 text-[var(--primary)]" /> (21) 98147-7503
@@ -547,6 +554,18 @@ export default function Home() {
 
       {/* ============ CHAT WIDGET SOFIA ============ */}
       <Script src="/chat-widget.js" strategy="afterInteractive" id="chat-widget-sofia" />
+      
+      {/* ============ FLOATING WHATSAPP BUTTON (LEFT SIDE) ============ */}
+      <Link
+        href="https://api.whatsapp.com/send?phone=5521981477503&text=Oi!%20Quero%20garantir%20meu%20site%20na%20promo%C3%A7%C3%A3o%20rel%C3%A2mpago%20de%20R%24%20397%20%F0%9F%9A%80"
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => handleCTAClick('Floating WhatsApp')}
+        className="whatsapp-float"
+        aria-label="Fale conosco pelo WhatsApp"
+      >
+        <Image src="/whatsapp-icon.png" alt="WhatsApp" width={32} height={32} className="w-8 h-8 object-contain" />
+      </Link>
     </main>
   );
 }

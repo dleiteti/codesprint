@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════
-   CODESPRINT — Chat Widget v2
+   CODESPRINT — Chat Widget v3
    Atendente virtual "Sofia" para a LP
    Self-contained: CSS + HTML + JS
+   v3: Foco em maximizar taxa de abertura e integração com telemetria
    ═══════════════════════════════════════════ */
 
 (function() {
@@ -12,55 +13,18 @@
   const HISTORY_KEY = 'codesprint_chat_history';
   const QR_KEY = 'codesprint_chat_qr';
   const SOFIA_AVATAR = '/sofia-avatar.png';
+  const APP_ID = 'codesprint';
 
-  // ─── Web Audio API (notification sound) ───
-  var audioCtx = null;
+  // Mensagens proativas dinâmicas da Sofia
+  const PROACTIVE_MESSAGES = [
+    '👋 Precisa de um site profissional ou aplicativo sob medida? Fala comigo!',
+    '💻 Desenvolvemos seu sistema em tempo recorde. Quer saber mais?',
+    '🚀 Solicite um orçamento gratuito para o seu projeto de software!',
+    '📊 Quer automatizar processos da sua empresa? Me chama!'
+  ];
 
-  function initAudioContext() {
-    if (!audioCtx) {
-      try {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      } catch(e) {}
-    }
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(function(){});
-    }
-  }
-
-  function playNotificationSound() {
-    if (!audioCtx || audioCtx.state !== 'running') return;
-    try {
-      var now = audioCtx.currentTime;
-
-      // Nota 1: E6 (1318 Hz)
-      var osc1 = audioCtx.createOscillator();
-      var gain1 = audioCtx.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.value = 1318;
-      gain1.gain.setValueAtTime(0.08, now);
-      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-      osc1.connect(gain1);
-      gain1.connect(audioCtx.destination);
-      osc1.start(now);
-      osc1.stop(now + 0.2);
-
-      // Nota 2: A6 (1760 Hz)
-      var osc2 = audioCtx.createOscillator();
-      var gain2 = audioCtx.createGain();
-      osc2.type = 'sine';
-      osc2.frequency.value = 1760;
-      gain2.gain.setValueAtTime(0.06, now + 0.15);
-      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-      osc2.connect(gain2);
-      gain2.connect(audioCtx.destination);
-      osc2.start(now + 0.15);
-      osc2.stop(now + 0.35);
-    } catch(e) {}
-  }
-  
-  // Generate or retrieve session ID
   function getSessionId() {
-    var sid = sessionStorage.getItem(SESSION_KEY);
+    let sid = sessionStorage.getItem(SESSION_KEY);
     if (!sid) {
       sid = 'cs_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
       sessionStorage.setItem(SESSION_KEY, sid);
@@ -68,78 +32,118 @@
     return sid;
   }
 
+  // Helper para registrar eventos no tracker
+  function trackEvent(name, data = {}) {
+    if (window.sparkTracker && typeof window.sparkTracker.push === 'function') {
+      window.sparkTracker.push(name, data);
+    } else if (typeof window.sendEvent === 'function') {
+      window.sendEvent(name, data);
+    }
+  }
+
   // ─── Inject CSS ───
   function injectStyles() {
-    var style = document.createElement('style');
+    const style = document.createElement('style');
     style.textContent = `
-      /* Chat Bubble — Card style with avatar */
+      /* ══════ CHAT BUBBLE — Estilo Premium CodeSprint (Ciano) ══════ */
       .cs-chat-bubble {
         position: fixed;
-        bottom: 24px;
-        right: 24px;
-        border-radius: 32px;
-        background: #111F38;
-        border: 1px solid rgba(255,255,255,0.08);
+        bottom: 20px;
+        right: 16px;
+        border-radius: 60px;
+        background: linear-gradient(135deg, #111F38 0%, #162847 100%);
+        border: 1.5px solid rgba(6,182,212,0.25);
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 10px 22px 10px 10px;
-        box-shadow: 0 6px 28px rgba(0,0,0,0.4);
+        padding: 10px 20px 10px 10px;
+        box-shadow: 0 6px 32px rgba(0,0,0,0.45);
         z-index: 10000;
         transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        animation: cs-bubble-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        opacity: 0;
-        transform: translateY(16px);
+        opacity: 1;
+        transform: translateY(0);
         font-family: 'Inter', -apple-system, sans-serif;
+        -webkit-tap-highlight-color: transparent;
       }
-      
+
+      .cs-chat-bubble:active {
+        transform: scale(0.96) !important;
+      }
+
       .cs-chat-bubble:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.45);
-        border-color: rgba(255,255,255,0.12);
+        box-shadow: 0 8px 36px rgba(0,0,0,0.5), 0 0 20px rgba(6,182,212,0.15);
+        border-color: rgba(6,182,212,0.4);
       }
-      
+
       .cs-chat-bubble.cs-open {
         transform: translateY(16px) !important;
         opacity: 0 !important;
         pointer-events: none;
       }
 
-      /* Avatar wrapper for badge positioning */
+      /* Bounce de atenção */
+      @keyframes cs-attention-bounce {
+        0%, 100% { transform: translateY(0); }
+        15% { transform: translateY(-8px); }
+        30% { transform: translateY(0); }
+        45% { transform: translateY(-4px); }
+        60% { transform: translateY(0); }
+      }
+      .cs-chat-bubble.cs-attention {
+        animation: cs-attention-bounce 0.8s cubic-bezier(0.36, 0, 0.66, -0.56);
+      }
+
       .cs-bubble-avatar-wrap {
         position: relative;
         flex-shrink: 0;
       }
-      
+
       .cs-bubble-avatar {
-        width: 52px;
-        height: 52px;
+        width: 64px;
+        height: 64px;
         border-radius: 50%;
         object-fit: cover;
         flex-shrink: 0;
-        border: 2px solid rgba(6, 182, 212, 0.4);
+        border: 2.5px solid rgba(6,182,212,0.5);
+        box-shadow: 0 0 12px rgba(6,182,212,0.2);
       }
 
-      /* Notification badge (pulsing red circle) */
+      /* Anel pulsante */
+      .cs-bubble-avatar-wrap::after {
+        content: '';
+        position: absolute;
+        top: -4px; left: -4px; right: -4px; bottom: -4px;
+        border-radius: 50%;
+        border: 2px solid rgba(6,182,212,0.4);
+        animation: cs-ring-pulse 2s ease-in-out infinite;
+      }
+      @keyframes cs-ring-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.6; }
+        50% { transform: scale(1.12); opacity: 0; }
+      }
+
+      /* Notification Badge */
       .cs-notification-badge {
         position: absolute;
-        top: -4px;
-        left: -4px;
-        width: 22px;
-        height: 22px;
+        top: -5px;
+        left: -5px;
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
         background: #EF4444;
         color: #fff;
-        font-size: 12px;
-        font-weight: 700;
+        font-size: 13px;
+        font-weight: 800;
         display: none;
         align-items: center;
         justify-content: center;
-        border: 2px solid #111F38;
-        animation: cs-badge-pulse 1.5s ease-in-out infinite;
-        z-index: 1;
+        border: 2.5px solid #111F38;
+        animation: cs-badge-pulse 1.2s ease-in-out infinite;
+        z-index: 2;
         line-height: 1;
+        box-shadow: 0 2px 8px rgba(239,68,68,0.4);
       }
 
       .cs-notification-badge.cs-show {
@@ -148,92 +152,165 @@
 
       @keyframes cs-badge-pulse {
         0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.25); }
+        50% { transform: scale(1.3); }
       }
-      
+
       .cs-bubble-info {
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        gap: 2px;
       }
-      
+
       .cs-bubble-name {
         color: #F0F4FA;
-        font-weight: 600;
-        font-size: 15px;
+        font-weight: 700;
+        font-size: 16px;
         line-height: 1.3;
         white-space: nowrap;
       }
-      
+
       .cs-bubble-status {
         color: #22C55E;
         font-size: 12px;
+        font-weight: 500;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
         line-height: 1.2;
       }
-      
+
       .cs-bubble-status::before {
         content: '';
-        width: 6px;
-        height: 6px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         background: #22C55E;
         display: inline-block;
         animation: cs-pulse-dot 2s ease-in-out infinite;
+        box-shadow: 0 0 6px rgba(34,197,94,0.5);
       }
-      
+
       @keyframes cs-pulse-dot {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.4; }
       }
-      
-      @keyframes cs-bubble-in {
-        to { opacity: 1; transform: translateY(0); }
-      }
 
-      /* Proactive tooltip */
-      .cs-chat-tooltip {
+      /* ══════ PROACTIVE BALLOON ══════ */
+      .cs-proactive-balloon {
         position: fixed;
-        bottom: 82px;
-        right: 24px;
-        background: #162847;
-        color: #F0F4FA;
-        padding: 10px 32px 10px 14px;
-        border-radius: 12px 12px 4px 12px;
-        font-family: 'Inter', -apple-system, sans-serif;
-        font-size: 13px;
-        max-width: 260px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        bottom: 100px;
+        right: 16px;
+        max-width: 300px;
         z-index: 10000;
         opacity: 0;
-        transform: translateY(6px);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(10px) scale(0.95);
+        transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         pointer-events: none;
-        border: 1px solid rgba(255,255,255,0.06);
+        font-family: 'Inter', -apple-system, sans-serif;
+        filter: drop-shadow(0 6px 20px rgba(0,0,0,0.4));
+        -webkit-tap-highlight-color: transparent;
       }
-      
-      .cs-chat-tooltip.cs-show {
+
+      .cs-proactive-balloon.cs-show {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         pointer-events: auto;
         cursor: pointer;
       }
-      
-      .cs-chat-tooltip .cs-tooltip-close {
+
+      .cs-balloon-body {
+        background: #162847;
+        border: 1px solid rgba(6,182,212,0.25);
+        border-radius: 16px 16px 4px 16px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        position: relative;
+      }
+
+      .cs-balloon-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 2px solid rgba(6,182,212,0.4);
+      }
+
+      .cs-balloon-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .cs-balloon-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+
+      .cs-balloon-name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #F0F4FA;
+      }
+
+      .cs-balloon-time {
+        font-size: 11px;
+        color: #506688;
+      }
+
+      .cs-balloon-text {
+        font-size: 14px;
+        color: #c8d6e5;
+        line-height: 1.45;
+        font-weight: 400;
+      }
+
+      .cs-balloon-close {
         position: absolute;
-        top: 4px;
+        top: 6px;
         right: 8px;
-        background: none;
+        background: rgba(255,255,255,0.05);
         border: none;
         color: #506688;
         cursor: pointer;
         font-size: 16px;
         line-height: 1;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
       }
 
-      /* Chat Window */
+      .cs-balloon-close:hover {
+        background: rgba(255,255,255,0.1);
+        color: #F0F4FA;
+      }
+
+      .cs-balloon-arrow {
+        width: 0; height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid #162847;
+        position: absolute;
+        bottom: -8px;
+        right: 36px;
+      }
+
+      .cs-proactive-balloon.cs-show .cs-balloon-body {
+        animation: cs-balloon-glow 2s ease-in-out 1;
+      }
+      @keyframes cs-balloon-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(6,182,212,0); }
+        50% { box-shadow: 0 0 20px 4px rgba(6,182,212,0.15); }
+      }
+
+      /* ══════ CHAT WINDOW ══════ */
       .cs-chat-window {
         position: fixed;
         bottom: 24px;
@@ -256,14 +333,13 @@
         border: 1px solid rgba(255,255,255,0.06);
         font-family: 'Inter', -apple-system, sans-serif;
       }
-      
+
       .cs-chat-window.cs-open {
         opacity: 1;
         transform: translateY(0) scale(1);
         pointer-events: auto;
       }
-      
-      /* Header */
+
       .cs-chat-header {
         padding: 16px 20px;
         background: linear-gradient(135deg, #111F38, #162847);
@@ -274,7 +350,6 @@
         flex-shrink: 0;
       }
 
-      /* Back button (mobile only) */
       .cs-chat-back {
         display: none;
         background: none;
@@ -294,26 +369,26 @@
         background: rgba(255,255,255,0.05);
         color: #F0F4FA;
       }
-      
+
       .cs-chat-avatar {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         object-fit: cover;
         flex-shrink: 0;
         border: 2px solid rgba(6, 182, 212, 0.3);
       }
-      
+
       .cs-chat-header-info {
         flex: 1;
       }
-      
+
       .cs-chat-header-name {
         color: #F0F4FA;
         font-weight: 600;
         font-size: 15px;
       }
-      
+
       .cs-chat-header-status {
         color: #22C55E;
         font-size: 12px;
@@ -321,7 +396,7 @@
         align-items: center;
         gap: 4px;
       }
-      
+
       .cs-chat-header-status::before {
         content: '';
         width: 6px;
@@ -330,7 +405,7 @@
         background: #22C55E;
         display: inline-block;
       }
-      
+
       .cs-chat-close {
         background: none;
         border: none;
@@ -343,12 +418,12 @@
         align-items: center;
         justify-content: center;
       }
-      
+
       .cs-chat-close:hover {
         background: rgba(255,255,255,0.05);
         color: #F0F4FA;
       }
-      
+
       /* Messages Area */
       .cs-chat-messages {
         flex: 1;
@@ -360,7 +435,7 @@
         scrollbar-width: thin;
         scrollbar-color: rgba(255,255,255,0.1) transparent;
       }
-      
+
       .cs-msg {
         max-width: 85%;
         padding: 10px 14px;
@@ -370,12 +445,12 @@
         animation: cs-msg-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         word-wrap: break-word;
       }
-      
+
       @keyframes cs-msg-in {
         from { opacity: 0; transform: translateY(8px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      
+
       .cs-msg-bot {
         background: #111F38;
         color: #F0F4FA;
@@ -383,14 +458,14 @@
         align-self: flex-start;
         border: 1px solid rgba(255,255,255,0.04);
       }
-      
+
       .cs-msg-user {
         background: linear-gradient(135deg, #06B6D4, #0891B2);
         color: white;
         border-bottom-right-radius: 4px;
         align-self: flex-end;
       }
-      
+
       /* Typing indicator */
       .cs-typing {
         display: flex;
@@ -398,7 +473,7 @@
         padding: 12px 16px;
         align-self: flex-start;
       }
-      
+
       .cs-typing-dot {
         width: 7px;
         height: 7px;
@@ -406,15 +481,15 @@
         background: #506688;
         animation: cs-typing-bounce 1.2s infinite;
       }
-      
+
       .cs-typing-dot:nth-child(2) { animation-delay: 0.15s; }
       .cs-typing-dot:nth-child(3) { animation-delay: 0.3s; }
-      
+
       @keyframes cs-typing-bounce {
         0%, 60%, 100% { transform: translateY(0); }
         30% { transform: translateY(-6px); }
       }
-      
+
       /* Quick replies */
       .cs-quick-replies {
         display: flex;
@@ -423,7 +498,7 @@
         padding: 0 16px 8px;
         flex-shrink: 0;
       }
-      
+
       .cs-quick-btn {
         background: rgba(6, 182, 212, 0.1);
         border: 1px solid rgba(6, 182, 212, 0.3);
@@ -436,7 +511,7 @@
         font-family: inherit;
         white-space: nowrap;
       }
-      
+
       .cs-quick-btn:hover {
         background: rgba(6, 182, 212, 0.2);
         border-color: #06B6D4;
@@ -451,7 +526,7 @@
         gap: 8px;
         flex-shrink: 0;
       }
-      
+
       .cs-chat-input {
         flex: 1;
         background: #111F38;
@@ -464,15 +539,15 @@
         outline: none;
         transition: border-color 0.2s;
       }
-      
+
       .cs-chat-input:focus {
         border-color: rgba(6, 182, 212, 0.4);
       }
-      
+
       .cs-chat-input::placeholder {
         color: #506688;
       }
-      
+
       .cs-chat-send {
         width: 40px;
         height: 40px;
@@ -486,25 +561,25 @@
         transition: all 0.2s;
         flex-shrink: 0;
       }
-      
+
       .cs-chat-send:hover {
         transform: scale(1.05);
         box-shadow: 0 2px 12px rgba(6, 182, 212, 0.4);
       }
-      
+
       .cs-chat-send:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         transform: none;
       }
-      
+
       .cs-chat-send svg {
         width: 18px;
         height: 18px;
         color: white;
       }
 
-      /* Mobile adjustments */
+      /* Adaptações Mobile */
       @media (max-width: 480px) {
         .cs-chat-window {
           bottom: 0;
@@ -515,16 +590,31 @@
           max-width: 100vw;
           border-radius: 0;
         }
-        
+
         .cs-chat-bubble {
           bottom: 12px;
-          right: 12px;
+          right: 10px;
+          padding: 8px 16px 8px 8px;
         }
-        
-        .cs-chat-tooltip {
-          bottom: 72px;
-          right: 12px;
-          max-width: calc(100vw - 80px);
+
+        .cs-bubble-avatar {
+          width: 56px;
+          height: 56px;
+        }
+
+        .cs-bubble-name {
+          font-size: 15px;
+        }
+
+        .cs-proactive-balloon {
+          bottom: 88px;
+          right: 10px;
+          left: 10px;
+          max-width: none;
+        }
+
+        .cs-balloon-arrow {
+          right: 30px;
         }
 
         .cs-chat-back {
@@ -535,10 +625,51 @@
     document.head.appendChild(style);
   }
 
+  // ─── Notification Sound ───
+  let audioCtx = null;
+
+  function initAudioContext() {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch(e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(function(){});
+    }
+  }
+
+  function playNotificationSound() {
+    if (!audioCtx || audioCtx.state !== 'running') return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc1 = audioCtx.createOscillator();
+      const gain1 = audioCtx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.value = 1318;
+      gain1.gain.setValueAtTime(0.08, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.2);
+
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.value = 1760;
+      gain2.gain.setValueAtTime(0.06, now + 0.15);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.start(now + 0.15);
+      osc2.stop(now + 0.35);
+    } catch(e) {}
+  }
+
   // ─── Build DOM ───
   function buildWidget() {
-    // Chat bubble — card style with badge
-    var bubble = document.createElement('button');
+    const bubble = document.createElement('button');
     bubble.className = 'cs-chat-bubble';
     bubble.id = 'csChatBubble';
     bubble.innerHTML = `
@@ -552,17 +683,25 @@
       </div>
     `;
 
-    // Tooltip — oferta irresistível
-    var tooltip = document.createElement('div');
-    tooltip.className = 'cs-chat-tooltip';
-    tooltip.id = 'csChatTooltip';
-    tooltip.innerHTML = `
-      <button class="cs-tooltip-close" aria-label="Fechar">&times;</button>
-      🚀 Site profissional a partir de R$ 497! Tire suas dúvidas 👇
+    const balloon = document.createElement('div');
+    balloon.className = 'cs-proactive-balloon';
+    balloon.id = 'csProactiveBalloon';
+    balloon.innerHTML = `
+      <div class="cs-balloon-body">
+        <img class="cs-balloon-avatar" src="${SOFIA_AVATAR}" alt="Sofia" />
+        <div class="cs-balloon-content">
+          <div class="cs-balloon-header">
+            <span class="cs-balloon-name">Sofia</span>
+            <span class="cs-balloon-time">agora</span>
+          </div>
+          <div class="cs-balloon-text" id="csBalloonText"></div>
+        </div>
+        <button class="cs-balloon-close" aria-label="Fechar">&times;</button>
+        <div class="cs-balloon-arrow"></div>
+      </div>
     `;
 
-    // Chat window with back button for mobile
-    var win = document.createElement('div');
+    const win = document.createElement('div');
     win.className = 'cs-chat-window';
     win.id = 'csChatWindow';
     win.innerHTML = `
@@ -596,101 +735,144 @@
     `;
 
     document.body.appendChild(bubble);
-    document.body.appendChild(tooltip);
+    document.body.appendChild(balloon);
     document.body.appendChild(win);
 
-    return { bubble: bubble, tooltip: tooltip, win: win };
+    return { bubble, balloon, win };
   }
 
   // ─── Chat Logic ───
   function initChat() {
     injectStyles();
-    var widgets = buildWidget();
-    var bubble = widgets.bubble;
-    var tooltip = widgets.tooltip;
-    var win = widgets.win;
-    
-    var messagesEl = document.getElementById('csChatMessages');
-    var inputEl = document.getElementById('csChatInput');
-    var sendBtn = document.getElementById('csChatSend');
-    var closeBtn = document.getElementById('csChatClose');
-    var backBtn = document.getElementById('csChatBack');
-    var quickRepliesEl = document.getElementById('csQuickReplies');
-    var badgeEl = document.getElementById('csNotificationBadge');
-    
-    var isOpen = false;
-    var isFirstOpen = true;
-    var isSending = false;
-    var sessionId = getSessionId();
+    const { bubble, balloon, win } = buildWidget();
 
-    // Restore history from sessionStorage
-    var savedHistory = sessionStorage.getItem(HISTORY_KEY);
+    const messagesEl = document.getElementById('csChatMessages');
+    const inputEl = document.getElementById('csChatInput');
+    const sendBtn = document.getElementById('csChatSend');
+    const closeBtn = document.getElementById('csChatClose');
+    const backBtn = document.getElementById('csChatBack');
+    const quickRepliesEl = document.getElementById('csQuickReplies');
+    const badgeEl = document.getElementById('csNotificationBadge');
+    const balloonText = document.getElementById('csBalloonText');
+
+    let isOpen = false;
+    let isFirstOpen = true;
+    let isSending = false;
+    let balloonDismissed = false;
+    let proactiveInterval = null;
+    let proactiveIndex = 0;
+    const sessionId = getSessionId();
+
+    // Restaurar histórico do sessionStorage
+    const savedHistory = sessionStorage.getItem(HISTORY_KEY);
     if (savedHistory) {
       try {
-        var msgs = JSON.parse(savedHistory);
-        msgs.forEach(function(m) { addMessage(m.text, m.type, false); });
+        const msgs = JSON.parse(savedHistory);
+        msgs.forEach(m => addMessage(m.text, m.type, false));
         isFirstOpen = false;
-        
-        // Restore persisted quick replies
-        var savedQR = sessionStorage.getItem(QR_KEY);
-        if (savedQR) {
-          try {
-            var qrOptions = JSON.parse(savedQR);
-            if (qrOptions.length > 0) {
-              showQuickReplies(qrOptions, false);
-            }
-          } catch(e) {}
-        }
-
-        // Se a conversa já estava qualificada, exibe o botão do WhatsApp
-        if (localStorage.getItem('cs_lead_qualified') === 'true') {
-          showWhatsAppButton();
-        }
       } catch(e) {}
     }
 
-    // ─── Open/Close ───
+    // Restaurar Quick Replies
+    if (!isFirstOpen) {
+      const savedQR = sessionStorage.getItem(QR_KEY);
+      if (savedQR) {
+        try {
+          const qrOptions = JSON.parse(savedQR);
+          if (qrOptions.length > 0) showQuickReplies(qrOptions, false);
+        } catch(e) {}
+      }
+    }
+
+    // Se lead completo qualificado, exibe o botão do WhatsApp
+    if (localStorage.getItem('cs_lead_qualified') === 'true') {
+      showWhatsAppButton();
+    }
+
+    // Balloon proativo
+    function showBalloon(text) {
+      if (isOpen || balloonDismissed) return;
+      balloonText.textContent = text;
+      balloon.classList.add('cs-show');
+      badgeEl.classList.add('cs-show');
+      trackEvent('cta_float_shown', { text });
+    }
+
+    function hideBalloon() {
+      balloon.classList.remove('cs-show');
+      if (badgeEl) badgeEl.classList.remove('cs-show');
+      bubble.classList.remove('cs-attention');
+    }
+
+    function startProactiveLoop() {
+      setTimeout(() => {
+        if (!isOpen) {
+          showBalloon(PROACTIVE_MESSAGES[0]);
+          proactiveIndex = 1;
+        }
+      }, 3000);
+
+      proactiveInterval = setInterval(() => {
+        if (isOpen || balloonDismissed) {
+          clearInterval(proactiveInterval);
+          return;
+        }
+        hideBalloon();
+        setTimeout(() => {
+          if (!isOpen && !balloonDismissed) {
+            showBalloon(PROACTIVE_MESSAGES[proactiveIndex % PROACTIVE_MESSAGES.length]);
+            proactiveIndex++;
+          }
+        }, 800);
+      }, 18000);
+
+      setInterval(() => {
+        if (!isOpen && !balloonDismissed) {
+          bubble.classList.remove('cs-attention');
+          void bubble.offsetWidth;
+          bubble.classList.add('cs-attention');
+        }
+      }, 8000);
+    }
+
+    // Open/Close
     function openChat() {
       isOpen = true;
       win.classList.add('cs-open');
       bubble.classList.add('cs-open');
-      tooltip.classList.remove('cs-show');
+      hideBalloon();
+      balloonDismissed = true;
+      if (proactiveInterval) clearInterval(proactiveInterval);
 
-      // Hide notification badge
       if (badgeEl) badgeEl.classList.remove('cs-show');
-
-      // Initialize audio context on first user interaction
       initAudioContext();
-      
+      trackEvent('chat_opened');
+
       if (isFirstOpen) {
         isFirstOpen = false;
         inputEl.disabled = true;
         sendBtn.disabled = true;
 
-        // Saudação em 3 etapas com typing indicators
-        // Etapa 1
         showTyping();
-        setTimeout(function() {
+        setTimeout(() => {
           hideTyping();
           addMessage('Oi! 👋 Tudo bem?', 'bot');
           playNotificationSound();
 
-          // Etapa 2
-          setTimeout(function() {
+          setTimeout(() => {
             showTyping();
-            setTimeout(function() {
+            setTimeout(() => {
               hideTyping();
-              addMessage('Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 497 — sem mensalidade 🚀', 'bot');
+              addMessage('Sou a Sophia da CodeSprint. Desenvolvemos aplicativos móveis, plataformas web e sistemas internos robustos de forma extremamente ágil.', 'bot');
               playNotificationSound();
 
-              // Etapa 3
-              setTimeout(function() {
+              setTimeout(() => {
                 showTyping();
-                setTimeout(function() {
+                setTimeout(() => {
                   hideTyping();
-                  addMessage('Como posso te ajudar hoje?', 'bot');
+                  addMessage('Você já tem um projeto em mente ou gostaria de entender como podemos automatizar o seu negócio?', 'bot');
                   playNotificationSound();
-                  showQuickReplies(['Quanto custa?', 'Como funciona?', 'Preciso de logo?']);
+                  showQuickReplies(['Tenho uma ideia! 🚀', 'Como funciona?', 'Quero um orçamento']);
                   inputEl.disabled = false;
                   sendBtn.disabled = false;
                   if (window.innerWidth > 480) {
@@ -702,13 +884,11 @@
           }, 600);
         }, 1000);
       } else {
-        setTimeout(function() {
-          if (window.innerWidth > 480) {
-            inputEl.focus();
-          }
-        }, 400);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
+        if (window.innerWidth > 480) {
+          setTimeout(() => inputEl.focus(), 400);
+        }
       }
+      messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
     function closeChat() {
@@ -718,32 +898,35 @@
     }
 
     bubble.addEventListener('click', openChat);
-    tooltip.addEventListener('click', openChat);
-    tooltip.querySelector('.cs-tooltip-close').addEventListener('click', function(e) {
-      e.stopPropagation();
-      tooltip.classList.remove('cs-show');
+    balloon.addEventListener('click', (e) => {
+      if (e.target.closest('.cs-balloon-close')) {
+        e.stopPropagation();
+        hideBalloon();
+        balloonDismissed = true;
+        return;
+      }
+      openChat();
     });
     closeBtn.addEventListener('click', closeChat);
     backBtn.addEventListener('click', closeChat);
 
-    // ─── Messages ───
-    function addMessage(text, type, save) {
-      if (save === undefined) save = true;
-      var msg = document.createElement('div');
-      msg.className = 'cs-msg cs-msg-' + type;
+    // Messages
+    function addMessage(text, type, save = true) {
+      const msg = document.createElement('div');
+      msg.className = `cs-msg cs-msg-${type}`;
       msg.textContent = text;
       messagesEl.appendChild(msg);
       messagesEl.scrollTop = messagesEl.scrollHeight;
 
       if (save) {
-        var history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
-        history.push({ text: text, type: type });
+        const history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
+        history.push({ text, type });
         sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
     }
 
     function showTyping() {
-      var typing = document.createElement('div');
+      const typing = document.createElement('div');
       typing.className = 'cs-typing';
       typing.id = 'csTypingIndicator';
       typing.innerHTML = '<span class="cs-typing-dot"></span><span class="cs-typing-dot"></span><span class="cs-typing-dot"></span>';
@@ -752,18 +935,17 @@
     }
 
     function hideTyping() {
-      var el = document.getElementById('csTypingIndicator');
+      const el = document.getElementById('csTypingIndicator');
       if (el) el.remove();
     }
 
-    function showQuickReplies(options, save) {
-      if (save === undefined) save = true;
+    function showQuickReplies(options, save = true) {
       quickRepliesEl.innerHTML = '';
-      options.forEach(function(text) {
-        var btn = document.createElement('button');
+      options.forEach(text => {
+        const btn = document.createElement('button');
         btn.className = 'cs-quick-btn';
         btn.textContent = text;
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', () => {
           quickRepliesEl.innerHTML = '';
           sessionStorage.removeItem(QR_KEY);
           sendMessage(text);
@@ -775,128 +957,119 @@
       }
     }
 
-    // ─── Send Message ───
-    function sendMessage(text) {
+    // Send Message
+    async function sendMessage(text) {
       if (!text.trim() || isSending) return;
-      
+
       isSending = true;
       sendBtn.disabled = true;
+      inputEl.disabled = true;
       inputEl.value = '';
       quickRepliesEl.innerHTML = '';
       sessionStorage.removeItem(QR_KEY);
-      
+
       addMessage(text, 'user');
       showTyping();
 
-      fetch(CHAT_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: sessionId,
-          message: text
-        })
-      })
-      .then(function(response) {
-        hideTyping();
+      try {
+        const response = await fetch(CHAT_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId: sessionId,
+            message: text,
+            appId: APP_ID
+          })
+        });
+
         if (response.ok) {
-          return response.json().then(function(data) {
-            // Delay humanizado antes de exibir a resposta
-            setTimeout(function() {
-              addMessage(data.reply, 'bot');
-              playNotificationSound();
+          const data = await response.json();
+          const replyText = data.reply;
+          const typingDelay = Math.min(Math.max(replyText.length * 15, 1200), 3500);
 
-              // Rastrear mensagem de chat no Telegram server-side
-              if (typeof window.sendEvent === 'function') {
-                window.sendEvent('chat_message');
-              }
+          setTimeout(() => {
+            hideTyping();
+            addMessage(replyText, 'bot');
+            playNotificationSound();
 
-              // Se lead completo, exibe o botão do WhatsApp e grava no localStorage
-              if (data.leadData && data.leadData.name && data.leadData.whatsapp) {
-                localStorage.setItem('cs_lead_qualified', 'true');
-                showWhatsAppButton();
-              }
+            trackEvent('chat_message');
 
-              isSending = false;
-              sendBtn.disabled = false;
+            if (data.leadData && data.leadData.name && data.leadData.whatsapp) {
+              localStorage.setItem('cs_lead_qualified', 'true');
+              showWhatsAppButton();
+            }
+
+            isSending = false;
+            sendBtn.disabled = false;
+            inputEl.disabled = false;
+            if (window.innerWidth > 480) {
               inputEl.focus();
-            }, 400);
-          });
+            }
+          }, typingDelay);
         } else {
+          hideTyping();
           addMessage('Desculpa, tive um probleminha aqui. Pode tentar de novo? 😅', 'bot');
           isSending = false;
           sendBtn.disabled = false;
-          inputEl.focus();
+          inputEl.disabled = false;
+          if (window.innerWidth > 480) {
+            inputEl.focus();
+          }
         }
-      })
-      .catch(function(error) {
+      } catch (error) {
         hideTyping();
         addMessage('Ops, parece que a conexão caiu. Tenta de novo? 😊', 'bot');
         isSending = false;
         sendBtn.disabled = false;
-        inputEl.focus();
-      });
+        inputEl.disabled = false;
+        if (window.innerWidth > 480) {
+          inputEl.focus();
+        }
+      }
     }
 
     function showWhatsAppButton() {
-      // Evita duplicar o botão se ele já existe nas mensagens
-      var existingBtn = document.getElementById('csWhatsAppDirectBtn');
+      const existingBtn = document.getElementById('csWhatsAppDirectBtn');
       if (existingBtn) return;
 
-      var waBtn = document.createElement('div');
+      const waBtn = document.createElement('div');
       waBtn.className = 'cs-msg cs-msg-bot';
       waBtn.id = 'csWhatsAppDirectBtn';
       waBtn.style.cssText = 'background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.3); cursor: pointer; color: #22C55E; font-weight: bold; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;';
       waBtn.innerHTML = '<img src="/whatsapp-icon.png" alt="WhatsApp" style="width: 20px; height: 20px; object-fit: contain;" /><span>Falar com Especialista no WhatsApp</span>';
-      
-      waBtn.addEventListener('click', function() {
-        if (typeof window.handleCTAClick === 'function') {
-           window.handleCTAClick('Chat Sofia Redirect');
-        }
-        window.open('https://wa.me/5521981477503?text=Oi!%20Falei%20com%20a%20Sofia%20no%20site%20e%20quero%20meu%20site%20R%24%20497!%20%F0%9F%91%8B', '_blank');
+
+      waBtn.addEventListener('click', () => {
+        trackEvent('cta_click', { role: 'cta', element: 'Chat Sofia Redirect' });
+        window.open('https://wa.me/5521981477503?text=Oi!%20Falei%20com%20a%20Sofia%20no%20site%20e%20quero%20um%20or%C3%A7amento%20de%20projeto!', '_blank');
       });
-      
+
       messagesEl.appendChild(waBtn);
       messagesEl.scrollTop = messagesEl.scrollHeight;
 
-      // Salva o clique do botão no histórico de mensagens do sessionStorage
-      var history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
-      if (!history.some(function(h) { return h.text.includes('Falar com Especialista'); })) {
-         history.push({ text: '💬 [Botão de Redirecionamento para o WhatsApp]', type: 'bot' });
-         sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+      const history = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
+      if (!history.some(h => h.text.includes('Falar com Especialista'))) {
+        history.push({ text: '💬 [Botão de Redirecionamento para o WhatsApp]', type: 'bot' });
+        sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       }
     }
 
-    // ─── Input handlers ───
-    sendBtn.addEventListener('click', function() { sendMessage(inputEl.value); });
-    inputEl.addEventListener('keypress', function(e) {
+    // Input handlers
+    sendBtn.addEventListener('click', () => sendMessage(inputEl.value));
+    inputEl.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage(inputEl.value);
     });
 
-    // ─── Proactive tooltip + badge after 3s ───
-    setTimeout(function() {
-      if (!isOpen) {
-        if (localStorage.getItem('cs_lead_qualified') !== 'true') {
-          tooltip.classList.add('cs-show');
-          if (badgeEl) badgeEl.classList.add('cs-show');
-          // Auto-hide tooltip after 12s
-          setTimeout(function() {
-            if (!isOpen) tooltip.classList.remove('cs-show');
-          }, 12000);
-        }
-      }
-    }, 3000);
-
-    // Track chat widget loaded/ready
-    if (typeof window.sendEvent === 'function') {
-      window.sendEvent('chat_widget_loaded');
+    // Restaurar estado do balão
+    if (localStorage.getItem('cs_lead_qualified') !== 'true') {
+      startProactiveLoop();
     }
+    
+    trackEvent('chat_widget_loaded');
   }
 
-  // ─── Init when DOM ready ───
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initChat);
   } else {
     initChat();
   }
-
 })();

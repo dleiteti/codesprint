@@ -57,7 +57,7 @@ SYSTEM_PROMPT = (
     "- Evite enrolações ou textos longos.\n\n"
     "Informações sobre a CodeSprint e o produto:\n"
     "- Produto principal: Site Profissional (ou Landing Page de Alta Conversão).\n"
-    "- Preço: Investimento único de R$ 497 (sem mensalidades recorrentes, sem taxas ocultas).\n"
+    "- Preço: Investimento único de R$ 397 em promoção relâmpago por tempo limitado (antes R$ 497). Sem mensalidades recorrentes, sem taxas ocultas.\n"
     "- Prazo de Entrega: O site fica pronto e no ar em até 48 horas após o envio do material.\n"
     "- O que está incluso no pacote:\n"
     "  * Design premium exclusivo otimizado para celular, tablet e computador.\n"
@@ -70,7 +70,7 @@ SYSTEM_PROMPT = (
     "- Caso o cliente não tenha logotipo, informamos que podemos começar apenas com o nome da marca em tipografia profissional ou ajudá-lo a estruturar.\n\n"
     "Fluxo ideal da conversa:\n"
     "1. Cumprimentar de forma acolhedora e perguntar como pode ajudar com a criação do site.\n"
-    "2. Responder às dúvidas de forma objetiva, destacando o preço de R$ 497 único e o prazo de 48h.\n"
+    "2. Responder às dúvidas de forma objetiva, destacando o preço promocional de R$ 397 único (antes R$ 497) e o prazo de 48h.\n"
     "3. Oferecer para que um especialista monte uma proposta e entre em contato.\n"
     "4. Coletar: Segmento → Nome → WhatsApp (na ordem que parecer mais natural na conversa).\n"
     "5. Quando tiver coletado os 3 dados (Segmento, Nome e WhatsApp), agradecer com simpatia e informar que a equipe de especialistas entrará em contato em instantes pelo WhatsApp."
@@ -130,20 +130,8 @@ def log_chat(session_id, role, text, lead_data=None):
 
 
 # ══════════════════════════════════════════════════════════════
-#  Lead extraction (regex)
+#  Lead extraction (inteligente — tolerante a falhas de digitação)
 # ══════════════════════════════════════════════════════════════
-
-_RE_NAME = re.compile(
-    r"(?:me\s+chamo|meu\s+nome\s+[eé]|sou\s+(?:o|a)\s+)"
-    r"\s*([A-ZÀ-Ú][a-zà-ú]+Header(?:\s+[A-ZÀ-Ú][a-zà-ú]+)*|[A-ZÀ-Ú][a-zà-ú]+)",
-    re.IGNORECASE,
-)
-
-_RE_WHATSAPP = re.compile(
-    r"(?<!\d)"
-    r"(\(?\d{2}\)?\s*9\s*\d{4}[\s.-]?\d{4}|\(?\d{2}\)?\s*[2-8]\d{3}[\s.-]?\d{4})"
-    r"(?!\d)"
-)
 
 _SEGMENTS = [
     "restaurante", "barbearia", "clínica", "clinica", "academia",
@@ -161,36 +149,83 @@ _RE_SEGMENT = re.compile(
     re.IGNORECASE,
 )
 
+_IGNORAR_NOMES = {
+    "sim", "nao", "não", "quero", "custa", "quanto", "como", "funciona", "ok",
+    "ola", "oi", "bom", "dia", "tarde", "noite", "whatsapp",
+    "whats", "zap", "fone", "telefone", "numero", "número", "gratis", "gratuita",
+    "site", "sites", "landing", "page", "preciso", "logo", "logotipo",
+    "mais", "info", "informacao", "informação", "informações", "valores", "valor",
+    "plano", "planos", "pagina", "página", "preco", "preço", "obrigado", "obrigada",
+}
+
+
+def extrair_nome_inteligente(text):
+    """Extrai nome do lead tolerando variações comuns de chat."""
+    text_clean = re.sub(r'[^\w\s]', '', text).strip()
+
+    # 1. Padrões com prefixo explícito
+    match = re.search(
+        r"(?:me\s+chamo|meu\s+nome\s+[eé]|sou\s+(?:o|a)\s+|pode\s+chamar\s+de|falar\s+com)\s*([a-zA-Zà-úÀ-Ú]+(?:\s+[a-zA-Zà-úÀ-Ú]+)*)",
+        text,
+        re.IGNORECASE
+    )
+    if match:
+        nome = match.group(1).strip()
+        if nome.lower() not in _IGNORAR_NOMES:
+            return nome.title()
+
+    # 2. Se for mensagem curta (1 a 3 palavras) sem termos de ignore ou números
+    words = text_clean.split()
+    if 1 <= len(words) <= 3:
+        if not any(w.lower() in _IGNORAR_NOMES for w in words):
+            if not any(w.isdigit() or w.startswith('@') for w in words):
+                return text_clean.title()
+
+    return None
+
+
+def extrair_whatsapp_inteligente(text):
+    """Extrai WhatsApp tolerando DDI 55, DDD faltante, 9 faltante, e 0 inicial."""
+    numbers = re.sub(r"\D", "", text)
+
+    # Trata 0 inicial de DDD (ex: 021981477503 -> 21981477503)
+    if len(numbers) >= 11 and numbers.startswith("0"):
+        numbers = numbers[1:]
+
+    # Se vier com DDI "55", remove o prefixo
+    if (len(numbers) == 13 or len(numbers) == 12) and numbers.startswith("55"):
+        numbers = numbers[2:]
+
+    if len(numbers) == 11:
+        return numbers
+    elif len(numbers) == 10:
+        # DDD + 8 dígitos -> insere o 9 no celular
+        return f"{numbers[:2]}9{numbers[2:]}"
+    elif len(numbers) == 9:
+        # Sem DDD -> assume DDD 21 (Rio)
+        return f"21{numbers}"
+    elif len(numbers) == 8:
+        # Sem DDD e sem o 9 -> assume DDD 21 e insere o 9
+        return f"219{numbers}"
+
+    return None
+
 
 def extract_lead_data(user_messages):
-    """Analisa todas as mensagens do usuário e extrai dados do lead."""
-    full_text = " ".join(user_messages)
-
-    # Extração de Nome
+    """Analisa todas as mensagens do usuário e extrai dados de forma incremental."""
     name = None
-    # Tentativa simples por padrão "me chamo [Nome]"
-    match = _RE_NAME.search(full_text)
-    if match:
-        name = match.group(1).strip()
-    else:
-        # Se não achou padrão verbal, pega o primeiro nome próprio se a mensagem for curta
-        words = [w for w in full_text.split() if w.istitle()]
-        if words and len(full_text.split()) <= 4:
-            name = words[0]
-
-    # Extração de WhatsApp
     whatsapp = None
-    match = _RE_WHATSAPP.search(full_text)
-    if match:
-        digits = re.sub(r"\D", "", match.group(1))
-        if len(digits) in (10, 11):
-            whatsapp = digits
-
-    # Extração de Segmento
     segment = None
-    match = _RE_SEGMENT.search(full_text)
-    if match:
-        segment = match.group(1).strip().lower()
+
+    for msg in user_messages:
+        if not name:
+            name = extrair_nome_inteligente(msg)
+        if not whatsapp:
+            whatsapp = extrair_whatsapp_inteligente(msg)
+        if not segment:
+            match = _RE_SEGMENT.search(msg)
+            if match:
+                segment = match.group(1).strip().lower()
 
     return {
         "name": name,
@@ -254,7 +289,7 @@ def call_gemini(history):
 # ══════════════════════════════════════════════════════════════
 
 def get_or_create_session(session_id):
-    """Obtém ou cria sessão. Retorna (history, lead_data, notified)."""
+    """Obtém ou cria sessão. Retorna (history, lead_data, notified_data)."""
     with sessions_lock:
         if session_id not in sessions:
             sessions[session_id] = {
@@ -263,7 +298,7 @@ def get_or_create_session(session_id):
                         "role": "model",
                         "parts": [{"text": (
                             "Oi! 👋 Tudo bem?\n\n"
-                            "Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 497 — sem mensalidade 🚀\n\n"
+                            "Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 397 na nossa Promoção Relâmpago — sem mensalidade 🚀\n\n"
                             "Como posso te ajudar hoje?"
                         )}]
                     }
@@ -273,23 +308,30 @@ def get_or_create_session(session_id):
                     "whatsapp": None,
                     "segment": None,
                 },
-                "leadNotified": False,
+                "notifiedData": {
+                    "name": None,
+                    "whatsapp": None,
+                    "segment": None,
+                },
                 "lastActivity": time.time(),
             }
         session = sessions[session_id]
         session["lastActivity"] = time.time()
+        # Migration: add notifiedData if missing (hot upgrade)
+        if "notifiedData" not in session:
+            session["notifiedData"] = {
+                "name": None,
+                "whatsapp": None,
+                "segment": None,
+            }
         return (
             session["history"],
             session["leadData"],
-            session["leadNotified"],
+            session["notifiedData"],
         )
 
 
-def mark_notified(session_id):
-    """Marca que a notificação de lead completo já foi enviada."""
-    with sessions_lock:
-        if session_id in sessions:
-            sessions[session_id]["leadNotified"] = True
+# mark_notified removido — agora usamos notifiedData incremental
 
 
 def cleanup_sessions():
@@ -383,27 +425,25 @@ class CodeSprintHandler(BaseHTTPRequestHandler):
             elif event == "cta_float":
                 msg = f"<b>[Code Sprint]</b> 📲 <b>Lead Clicou no CTA Flutuante!</b>\nOrigem: <b>{source}</b>\nHora: {now}"
 
-            elif event == "scroll_50":
-                msg = f"<b>[Code Sprint]</b> 📜 Visitante rolou 50% da LP\nOrigem: {source}\nHora: {now}"
+            elif event == "chat_opened":
+                msg = f"<b>[Code Sprint]</b> 💬 <b>Conversa com a Sofia Iniciada!</b>\nO visitante abriu o chat.\nOrigem: <b>{source}</b>\nHora: {now}"
 
-            elif event == "chat_widget_loaded":
-                msg = f"<b>[Code Sprint]</b> 💬 <b>Chat Aberto / Carregado</b>\nOrigem: <b>{source}</b>\nHora: {now}"
-
-            elif event == "chat_message":
-                msg = f"<b>[Code Sprint]</b> 💬 <b>Visitante mandou mensagem no Chat</b>\nOrigem: <b>{source}</b>\nHora: {now}"
+            elif event in ("scroll_50", "chat_widget_loaded", "chat_message", "cta_float_shown"):
+                # Apenas grava no log, não envia ao Telegram
+                msg = None
 
             else:
                 msg = f"<b>[Code Sprint]</b> ❓ Evento: {event}\nOrigem: {source}\nHora: {now}"
 
-            # Log e Telegram
+            # Log always; Telegram only if msg is set
             log_event(event_data)
             
-            # Enviar em background
-            threading.Thread(
-                target=send_telegram,
-                args=(msg,),
-                daemon=True,
-            ).start()
+            if msg:
+                threading.Thread(
+                    target=send_telegram,
+                    args=(msg,),
+                    daemon=True,
+                ).start()
 
             # Resposta (1x1 pixel transparente para Image() trick)
             self.send_response(200)
@@ -460,7 +500,7 @@ class CodeSprintHandler(BaseHTTPRequestHandler):
             return
 
         # Obter/criar sessão
-        history, lead_data, already_notified = get_or_create_session(session_id)
+        history, lead_data, notified_data = get_or_create_session(session_id)
 
         # Adicionar mensagem do usuário ao histórico
         history.append({
@@ -493,19 +533,48 @@ class CodeSprintHandler(BaseHTTPRequestHandler):
             if extracted[key] and not lead_data[key]:
                 lead_data[key] = extracted[key]
 
-        # Se lead completo e ainda não notificado, enviar Telegram
-        if lead_is_complete(lead_data) and not already_notified:
-            mark_notified(session_id)
+        # ── Notificação incremental no Telegram ──
+        should_notify = False
+        is_new_lead = False
+
+        with sessions_lock:
+            # Se o WhatsApp foi detectado e ainda não foi notificado
+            if lead_data["whatsapp"] and not notified_data["whatsapp"]:
+                should_notify = True
+                is_new_lead = True
+
+            # Se o WhatsApp já foi notificado, mas agora temos dados adicionais
+            elif notified_data["whatsapp"]:
+                for key in ("name", "segment"):
+                    if lead_data[key] and not notified_data[key]:
+                        should_notify = True
+                        break
+
+            if should_notify:
+                # Atualizar o controle na sessão
+                for key in ("name", "whatsapp", "segment"):
+                    notified_data[key] = lead_data[key]
+
+        if should_notify:
             now = datetime.now(SP_TZ).strftime("%H:%M:%S")
-            tg_msg = (
-                f"<b>[Code Sprint]</b> 🤖💬 <b>LEAD QUALIFICADO VIA CHAT</b>\n"
-                f"👤 Nome: <b>{lead_data['name']}</b>\n"
-                f"📱 WhatsApp: <b>{lead_data['whatsapp']}</b>\n"
-                f"🏢 Segmento: <b>{lead_data['segment']}</b>\n"
-                f"🔑 Sessão: {session_id[:12]}...\n"
-                f"⏰ Hora: {now}"
-            )
-            # Enviar em background para não travar a resposta do HTTP
+            if is_new_lead:
+                tg_msg = (
+                    f"<b>[Code Sprint]</b> 🤖💬 <b>NOVO LEAD VIA CHAT (Sofia)</b>\n"
+                    f"👤 Nome: <b>{lead_data['name'] or 'Não informado'}</b>\n"
+                    f"📱 WhatsApp: <b>{lead_data['whatsapp']}</b>\n"
+                    f"🏢 Segmento: <b>{lead_data['segment'] or 'Não informado'}</b>\n"
+                    f"🔑 Sessão: <code>{session_id[-6:]}</code>\n"
+                    f"⏰ Hora: {now}"
+                )
+            else:
+                tg_msg = (
+                    f"<b>[Code Sprint]</b> 📝 <b>LEAD ATUALIZADO (Sofia)</b>\n"
+                    f"👤 Nome: <b>{lead_data['name'] or 'Não informado'}</b>\n"
+                    f"📱 WhatsApp: <b>{lead_data['whatsapp']}</b>\n"
+                    f"🏢 Segmento: <b>{lead_data['segment'] or 'Não informado'}</b>\n"
+                    f"🔑 Sessão: <code>{session_id[-6:]}</code>\n"
+                    f"⏰ Hora: {now}"
+                )
             threading.Thread(
                 target=send_telegram,
                 args=(tg_msg,),
