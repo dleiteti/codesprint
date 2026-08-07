@@ -57,7 +57,7 @@ SYSTEM_PROMPT = (
     "- Evite enrolações ou textos longos.\n\n"
     "Informações sobre a CodeSprint e o produto:\n"
     "- Produto principal: Site Profissional (ou Landing Page de Alta Conversão).\n"
-    "- Preço: Investimento único de R$ 397 em promoção relâmpago por tempo limitado (antes R$ 497). Sem mensalidades recorrentes, sem taxas ocultas.\n"
+    "- Preço: Investimento único de R$ 897 em promoção relâmpago por tempo limitado (antes R$ 1.497). Sem mensalidades recorrentes, sem taxas ocultas.\n"
     "- Prazo de Entrega: O site fica pronto e no ar em até 48 horas após o envio do material.\n"
     "- O que está incluso no pacote:\n"
     "  * Design premium exclusivo otimizado para celular, tablet e computador.\n"
@@ -70,7 +70,7 @@ SYSTEM_PROMPT = (
     "- Caso o cliente não tenha logotipo, informamos que podemos começar apenas com o nome da marca em tipografia profissional ou ajudá-lo a estruturar.\n\n"
     "Fluxo ideal da conversa:\n"
     "1. Cumprimentar de forma acolhedora e perguntar como pode ajudar com a criação do site.\n"
-    "2. Responder às dúvidas de forma objetiva, destacando o preço promocional de R$ 397 único (antes R$ 497) e o prazo de 48h.\n"
+    "2. Responder às dúvidas de forma objetiva, destacando o preço promocional de R$ 897 único (antes R$ 1.497) e o prazo de 48h.\n"
     "3. Oferecer para que um especialista monte uma proposta e entre em contato.\n"
     "4. Coletar: Segmento → Nome → WhatsApp (na ordem que parecer mais natural na conversa).\n"
     "5. Quando tiver coletado os 3 dados (Segmento, Nome e WhatsApp), agradecer com simpatia e informar que a equipe de especialistas entrará em contato em instantes pelo WhatsApp."
@@ -298,7 +298,7 @@ def get_or_create_session(session_id):
                         "role": "model",
                         "parts": [{"text": (
                             "Oi! 👋 Tudo bem?\n\n"
-                            "Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 397 na nossa Promoção Relâmpago — sem mensalidade 🚀\n\n"
+                            "Sou a Sofia, da CodeSprint! Criamos sites profissionais em até 48h por apenas R$ 897 na nossa Promoção Relâmpago — sem mensalidade 🚀\n\n"
                             "Como posso te ajudar hoje?"
                         )}]
                     }
